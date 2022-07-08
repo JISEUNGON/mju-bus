@@ -1,4 +1,4 @@
-# mju-bus REPO 
+# mju-bus mono-repo
 
 ## app
 REACT-NATIVE
