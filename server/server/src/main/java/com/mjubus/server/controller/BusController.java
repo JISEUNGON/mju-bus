@@ -1,29 +1,41 @@
 package com.mjubus.server.controller;
 
 
+import com.mjubus.server.domain.Bus;
+import com.mjubus.server.exception.BusNotFoundExcpetion;
+import com.mjubus.server.repository.BusRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/bus")
 @Api(tags = {"버스 정보 조회 API"})
 public class BusController {
 
+    @Autowired
+    private BusRepository busRepository;
     @GetMapping("/{busID}")
     @ApiOperation(value = "버스에 대한 정보를 조회한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public String info(@PathVariable(value = "busID") String id) {
-        return "{\"sid\":\"ee1d5094-9a6b-4c04-95cb-b4d1f29ba303,\",\"name\":\"명지대역,\",\"charge\":\"0,\",\"type\":\"1\"}";
+    public Bus info(@PathVariable(value = "busID") String id) throws ChangeSetPersister.NotFoundException {
+        int type = Integer.parseInt(id);
+        Optional<Bus> targetBus = busRepository.findByType(type);
+        return targetBus.orElseThrow(() -> new BusNotFoundExcpetion(id));
+
     }
 
 

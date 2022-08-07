@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NO_CONTENT)
 @Getter
-public class NoMatchContentExcpetion extends ErrorResponse {
+public class BusNotFoundExcpetion extends RuntimeException {
     private String message;
-    public NoMatchContentExcpetion(String message, ErrorCode errorCode) {
-        super(errorCode);
+    public BusNotFoundExcpetion(String message) {
+        super(message);
         this.message = message;
     }
 

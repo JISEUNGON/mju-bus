@@ -26,13 +26,13 @@ public class BusTimeTable {
     private Bus bus;
 
     @ManyToOne
-    @JoinColumn(name = "mju_calendar_sid")
+    @JoinColumn(name = "bus_calendar_sid")
     @ApiModelProperty(example = "명지대 학사일정 SID")
     private MjuCalendar mjuCalendar;
 
     @ManyToOne
-    @JoinColumn(name = "route_info_sid")
-    @ApiModelProperty(example = "노선도 INFO SID")
-    private RouteInfo routeINfo;
+    @JoinColumn(name = "bus_timetable_info_sid")
+    @ApiModelProperty(example = "시간표 INFO SID")
+    private BusTimeTableInfo busTimeTableInfo;
 
 }

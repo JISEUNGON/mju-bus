@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @ApiModel(value = "학사 일정")
-@Table(name="mju_calendar")
+@Table(name="bus_calendar")
 @Getter
 @Setter
 public class MjuCalendar {
@@ -25,11 +25,19 @@ public class MjuCalendar {
     @ApiModelProperty(example = "학사 일정명")
     private String name;
 
-    @Column(name = "start", columnDefinition = "datetime")
+    @Column(name = "start_at", columnDefinition = "datetime")
     @ApiModelProperty(example = "학사 일정 시작일")
     private java.sql.Date start;
 
-    @Column(name = "end", columnDefinition = "datetime")
+    @Column(name = "end_at", columnDefinition = "datetime")
     @ApiModelProperty(example = "학사 일정 종일")
     private java.sql.Date end;
+
+    @Column(name = "on_weekend", columnDefinition = "int")
+    @ApiModelProperty(example = "주말 여부")
+    private int weekend;
+
+    @Column(name = "priority", columnDefinition = "int")
+    @ApiModelProperty(example = "일정 우선순위")
+    private int priority;
 }
