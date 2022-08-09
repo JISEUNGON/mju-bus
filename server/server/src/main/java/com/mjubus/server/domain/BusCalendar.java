@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name="bus_calendar")
 @Getter
 @Setter
-public class MjuCalendar {
+public class BusCalendar {
 
     @Id
     @GeneratedValue(generator = "uuid")

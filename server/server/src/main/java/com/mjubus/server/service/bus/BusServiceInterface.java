@@ -1,15 +1,15 @@
 package com.mjubus.server.service.bus;
 
 import com.mjubus.server.domain.Bus;
+import com.mjubus.server.dto.BusStatusDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public interface BusServiceInterface {
-    Optional<Bus> getBus(int type);
+    Optional<Bus> getBusByType(int type);
 
-    boolean isActivate(int type);
-    boolean isActivate(String sid);
+    BusStatusDto getBusStatus(int type);
 
 }

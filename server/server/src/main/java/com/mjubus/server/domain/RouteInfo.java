@@ -24,4 +24,13 @@ public class RouteInfo {
     @Column(name = "name", columnDefinition = "char(36)")
     @ApiModelProperty(example = "노선명")
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "main_station_sid", columnDefinition = "char(36)")
+    @ApiModelProperty(example = "main_station_sid")
+    private Station station;
+
+    @Column(name = "minute_required", columnDefinition = "int")
+    @ApiModelProperty(example = "main_station_sid 까지 평균 소요 시간")
+    private int minute;
 }
