@@ -1,26 +1,21 @@
-#  Template Java Gradle build
+#  Template Java Spring Boot App for Elastic Beanstalk
 
-#  This template allows you to test and build your Java project with Gradle.
-#  The workflow allows running tests, code checkstyle and security scans on the default branch.
+#  This template allows you to deploy your application as code using AWS Elastic Beanstalk.
+#  The workflow allows validate, linting and security scans on feature branches (as well as master).
+#  The Spring Boot App will be validated and deployed after the code is merged to master.
 
-# Prerequisites: appropriate project structure should exist in the repository.
+# Prerequisites: $AWS_ACCESS_KEY_ID, $AWS_SECRET_ACCESS_KEY, $AWS_DEFAULT_REGION setup in the Deployment variables.
+# For advanced cases, please, follow examples from the pipe's README https://bitbucket.org/atlassian/aws-elasticbeanstalk-deploy/src/master/README.md
 
-image: gradle:6.6.0
+image: atlassian/default-image:3
 
 pipelines:
-  default:
-    - parallel:
-      - step:
-          name: Build and Test
-          caches:
-            - gradle
-          script:
-            - gradle build
-          after-script:
-            - pipe: atlassian/checkstyle-report:0.3.0
-      - step:
-          name: Security Scan
-          script:
-            # Run a security scan for sensitive data.
-            # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
-            - pipe: atlassian/git-secrets-scan:0.5.1
+    branches:
+        master:
+        - step:
+            name: Deploy to AWS
+            deployment: test
+            image: atlassian/pipelines-awscli
+            script:
+                - aws deploy push --application-name $APPLICATION_NAME --s3-location s3://$S3_BUCKET/$S3_KEY --ignore-hidden-files
+                - aws deploy create-deployment --application-name $APPLICATION_NAME --s3-location bucket=$S3_BUCKET,key=$S3_KEY,bundleType=zip --deployment-group-name $DEPLOYMENT_GROUP_NAME
