@@ -37,4 +37,7 @@ public class Station {
     @ApiModelProperty(example = "경도")
     private Double longitude;
 
+    @Column(name = "type", columnDefinition = "int")
+    @ApiModelProperty(example = "1")
+    private int type;
 }
