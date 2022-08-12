@@ -1,28 +1,46 @@
 package com.mjubus.server.controller;
 
+import com.mjubus.server.domain.Station;
+import com.mjubus.server.exception.BusNotFoundExcpetion;
+import com.mjubus.server.service.station.StationService;
+import com.mjubus.server.service.station.StationServiceInterface;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/station")
 @Api(tags = {"정류장 정보 조회 API"})
 public class StationController {
 
+    @Autowired
+    private StationService stationService;
+
     @GetMapping("/{stationID}")
     @ApiOperation(value = "정류장에 대한 정보를 조회한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
-    })
+    })/*
     @ResponseBody
     public String info(@PathVariable(value = "stationID") String id) {
         return "{\"sid\":\"f05a3600-cbdf-4c38-ab74-146b2dac9e9d\",\"name\":\"명지대역,\",\"latitude\":\"37.2385136\",\"longitude\":\"127.1895973\"}";
+    }*/
+    @ResponseBody
+    public Station info(@PathVariable(value = "stationID") String id) {
+        int type = Integer.parseInt(id);
+
+        Optional<Station> targetStation = stationService.findStation(type);
+
+        return targetStation.orElseThrow(() -> new BusNotFoundExcpetion(id));
     }
 
     @GetMapping("/{stationID}/bus-remain")
