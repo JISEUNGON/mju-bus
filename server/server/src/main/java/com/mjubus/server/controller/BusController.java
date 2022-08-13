@@ -42,7 +42,6 @@ public class BusController {
     public Bus info(@PathVariable(value = "busID") Long id) {
         Optional<Bus> targetBus = busService.findBusById(id);
         return targetBus.orElseThrow(() -> new BusNotFoundException(id));
-
     }
 
     @GetMapping("/{busID}/status")
