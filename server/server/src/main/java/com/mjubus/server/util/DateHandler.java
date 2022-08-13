@@ -1,18 +1,24 @@
 package com.mjubus.server.util;
 
-import java.sql.Date;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 public class DateHandler {
 
-    public static ZonedDateTime getToday() {
+    private static ZonedDateTime getZonedDateTime() {
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 
-    public static boolean isWeekend(ZonedDateTime date) {
+    public static LocalDateTime getToday() {
+        return getZonedDateTime().toLocalDateTime();
+    }
+
+    public static LocalDateTime getTodayWith(int hour, int minute) {
+        ZonedDateTime zonedDateTime = getZonedDateTime();
+        zonedDateTime = zonedDateTime.with(LocalTime.of(hour, minute));
+        return zonedDateTime.toLocalDateTime();
+    }
+
+    public static boolean isWeekend(LocalDateTime date) {
         DayOfWeek day = date.getDayOfWeek();
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }

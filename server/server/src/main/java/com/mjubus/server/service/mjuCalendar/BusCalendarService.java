@@ -6,7 +6,7 @@ import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -16,7 +16,7 @@ public class BusCalendarService implements BusCalendarInterface {
     private BusCalendarRepository busCalendarRepository;
 
     @Override
-    public Optional<BusCalendar> findByDate(ZonedDateTime date) {
+    public Optional<BusCalendar> findByDate(LocalDateTime date) {
         if (DateHandler.isWeekend(date)) {
             return busCalendarRepository.findBusCalendarByDateOnWeekend(date);
         }

@@ -1,4 +1,4 @@
-package com.mjubus.server.exception;
+package com.mjubus.server.exception.Bus;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
