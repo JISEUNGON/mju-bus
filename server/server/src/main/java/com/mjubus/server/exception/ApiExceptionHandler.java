@@ -1,5 +1,7 @@
 package com.mjubus.server.exception;
 
+import com.mjubus.server.exception.Bus.BusNotFoundException;
+import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +19,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(BusCalenderNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(BusCalenderNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0002", "No Calendar is found in today" + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusTimeTableNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(BusTimeTableNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0003", "No BusTimeTable is found in Request" + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

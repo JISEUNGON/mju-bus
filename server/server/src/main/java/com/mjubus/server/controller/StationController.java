@@ -1,7 +1,7 @@
 package com.mjubus.server.controller;
 
 import com.mjubus.server.domain.Station;
-import com.mjubus.server.exception.BusNotFoundException;
+import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.service.station.StationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

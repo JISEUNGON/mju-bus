@@ -7,22 +7,26 @@ import lombok.Setter;
 
 @Getter
 public class BusStatusDto {
+    public static final int BEFORE_RUNNING = 1;
+    public static final int RUNNING = 2;
+    public static final int FINISH_RUNNING = 3;
+
     @ApiModelProperty(example = "61883118-be22-48fa-d3f5-44f5a450f9d3")
-    private Long sid;
+    private Long id;
 
     @ApiModelProperty(example = "시내")
     private String name;
 
-    @ApiModelProperty(example = "true", dataType = "boolean")
-    private boolean status;
+    @ApiModelProperty(example = "3")
+    private int status;
 
     public BusStatusDto(Bus bus) {
-        this.sid = bus.getId();
+        this.id = bus.getId();
         this.name = bus.getName();
-        this.status = false;
+        this.status = FINISH_RUNNING;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 }

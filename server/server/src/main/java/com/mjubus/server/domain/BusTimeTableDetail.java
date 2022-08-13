@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 
 @Entity
 @ApiModel(value = "버스 시간표 DETAIL")
@@ -27,5 +28,5 @@ public class BusTimeTableDetail {
 
     @Column(name = "depart_at", columnDefinition = "time")
     @ApiModelProperty(example = "출발 시간")
-    private Date depart;
+    private LocalDateTime depart;
 }
