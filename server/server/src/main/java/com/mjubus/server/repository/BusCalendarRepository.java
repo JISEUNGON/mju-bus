@@ -9,9 +9,9 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 public interface BusCalendarRepository extends JpaRepository<BusCalendar, String> {
-    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.on_weekend = 0 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.weekend = 0 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
     Optional<BusCalendar> findBusCalendarByDateOnWeekday(@Param("date")ZonedDateTime date);
-    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.on_weekend = 1 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.weekend = 1 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
 
     Optional<BusCalendar> findBusCalendarByDateOnWeekend(@Param("date")ZonedDateTime date);
 }

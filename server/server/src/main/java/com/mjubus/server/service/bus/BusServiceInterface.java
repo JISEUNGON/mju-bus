@@ -8,8 +8,8 @@ import java.util.Optional;
 
 @Service
 public interface BusServiceInterface {
-    Optional<Bus> getBusByType(int type);
+    Optional<Bus> findBusById(Long id);
 
-    BusStatusDto getBusStatus(int type);
+    BusStatusDto getBusStatus(Long id);
 
 }

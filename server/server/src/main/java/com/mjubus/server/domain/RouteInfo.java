@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -16,18 +15,18 @@ import javax.persistence.*;
 public class RouteInfo {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "sid", columnDefinition = "char(36)")
-    private String sid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="id", columnDefinition = "int")
+    @ApiModelProperty(example = "고유 식별 ID")
+    private Long id;
 
     @Column(name = "name", columnDefinition = "char(36)")
     @ApiModelProperty(example = "노선명")
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "main_station_sid", columnDefinition = "char(36)")
-    @ApiModelProperty(example = "main_station_sid")
+    @JoinColumn(name = "main_station_id", columnDefinition = "int")
+    @ApiModelProperty(example = "main_station_id")
     private Station station;
 
     @Column(name = "minute_required", columnDefinition = "int")

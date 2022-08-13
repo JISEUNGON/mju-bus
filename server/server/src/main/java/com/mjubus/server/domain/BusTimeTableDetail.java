@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
-@ApiModel(value = "버스 시간표")
-@Table(name="bus_timetable")
+@ApiModel(value = "버스 시간표 DETAIL")
+@Table(name="bus_timetable_detail")
 @Getter
 @Setter
-public class BusTimeTable {
+public class BusTimeTableDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="id", columnDefinition = "int")
@@ -20,18 +21,11 @@ public class BusTimeTable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "bus_id")
-    @ApiModelProperty(example = "버스 SID")
-    private Bus bus;
-
-    @ManyToOne
-    @JoinColumn(name = "bus_calendar_id")
-    @ApiModelProperty(example = "명지대 학사일정 SID")
-    private BusCalendar busCalendar;
-
-    @ManyToOne
     @JoinColumn(name = "bus_timetable_info_id")
-    @ApiModelProperty(example = "시간표 INFO SID")
+    @ApiModelProperty(example = "버스 시간표 ID")
     private BusTimeTableInfo busTimeTableInfo;
 
+    @Column(name = "depart_at", columnDefinition = "time")
+    @ApiModelProperty(example = "출발 시간")
+    private Date depart;
 }
