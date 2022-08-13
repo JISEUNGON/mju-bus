@@ -1,6 +1,7 @@
 package com.mjubus.server.service.bus;
 
 import com.mjubus.server.domain.*;
+import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,6 +81,23 @@ public class BusService implements BusServiceInterface {
         }
 
         return busStatusDto;
+    }
+
+    @Override
+    public List<Bus> getBusByDate(LocalDateTime date) {
+        Optional<BusCalendar> busCalendarOptional = busCalendarService.findByDate(date);
+
+        // BusCalendar 검증
+        BusCalendar busCalendar = busCalendarOptional.orElseThrow(() -> new BusCalenderNotFoundException(date));
+
+        // bus-id 로 리스트 가져오기
+        List<BusTimeTable> busTimeTableList = busTimeTableService.findListById(busCalendar.getId());
+
+        // 이동
+        List<Bus> result = new LinkedList<>();
+        busTimeTableList.forEach((busTimeTable -> result.add(busTimeTable.getBus())));
+
+        return result;
     }
 
 

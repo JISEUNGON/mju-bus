@@ -1,8 +1,10 @@
 package com.mjubus.server.service.busTimeTable;
 
+import com.mjubus.server.domain.BusTimeTable;
 import com.mjubus.server.domain.BusTimeTableDetail;
 import com.mjubus.server.domain.BusTimeTableInfo;
 import com.mjubus.server.repository.BusTimeTableDetailRepository;
+import com.mjubus.server.repository.BusTimeTableRepository;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,10 @@ public class BusTimeTableService implements BusTimeTableInterface {
 
     @Autowired
     private BusTimeTableDetailRepository busTimeTableDetailRepository;
+
+    @Autowired
+    private BusTimeTableRepository busTimeTableRepository;
+
     @Override
     public List<BusTimeTableDetail> findByInfoId(Long id) {
         return busTimeTableDetailRepository.findBusTimeTableDetailsByBusTimeTableInfo_Id(id).get();
@@ -35,5 +41,10 @@ public class BusTimeTableService implements BusTimeTableInterface {
         LocalDateTime depart = last.getDepart();
 
         return DateHandler.getTodayWith(depart.getHour(), depart.getMinute());
+    }
+
+    @Override
+    public List<BusTimeTable> findListById(Long id) {
+        return busTimeTableRepository.findBusTimeTablesByBusCalendar_Id(id);
     }
 }

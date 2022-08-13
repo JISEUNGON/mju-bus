@@ -1,6 +1,7 @@
 package com.mjubus.server.service.mjuCalendar;
 
 import com.mjubus.server.domain.BusCalendar;
+import com.mjubus.server.domain.BusTimeTable;
 import com.mjubus.server.repository.BusCalendarRepository;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,6 @@ public class BusCalendarService implements BusCalendarInterface {
         }
         return busCalendarRepository.findBusCalendarByDateOnWeekday(date);
     }
+
 }
 

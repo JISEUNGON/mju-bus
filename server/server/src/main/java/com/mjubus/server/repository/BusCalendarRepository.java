@@ -14,4 +14,5 @@ public interface BusCalendarRepository extends JpaRepository<BusCalendar, String
 
     @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.weekend = 1 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
     Optional<BusCalendar> findBusCalendarByDateOnWeekend(@Param("date") LocalDateTime date);
+
 }
