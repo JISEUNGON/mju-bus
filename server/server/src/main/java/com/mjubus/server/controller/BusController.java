@@ -2,11 +2,13 @@ package com.mjubus.server.controller;
 
 
 import com.mjubus.server.domain.Bus;
+import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.repository.BusRepository;
 import com.mjubus.server.service.bus.BusService;
+import com.mjubus.server.util.DateHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,4 +68,19 @@ public class BusController {
         List<StationDTO> bus = busService.getBusStations(id);
         return bus;
     }
+
+    @GetMapping("/list")
+    @ApiOperation(value = "운행중인 버스 리스트를 받는다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "요청한 type이 다른 경우")
+    })
+    @ResponseBody
+    public List<Bus> busList() {
+        List<Bus> busList = busService.getBusByDate(DateHandler.getToday());
+        // 날짜 테스트
+//        List<Bus> busList = busService.getBusByDate(DateHandler.getDateWith(10, 20, 12, 45));
+        return busList;
+    }
+
 }
