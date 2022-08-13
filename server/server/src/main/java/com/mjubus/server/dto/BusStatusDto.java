@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 public class BusStatusDto {
     @ApiModelProperty(example = "61883118-be22-48fa-d3f5-44f5a450f9d3")
-    private String sid;
+    private Long sid;
 
     @ApiModelProperty(example = "시내")
     private String name;
@@ -17,7 +17,7 @@ public class BusStatusDto {
     private boolean status;
 
     public BusStatusDto(Bus bus) {
-        this.sid = bus.getSid();
+        this.sid = bus.getId();
         this.name = bus.getName();
         this.status = false;
     }

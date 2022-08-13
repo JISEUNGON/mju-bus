@@ -2,10 +2,9 @@ package com.mjubus.server.controller;
 
 
 import com.mjubus.server.domain.Bus;
-import com.mjubus.server.domain.Station;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.StationDTO;
-import com.mjubus.server.exception.BusNotFoundExcpetion;
+import com.mjubus.server.exception.BusNotFoundException;
 import com.mjubus.server.repository.BusRepository;
 import com.mjubus.server.service.bus.BusService;
 import io.swagger.annotations.Api;
@@ -41,10 +40,9 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "버스 ID 찾지 못하는 경")
     })
     @ResponseBody
-    public Bus info(@PathVariable(value = "busID") String id) throws ChangeSetPersister.NotFoundException {
-        int type = Integer.parseInt(id);
-        Optional<Bus> targetBus = busService.getBusByType(type);
-        return targetBus.orElseThrow(() -> new BusNotFoundExcpetion(id));
+    public Bus info(@PathVariable(value = "busID") Long id) throws ChangeSetPersister.NotFoundException {
+        Optional<Bus> targetBus = busService.findBusById(id);
+        return targetBus.orElseThrow(() -> new BusNotFoundException(id));
 
     }
 
@@ -54,9 +52,8 @@ public class BusController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public BusStatusDto status(@PathVariable(value = "busID") String id) {
-        int type = Integer.parseInt(id);
-        return busService.getBusStatus(type);
+    public BusStatusDto status(@PathVariable(value = "busID") Long id) {
+        return busService.getBusStatus(id);
     }
 
     @GetMapping("/{busID}/route")
@@ -65,9 +62,8 @@ public class BusController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public List<StationDTO> stationList(@PathVariable(value = "busID") String id) {
-        int type = Integer.parseInt(id);
-        List<StationDTO> bus = busService.getBusStations(type);
+    public List<StationDTO> stationList(@PathVariable(value = "busID") Long id) {
+        List<StationDTO> bus = busService.getBusStations(id);
         return bus;
     }
 }

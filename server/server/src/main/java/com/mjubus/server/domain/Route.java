@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -16,25 +15,25 @@ import javax.persistence.*;
 public class Route {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "sid", columnDefinition = "char(36)")
-    private String sid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="id", columnDefinition = "int")
+    @ApiModelProperty(example = "고유 식별 ID")
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "bus_sid")
-    @ApiModelProperty(example = "버스 SID")
+    @JoinColumn(name = "bus_id")
+    @ApiModelProperty(example = "버스 ID")
     private Bus bus;
 
     @ManyToOne
-    @JoinColumn(name = "route_info_sid")
-    @ApiModelProperty(example = "경로 SID")
+    @JoinColumn(name = "route_info_id")
+    @ApiModelProperty(example = "경로 ID")
     private RouteInfo routeInfo;
 
 
     @ManyToOne
-    @JoinColumn(name = "bus_calendar_sid")
-    @ApiModelProperty(example = "명지대 학사일정 SID")
+    @JoinColumn(name = "bus_calendar_id")
+    @ApiModelProperty(example = "명지대 학사일정 ID")
     private BusCalendar busCalendar;
     
     @Column(name = "type", columnDefinition = "int")

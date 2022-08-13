@@ -16,11 +16,15 @@ import javax.persistence.*;
 public class Bus {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "sid", columnDefinition = "char(36)")
-    @ApiModelProperty(example = "ee1d5094-9a6b-4c04-95cb-b4d1f29ba303")
-    private String sid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="id", columnDefinition = "int")
+    @ApiModelProperty(example = "고유 식별 ID")
+    /**
+     * `0` ~ `99` : 명지대학교 시내 셔틀버스
+     * `100` ~ `199` :  명지대학교 시외 셔틀버스
+     * `200` ~ `255` : 경기도 시외버스 (빨간버스)
+     */
+    private Long id;
 
     @Column(name = "name", columnDefinition = "char(36)")
     @ApiModelProperty(example = "명지대역")
@@ -28,9 +32,6 @@ public class Bus {
 
     @Column(name = "charge", columnDefinition = "int")
     @ApiModelProperty(example = "0", dataType = "int")
-    private int charge;
+    private Long charge;
 
-    @Column(name = "type", columnDefinition = "tinyint")
-    @ApiModelProperty(example = "1", dataType = "int")
-    private int type;
 }

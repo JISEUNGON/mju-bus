@@ -33,15 +33,15 @@ public class BusService implements BusServiceInterface {
     private RouteRepository routeRepository;
 
     @Override
-    public Optional<Bus> getBusByType(int type) {
-      return busRepository.findByType(type);
+    public Optional<Bus> findBusById(Long id) {
+      return busRepository.findById(id);
     }
 
     @Override
-    public BusStatusDto getBusStatus(int type) {
+    public BusStatusDto getBusStatus(Long id) {
         BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday()).get();
-        Bus bus = getBusByType(type).get();
-        Optional<Route> route = routeRepository.findRouteByBus_SidAndAndBusCalendar_Sid(bus.getSid(), busCalendar.getSid());
+        Bus bus = findBusById(id).get();
+        Optional<Route> route = routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
         BusStatusDto busStatusDto = new BusStatusDto(bus);
         if (route.isPresent())
             busStatusDto.setStatus(true);
@@ -51,11 +51,11 @@ public class BusService implements BusServiceInterface {
     }
 
 
-    public List<StationDTO> getBusStations(int type) {
+    public List<StationDTO> getBusStations(Long type) {
         BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday()).get();
-        Bus bus = getBusByType(type).get();
-        Route route = routeRepository.findRouteByBus_SidAndAndBusCalendar_Sid(bus.getSid(), busCalendar.getSid()).get();
-        List<StationDTO> station = routeDetailRepository.findStationsByRouteInfo_Sid(route.getRouteInfo().getSid());
+        Bus bus = findBusById(type).get();
+        Route route = routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId()).get();
+        List<StationDTO> station = routeDetailRepository.findStationsByRouteInfo_Id(route.getRouteInfo().getId());
         return station;
     }
 
