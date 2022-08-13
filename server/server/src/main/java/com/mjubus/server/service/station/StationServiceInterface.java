@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StationServiceInterface {
-  public Optional<Station> findStation(int id);
+  public Optional<Station> findStationById(Long id);
 }

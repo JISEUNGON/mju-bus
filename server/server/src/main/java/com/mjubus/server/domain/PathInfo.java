@@ -8,18 +8,25 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@ApiModel(value = "버스 시간표 메타 테이블")
-@Table(name="bus_timetable_info")
+@ApiModel(value = "버스 경로 메타 테이블")
+@Table(name="path_info")
 @Getter
 @Setter
-public class BusTimeTableInfo {
+public class PathInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="id", columnDefinition = "int")
     @ApiModelProperty(example = "고유 식별 ID")
     private Long id;
 
-    @ApiModelProperty(example = "버스 시간표 명")
-    @Column(name = "name", columnDefinition = "char(36)")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "station_from")
+    @ApiModelProperty(example = "출발 정류장")
+    private Station stationFrom;
+
+    @ManyToOne
+    @JoinColumn(name = "station_to")
+    @ApiModelProperty(example = "도착 정류장")
+    private Station stationAt;
+
 }

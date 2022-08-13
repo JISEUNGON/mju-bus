@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 public interface StationDTO {
 
     @ApiModelProperty(example = "458d6218-7ca1-49a5-9575-13da00d14550")
-    String getSid();
+    Long getId();
 
     @ApiModelProperty(example = "생활관(명현관)")
     String getName();

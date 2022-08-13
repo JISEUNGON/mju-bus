@@ -13,7 +13,7 @@ public class StationService implements StationServiceInterface{
   private StationRepository stationRepository;
 
   @Override
-  public Optional<Station> findStation(int id) {
-    return stationRepository.findStationByType(id);
+  public Optional<Station> findStationById(Long id) {
+    return stationRepository.findStationById(id);
   }
 }

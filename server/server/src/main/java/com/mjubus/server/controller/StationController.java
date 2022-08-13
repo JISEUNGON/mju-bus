@@ -1,9 +1,8 @@
 package com.mjubus.server.controller;
 
 import com.mjubus.server.domain.Station;
-import com.mjubus.server.exception.BusNotFoundExcpetion;
+import com.mjubus.server.exception.BusNotFoundException;
 import com.mjubus.server.service.station.StationService;
-import com.mjubus.server.service.station.StationServiceInterface;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,18 +28,12 @@ public class StationController {
     @ApiOperation(value = "정류장에 대한 정보를 조회한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
-    })/*
+    })
     @ResponseBody
-    public String info(@PathVariable(value = "stationID") String id) {
-        return "{\"sid\":\"f05a3600-cbdf-4c38-ab74-146b2dac9e9d\",\"name\":\"명지대역,\",\"latitude\":\"37.2385136\",\"longitude\":\"127.1895973\"}";
-    }*/
-    @ResponseBody
-    public Station info(@PathVariable(value = "stationID") String id) {
-        int type = Integer.parseInt(id);
+    public Station info(@PathVariable(value = "stationID") Long id) {
+        Optional<Station> targetStation = stationService.findStationById(id);
 
-        Optional<Station> targetStation = stationService.findStation(type);
-
-        return targetStation.orElseThrow(() -> new BusNotFoundExcpetion(id));
+        return targetStation.orElseThrow(() -> new BusNotFoundException(id));
     }
 
     @GetMapping("/{stationID}/bus-remain")

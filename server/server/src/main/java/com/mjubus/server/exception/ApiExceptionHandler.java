@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(BusNotFoundExcpetion.class)
-    public ResponseEntity<ApiErrorResponse> handleException(BusNotFoundExcpetion ex) {
+    @ExceptionHandler(BusNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(BusNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0001","No Bus is found with ID : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }

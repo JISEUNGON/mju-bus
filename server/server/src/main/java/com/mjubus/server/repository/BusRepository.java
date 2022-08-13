@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
 public interface BusRepository extends JpaRepository<Bus, String> {
-    Optional<Bus> findByType(int type);
+    Optional<Bus> findById(Long id);
 }
