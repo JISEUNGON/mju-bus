@@ -51,31 +51,8 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "버스 ID가 정상적이지 않은 경")
     })
     @ResponseBody
-    public String busList(@PathVariable(value = "busID") Long id) {
-        return "{\n" +
-                "  \"id\": 100,\n" +
-                "  \"name\": \"합정/영등포\",\n" +
-                "  \"stations\": [\n" +
-                "    {\n" +
-                "      \"name\": \"합정역\",\n" +
-                "      \"timeList\": [\n" +
-                "        {\n" +
-                "          \"deaprt_at\": \"07:10\",\n" +
-                "          \"arrive_at\": \"07:10\"\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"name\": \"영등포역\",\n" +
-                "      \"timeList\": [\n" +
-                "        {\n" +
-                "          \"depart_at\": \"07:20\",\n" +
-                "          \"arrive_at\": \"07:20\"\n" +
-                "        }\n" +
-                "      ]\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+    public BusTimeTableResponseDto busList(@PathVariable(value = "busID") Long id) {
+        return busTimeTableService.makeBusTimeTableByBusId(id);
     }
 
     @GetMapping("/{busID}")

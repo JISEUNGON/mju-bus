@@ -1,9 +1,6 @@
 package com.mjubus.server.service.route;
 
-import com.mjubus.server.domain.Bus;
-import com.mjubus.server.domain.BusCalendar;
-import com.mjubus.server.domain.Route;
-import com.mjubus.server.domain.RouteInfo;
+import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.exception.BusCalenderNotFoundException;
@@ -27,8 +24,6 @@ public class RouteService implements RouteInterface {
     @Autowired
     private BusCalendarService busCalendarService;
 
-    @Autowired
-    private BusService busService;
 
     @Autowired
     private RouteRepository routeRepository;
@@ -69,5 +64,21 @@ public class RouteService implements RouteInterface {
     public List<StationDTO> findStationsByRouteInfo(RouteInfo routeInfo) {
         Optional<List<StationDTO>> optionalStationDTOS = routeDetailRepository.findStationsByRouteInfo_Id(routeInfo.getId());
         return optionalStationDTOS.orElseThrow(() -> new RouteInfoNotFoundException(routeInfo));
+    }
+
+    @Override
+    public List<StationDTO> findStationsByBus(Bus bus) {
+        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday());
+
+        Optional<Route> optionalRoute = routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
+        Route route = optionalRoute.orElseThrow(() -> new RouteNotFoundException(bus, null, busCalendar));
+        return findStationsByRouteInfo(route.getRouteInfo());
+    }
+
+    @Override
+    public RouteInfo findRouteInfoByBus(Bus bus) {
+        Route route = findByBus(bus);
+
+        return route.getRouteInfo();
     }
 }

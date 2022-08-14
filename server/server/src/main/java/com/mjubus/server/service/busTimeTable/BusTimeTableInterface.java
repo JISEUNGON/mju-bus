@@ -16,7 +16,7 @@ public interface BusTimeTableInterface {
     BusTimeTable findBusTimeTableByBusTimeTableInfo(BusTimeTableInfo busTimeTableInfo);
 //    List<BusTimeTable> findBusTimeTableListByBus(Bus bus);
     List<BusTimeTable> findBusTimeTableListByCalendar(BusCalendar busCalendar);
-
+    BusTimeTableResponseDto makeBusTimeTableByBusId(Long busId);
     /**
      * bus_timetable_info 테이블 관련 Service
      */
