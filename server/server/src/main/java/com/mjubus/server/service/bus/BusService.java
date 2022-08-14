@@ -4,14 +4,17 @@ import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.StationDTO;
+import com.mjubus.server.enums.BusEnum;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.exception.BusCalenderNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import com.mjubus.server.repository.*;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
 import com.mjubus.server.service.mjuCalendar.BusCalendarService;
+import com.mjubus.server.service.route.RouteService;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,41 +24,34 @@ import java.util.Optional;
 
 @Service
 public class BusService implements BusServiceInterface {
-    @Autowired
-    private BusRepository busRepository;
+    private final BusRepository busRepository;
 
-    @Autowired
-    private BusCalendarService busCalendarService;
+    private final BusCalendarService busCalendarService;
 
-    @Autowired
-    private BusTimeTableRepository busTimeTableRepository;
+    private final BusTimeTableService busTimeTableService;
 
-    @Autowired
-    private RouteDetailRepository routeDetailRepository;
+    private final RouteService routeService;
 
-    @Autowired
-    private BusTimeTableService busTimeTableService;
-    @Autowired
-    private RouteRepository routeRepository;
-
-    @Override
-    public Optional<Bus> findBusById(Long id) {
-      return busRepository.findById(id);
+    public BusService(@Lazy BusTimeTableService busTimeTableService, @Lazy BusRepository busRepository, @Lazy BusCalendarService busCalendarService, @Lazy RouteService routeService) {
+        this.busTimeTableService = busTimeTableService;
+        this.busRepository = busRepository;
+        this.busCalendarService = busCalendarService;
+        this.routeService = routeService;
     }
 
     @Override
-    public BusStatusDto getBusStatus(Long id) {
-        Optional<BusCalendar> busCalendarOptional = busCalendarService.findByDate(DateHandler.getToday());
-        Optional<Bus> busOptional = findBusById(id);
+    public Bus findBusByBusId(Long id) {
+        Optional<Bus> bus = busRepository.findById(id);
+        return  bus.orElseThrow(() -> new BusNotFoundException(id));
+    }
 
+    @Override
+    public BusStatusDto getBusStatusByBusId(Long id) {
         // Bus, BusCalender 검증
-        Bus bus = busOptional.orElseThrow(() -> new BusNotFoundException(id));
-        BusCalendar busCalendar = busCalendarOptional.orElseThrow(() -> new BusCalenderNotFoundException(DateHandler.getToday()));
+        Bus bus = findBusByBusId(id);
 
-        // BusTimeTable 검증
-        Optional<BusTimeTable> busTimeTableOptional = busTimeTableRepository.findBusTimeTableByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
-        BusTimeTable busTimeTable = busTimeTableOptional.orElseThrow(() ->  new BusTimeTableNotFoundException("<getBusStatus> Bus : " +  bus.getName() + " / BusCalendar : " + busCalendar.getName()));
-
+        // BusTimeTable
+        BusTimeTable busTimeTable = busTimeTableService.findBusTimeTableByBus(bus);
 
         // Response Obj
         BusStatusDto busStatusDto = new BusStatusDto(bus);
@@ -64,7 +60,7 @@ public class BusService implements BusServiceInterface {
         LocalDateTime now = DateHandler.getToday();
 
         // 버스 시간표
-        List<BusTimeTableDetail> timeTableDetails = busTimeTableService.findByInfoId(busTimeTable.getBusTimeTableInfo().getId());
+        List<BusTimeTableDetail> timeTableDetails = busTimeTableService.findBusTimeTableDetailByInfo(busTimeTable.getBusTimeTableInfo());
 
         // 첫차
         LocalDateTime first_bus = busTimeTableService.getFirstBus(timeTableDetails);
@@ -84,28 +80,34 @@ public class BusService implements BusServiceInterface {
     }
 
     @Override
-    public List<Bus> getBusByDate(LocalDateTime date) {
-        Optional<BusCalendar> busCalendarOptional = busCalendarService.findByDate(date);
+    public List<BusResponseDto> getBusListByDate(LocalDateTime date) {
+        // BusCalendar
+        BusCalendar busCalendar = busCalendarService.findByDate(date);
 
-        // BusCalendar 검증
-        BusCalendar busCalendar = busCalendarOptional.orElseThrow(() -> new BusCalenderNotFoundException(date));
-
-        // bus-id 로 리스트 가져오기
-        List<BusTimeTable> busTimeTableList = busTimeTableService.findListById(busCalendar.getId());
+        // 현재 일정으로 운행중인 버스 운행표
+        List<BusTimeTable> busTimeTableList = busTimeTableService.findBusTimeTableListByCalendar(busCalendar);
 
         // 이동
-        List<Bus> result = new LinkedList<>();
-        busTimeTableList.forEach((busTimeTable -> result.add(busTimeTable.getBus())));
+        List<BusResponseDto> result = new LinkedList<>();
+        busTimeTableList.forEach((busTimeTable -> result.add(new BusResponseDto(busTimeTable.getBus()))));
+
+        // 상태값 추가
+        for (BusResponseDto busResponseDto : result) {
+            if (busResponseDto.getId() < 100) {
+                busResponseDto.setType(BusEnum.시내버스.getValue());
+            } else {
+                busResponseDto.setType(BusEnum.시외버스.getValue());
+            }
+        }
 
         return result;
     }
 
 
-    public List<StationDTO> getBusStations(Long type) {
-        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday()).get();
-        Bus bus = findBusById(type).get();
-        Route route = routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId()).get();
-        List<StationDTO> station = routeDetailRepository.findStationsByRouteInfo_Id(route.getRouteInfo().getId());
+    public List<StationDTO> getBusStationsByBusId(Long busId) {
+        Bus bus = findBusByBusId(busId);
+        Route route = routeService.findByBus(bus);
+        List<StationDTO> station = routeService.findStationsByRouteInfo(route.getRouteInfo());
         return station;
     }
 

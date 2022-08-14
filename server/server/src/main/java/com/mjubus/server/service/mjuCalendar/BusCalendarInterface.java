@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface BusCalendarInterface {
-    Optional<BusCalendar> findByDate(LocalDateTime date);
+    BusCalendar findByDate(LocalDateTime date);
 }

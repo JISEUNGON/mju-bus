@@ -35,8 +35,6 @@ public class BusCalendarController {
     })
     @ResponseBody
     public BusCalendar info() {
-        Optional<BusCalendar> busCalendarOptional = busCalendarService.findByDate(DateHandler.getToday());
-        BusCalendar busCalendar = busCalendarOptional.orElseThrow(() -> new BusCalenderNotFoundException(DateHandler.getToday()));
-        return busCalendar;
+        return busCalendarService.findByDate(DateHandler.getToday());
     }
 }

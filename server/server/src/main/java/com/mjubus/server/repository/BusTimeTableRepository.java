@@ -10,5 +10,9 @@ import java.util.Optional;
 
 public interface BusTimeTableRepository extends JpaRepository<BusTimeTable, String> {
     Optional<BusTimeTable> findBusTimeTableByBus_IdAndBusCalendar_Id(Long bus_id, Long busCalendar_id);
-    List<BusTimeTable> findBusTimeTablesByBusCalendar_Id(Long busCalendar_id);
+
+    Optional<BusTimeTable> findBusTimeTableByBusTimeTableInfo_IdAndBusCalendar_Id(Long busTimeTableInfo_id, Long busCalendar_id);
+
+    Optional<List<BusTimeTable>> findBusTimeTablesByBusCalendar_Id(Long busCalendar_id);
+
 }
