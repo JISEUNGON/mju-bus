@@ -2,17 +2,23 @@ package com.mjubus.server.service.busTimeTable;
 
 import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.BusTimeTableResponseDto;
+import com.mjubus.server.dto.BusTimeTableStationDto;
+import com.mjubus.server.dto.BusTimeTableTimeDto;
+import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableDetailNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import com.mjubus.server.repository.BusTimeTableDetailRepository;
 import com.mjubus.server.repository.BusTimeTableRepository;
 import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.mjuCalendar.BusCalendarService;
+import com.mjubus.server.service.route.RouteService;
+import com.mjubus.server.service.station.StationService;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +35,11 @@ public class BusTimeTableService implements BusTimeTableInterface {
     @Autowired
     private BusCalendarService busCalendarService;
 
+    @Autowired
+    private RouteService routeService;
+
     private final BusService busService;
+
 
     public BusTimeTableService(BusService busService) {
         this.busService = busService;
@@ -59,13 +69,88 @@ public class BusTimeTableService implements BusTimeTableInterface {
         return optionalBusTimeTableList.orElseThrow(() -> new BusTimeTableNotFoundException(null, busCalendar, null));
     }
 
-//    @Override
-//    public List<BusTimeTable> findBusTimeTableListByBus(Bus bus) {
-//        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday());
-//
-//        busTimeTableRepository.
-//    }
-//
+    @Override
+    public BusTimeTableResponseDto makeBusTimeTableByBusId(Long busId) {
+        BusTimeTableResponseDto result = new BusTimeTableResponseDto();
+
+        // Bus 정보 삽입
+        Bus bus = busService.findBusByBusId(busId);
+        result.setBus(bus);
+
+        if (bus.getId() < 100) {
+            // 시내 셔틀버스
+            RouteInfo routeInfoByBus = routeService.findRouteInfoByBus(bus);
+
+            // 주요 정류장 + 정류장 도착 예정 시간
+            int minRequired = routeInfoByBus.getMinute();
+            String stationName = routeInfoByBus.getStation().getName();
+
+            // Stations
+            List<BusTimeTableStationDto> busTimeTableStationDto = new LinkedList<>();
+
+            // Station
+            BusTimeTableStationDto station = new BusTimeTableStationDto();
+            station.setName(stationName);
+
+            // Time
+            List<BusTimeTableTimeDto> timeList = new LinkedList<>();
+
+            BusTimeTable busTimeTable = findBusTimeTableByBus(bus);
+            List<BusTimeTableDetail> tableDetailList = findBusTimeTableDetailByInfo(busTimeTable.getBusTimeTableInfo());
+            for(BusTimeTableDetail detail : tableDetailList) {
+                BusTimeTableTimeDto temp = new BusTimeTableTimeDto();
+
+                // 명지대 출발 시각
+                LocalTime depart_at = detail.getDepart();
+
+                // 주요 정류장 도착 시각
+                LocalTime arrive_at = detail.getDepart();
+                arrive_at = LocalTime.from(DateHandler.getTodayWith(arrive_at.getHour(), arrive_at.getMinute() + minRequired));
+
+                // 조립
+                temp.setDepart_at(depart_at);
+                temp.setArrive_at(arrive_at);
+                timeList.add(temp);
+            }
+            station.setTimeList(timeList);
+            busTimeTableStationDto.add(station);
+            result.setStations(busTimeTableStationDto);
+        } else {
+            // 시외 셔틀버스
+            List<StationDTO> stationDTOList = routeService.findStationsByBus(bus);
+            List<BusTimeTableStationDto> busTimeTableStationDtos = new LinkedList<>();
+            for (StationDTO stationDTO: stationDTOList) {
+
+                // 0. Station 객체
+                BusTimeTableStationDto busTimeTableStationDto = new BusTimeTableStationDto();
+
+                // 1. Station 이름
+                busTimeTableStationDto.setName(stationDTO.getName());
+
+                // 2. 시간표 객체
+                List<BusTimeTableTimeDto> timeList = new LinkedList<>();
+
+                // 3. 시간표 추가
+                BusTimeTable busTimeTable = findBusTimeTableByBus(bus);
+                List<BusTimeTableDetail> tableDetailList = findBusTimeTableDetailByInfo(busTimeTable.getBusTimeTableInfo());
+                for(BusTimeTableDetail busTimeTableDetail : tableDetailList) {
+                    BusTimeTableTimeDto temp = new BusTimeTableTimeDto();
+                    temp.setArrive_at(busTimeTableDetail.getDepart());
+                    temp.setDepart_at(busTimeTableDetail.getDepart());
+                    timeList.add(temp);
+                }
+
+                // 4. 조립
+                busTimeTableStationDto.setTimeList(timeList);
+                busTimeTableStationDtos.add(busTimeTableStationDto);
+            }
+
+            result.setStations(busTimeTableStationDtos);
+        }
+
+        return result;
+    }
+
     @Override
     public List<BusTimeTableDetail> findBusTimeTableDetailByInfo(BusTimeTableInfo busTimeTableInfo) {
 
@@ -77,7 +162,7 @@ public class BusTimeTableService implements BusTimeTableInterface {
     @Override
     public LocalDateTime getFirstBus(List<BusTimeTableDetail> busTimeTableDetails) {
         BusTimeTableDetail first = busTimeTableDetails.get(0);
-        LocalDateTime depart = first.getDepart();
+        LocalTime depart = first.getDepart();
 
         return DateHandler.getTodayWith(depart.getHour(), depart.getMinute());
     }
@@ -85,78 +170,10 @@ public class BusTimeTableService implements BusTimeTableInterface {
     @Override
     public LocalDateTime getLastBus(List<BusTimeTableDetail> busTimeTableDetails) {
         BusTimeTableDetail last = busTimeTableDetails.get(busTimeTableDetails.size() - 1);
-        LocalDateTime depart = last.getDepart();
+        LocalTime depart = last.getDepart();
 
         return DateHandler.getTodayWith(depart.getHour(), depart.getMinute());
     }
-//
-//    @Override
-//    public BusTimeTable findListByBus(Bus bus) {
-//        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday());
-//
-//        Optional<BusTimeTable> optionalBusTimeTable = busTimeTableRepository.findBusTimeTableByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
-//        return optionalBusTimeTable.orElseThrow(() -> new BusTimeTableNotFoundException(bus, busCalendar, null));
-//    }
 
 
-
-//    @Override
-    public BusTimeTableResponseDto getBusTimeTableResponseDtoById(Long id) {
-        /**
-         * # 2안
-         * {
-         *   "id" : 10,
-         *   "stations" : [
-         *      "name" : "진입로",
-         *      "timeList" : [
-         *         {
-         *              "depart_at" : "08:00",
-         *              "arrive_at" : "08:15"
-         *         },
-         *         ...
-         *      ]
-         *   }
-         *   "busName" : "명지대역",
-         *   "timeTableList" : [
-         *     {
-         *       "stationName": "진입로",
-         *       "depart_at": "08:00",
-         *       "arrive_at": "08:15"
-         *     },
-         *      {
-         *       "stationName": "진입로",
-         *       "depart_at": "08:10",
-         *       "arrive_at": "08:25"
-         *     }
-         *    ]
-         * }
-         */
-        /**
-         // 1. 핵심 정류장을 반환하는 API
-         *  2. 핵심 정류장에 대한 도착 예정 시간을 반환하는?
-         */
-        BusTimeTableResponseDto busTimeTableResponseDto = new BusTimeTableResponseDto();
-
-        // 버스, 캘린더 검증
-        BusTimeTable busTimeTable = findBusTimeTableByBus(null);
-        Bus bus = busService.findBusByBusId(id);
-
-        // 버스 시간표 Detail
-//        BusTimeTableInfo busTimeTableInfo = busTimeTable.getBusTimeTableInfo();
-//        Optional<List<BusTimeTableDetail>> optionalBusTimeTableDetailList = findDetailByInfoId(busTimeTableInfo.getId());
-//
-//        // Detail 검증
-////        List<BusTimeTableDetail> busTimeTableDetailList = optionalBusTimeTableDetailList.orElseThrow(() -> new BusTimeTableNotFoundException(bus, busc));
-//
-//        // 데이터 생성
-//        List<BusTimeTableDetailDto> busTimeTableDetailDtoList = new LinkedList<>();
-//        for(int i = 0; i < busTimeTableDetailList.size(); i++) {
-//            BusTimeTableDetailDto busTimeTableDetailDto = new BusTimeTableDetailDto();
-
-//        }
-
-        // 데이터 삽입
-        busTimeTableResponseDto.setBus(bus);
-        return null;
-    }
 }
