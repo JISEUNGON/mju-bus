@@ -1,6 +1,7 @@
 package com.mjubus.server.service.station;
 
 import com.mjubus.server.domain.Station;
+import com.mjubus.server.exception.Station.StationNotFoundException;
 import com.mjubus.server.repository.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,8 @@ public class StationService implements StationServiceInterface{
   private StationRepository stationRepository;
 
   @Override
-  public Optional<Station> findStationById(Long id) {
-    return stationRepository.findStationById(id);
+  public Station findStationById(Long id) {
+     Optional<Station> optionalStation = stationRepository.findStationById(id);
+     return optionalStation.orElseThrow(() -> new StationNotFoundException(id));
   }
 }

@@ -1,6 +1,9 @@
 package com.mjubus.server.enums;
 
-public enum Bus {
+public enum BusEnum {
+    시내버스(1),
+    시외버스(2),
+    빨간버스(3),
     명지대역(10),
     시내(20),
     기흥역(30),
@@ -24,7 +27,7 @@ public enum Bus {
 
 
     private final int value;
-    Bus(int value) {
+    BusEnum(int value) {
         this.value = value;
     }
 

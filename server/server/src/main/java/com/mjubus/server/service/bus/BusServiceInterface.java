@@ -12,9 +12,9 @@ import java.util.Optional;
 
 @Service
 public interface BusServiceInterface {
-    Optional<Bus> findBusById(Long id);
+    Bus findBusByBusId(Long id);
 
-    BusStatusDto getBusStatus(Long id);
+    BusStatusDto getBusStatusByBusId(Long id);
 
-    List<Bus> getBusByDate(LocalDateTime date);
+    List<BusResponseDto> getBusListByDate(LocalDateTime date);
 }

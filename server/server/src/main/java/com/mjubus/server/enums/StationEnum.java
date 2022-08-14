@@ -1,6 +1,6 @@
 package com.mjubus.server.enums;
 
-public enum Station {
+public enum StationEnum {
     명지대_버스관리사무소(1),
     상공회의소(2),
     진입로_명지대역(3),
@@ -39,7 +39,7 @@ public enum Station {
     용인터미널(200),
     명지대_시외버스_정류장(201);
     private final int value;
-    Station(int value) {
+    StationEnum(int value) {
         this.value = value;
     }
 
