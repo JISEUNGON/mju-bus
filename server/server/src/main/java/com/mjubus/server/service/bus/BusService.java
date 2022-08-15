@@ -4,6 +4,8 @@ import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.StationDTO;
+import com.mjubus.server.dto.busListDto.BusList;
+import com.mjubus.server.dto.busListDto.BusListDto;
 import com.mjubus.server.enums.BusEnum;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.exception.BusCalenderNotFoundException;
@@ -80,27 +82,43 @@ public class BusService implements BusServiceInterface {
     }
 
     @Override
-    public List<BusResponseDto> getBusListByDate(LocalDateTime date) {
+    public List<BusList> getBusListByDate(LocalDateTime date) {
         // BusCalendar
         BusCalendar busCalendar = busCalendarService.findByDate(date);
 
         // 현재 일정으로 운행중인 버스 운행표
         List<BusTimeTable> busTimeTableList = busTimeTableService.findBusTimeTableListByCalendar(busCalendar);
 
-        // 이동
-        List<BusResponseDto> result = new LinkedList<>();
-        busTimeTableList.forEach((busTimeTable -> result.add(new BusResponseDto(busTimeTable.getBus()))));
+        // 시내버스
+        BusList busList_IN = new BusList();
+        busList_IN.setType(BusEnum.시내버스.getValue());
+        List<Bus> busListInner = new LinkedList<>();
 
-        // 상태값 추가
-        for (BusResponseDto busResponseDto : result) {
-            if (busResponseDto.getId() < 100) {
-                busResponseDto.setType(BusEnum.시내버스.getValue());
+        // 시외버스
+        BusList busList_OUT = new BusList();
+        busList_OUT.setType(BusEnum.시외버스.getValue());
+        List<Bus> busListOuter = new LinkedList<>();
+
+        // 시내/시외 분류
+        for(BusTimeTable busTimeTable : busTimeTableList) {
+            Bus bus = busTimeTable.getBus();
+            if (bus.getId() < 100) {
+                busListInner.add(bus);
             } else {
-                busResponseDto.setType(BusEnum.시외버스.getValue());
+                busListOuter.add(bus);
             }
         }
 
-        return result;
+        // 결과 값 생성
+        List<BusList> busLists = new LinkedList<>();
+
+        busList_IN.setBusList(busListInner);
+        busList_OUT.setBusList(busListOuter);
+
+        busLists.add(busList_IN);
+        busLists.add(busList_OUT);
+
+        return busLists;
     }
 
 

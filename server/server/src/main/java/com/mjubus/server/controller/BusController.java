@@ -6,6 +6,8 @@ import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.StationDTO;
+import com.mjubus.server.dto.busListDto.BusList;
+import com.mjubus.server.dto.busListDto.BusListDto;
 import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
 import com.mjubus.server.util.DateHandler;
@@ -40,7 +42,7 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "요청한 type이 다른 경우")
     })
     @ResponseBody
-    public List<BusResponseDto> busTimeTable() {
+    public List<BusList> busTimeTable() {
         return busService.getBusListByDate(DateHandler.getToday());
     }
 
