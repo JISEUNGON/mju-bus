@@ -82,7 +82,7 @@ public class BusService implements BusServiceInterface {
     }
 
     @Override
-    public BusListDto getBusListByDate(LocalDateTime date) {
+    public List<BusList> getBusListByDate(LocalDateTime date) {
         // BusCalendar
         BusCalendar busCalendar = busCalendarService.findByDate(date);
 
@@ -118,7 +118,7 @@ public class BusService implements BusServiceInterface {
         busLists.add(busList_IN);
         busLists.add(busList_OUT);
 
-        return new BusListDto(busLists);
+        return busLists;
     }
 
 

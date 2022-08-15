@@ -3,6 +3,7 @@ package com.mjubus.server.service.bus;
 import com.mjubus.server.domain.Bus;
 import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
+import com.mjubus.server.dto.busListDto.BusList;
 import com.mjubus.server.dto.busListDto.BusListDto;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,5 @@ public interface BusServiceInterface {
 
     BusStatusDto getBusStatusByBusId(Long id);
 
-    BusListDto getBusListByDate(LocalDateTime date);
+    List<BusList> getBusListByDate(LocalDateTime date);
 }
