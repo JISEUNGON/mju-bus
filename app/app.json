@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "front",
-    "slug": "front",
+    "name": "mju-bus",
+    "slug": "mju-bus",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "description": "Home Screen 80% finished"
   },
   "name": "front"
 }

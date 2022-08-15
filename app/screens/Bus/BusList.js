@@ -14,6 +14,7 @@ const List = styled.View`
   border-color: aqua;
 `;
 
+// eslint-disable-next-line react/prop-types
 function BusList({ navigation: { navigate } }) {
   return (
     <Container>

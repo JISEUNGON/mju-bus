@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import * as Font from "expo-font";
+import { useQuery } from "@tanstack/react-query";
+import { busApi, calendarApi } from "../api";
 
 const customFonts = {
   "SpoqaHanSansNeo-Bold": require("../assets/fonts/SpoqaHanSansNeo-Bold.ttf"),
@@ -9,9 +11,18 @@ const customFonts = {
   "SpoqaHanSansNeo-Medium": require("../assets/fonts/SpoqaHanSansNeo-Medium.ttf"),
 };
 
-function Splash({ navigation: { navigate } }) {
+// eslint-disable-next-line react/prop-types
+function Splash({ navigation: { navigate }, route: { params } }) {
   const [appIsReady, setAppIsReady] = useState(false);
 
+  const { isFetching: buslistLoading, data: busListData } = useQuery(
+    ["busList"],
+    busApi.list,
+  );
+  const { isFetching: calendarLoading, data: calendarData } = useQuery(
+    ["calendar"],
+    calendarApi.calendar,
+  );
   useEffect(() => {
     async function prepare() {
       try {
