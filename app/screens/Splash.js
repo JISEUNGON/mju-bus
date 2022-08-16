@@ -15,14 +15,16 @@ const customFonts = {
 function Splash({ navigation: { navigate }, route: { params } }) {
   const [appIsReady, setAppIsReady] = useState(false);
 
-  const { isFetching: buslistLoading, data: busListData } = useQuery(
+  const { isLoading: buslistLoading, data: busListData } = useQuery(
     ["busList"],
     busApi.list,
   );
-  const { isFetching: calendarLoading, data: calendarData } = useQuery(
+  const { isLoading: calendarLoading, data: calendarData } = useQuery(
     ["calendar"],
     calendarApi.calendar,
   );
+  const loading = buslistLoading || calendarLoading;
+
   useEffect(() => {
     async function prepare() {
       try {
@@ -42,15 +44,21 @@ function Splash({ navigation: { navigate }, route: { params } }) {
   }, []);
 
   useEffect(() => {
-    if (appIsReady) {
+    if (appIsReady && !loading) {
       // This tells the splash screen to hide immediately! If we call this after
       // `setAppIsReady`, then we may see a blank screen while the app is
       // loading its initial state and rendering its first pixels. So instead,
       // we hide the splash screen once we know the root view has already
       // performed layout.
-      navigate("HomeBottomTabs", { screen: "홈" });
+      navigate("HomeBottomTabs", {
+        screen: "홈",
+        params: {
+          calendarData,
+          busListData,
+        },
+      });
     }
-  }, [appIsReady, navigate]);
+  }, [appIsReady, navigate, loading]);
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

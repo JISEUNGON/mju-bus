@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { ActivityIndicator, Dimensions, TouchableOpacity } from "react-native";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinkScreen from "../../components/LinkScreen";
-import RunningBus from "../../components/RunningBus";
-import { busApi, calendarApi, stationApi } from "../../api";
+import RunningBus, { NoSiweList } from "../../components/RunningBus";
+import { busApi, stationApi } from "../../api";
 import RunningRedBus from "../../components/RunningRedBus";
 import RouteSelect from "./RouteSelect";
-import { busId, stationId } from "../../id";
+import { stationId } from "../../id";
 
 const STORAGE_KEY = "@routes";
 
@@ -35,7 +35,7 @@ const LinkContainer = styled.View`
 const RunningBusContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
 `;
 const RedBusComingContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
@@ -60,7 +60,8 @@ const SubTitle = styled.Text`
   margin-top: 10px;
 `;
 
-function Home() {
+// eslint-disable-next-line react/prop-types
+function Home({ route: { params } }) {
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -79,12 +80,7 @@ function Home() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await queryClient.refetchQueries([
-      "remain",
-      "status",
-      "calendar",
-      "busList",
-    ]);
+    await queryClient.refetchQueries(["remain", "status"]);
     setRefreshing(false);
   };
 
@@ -92,41 +88,73 @@ function Home() {
     setModalVisible(true);
   };
 
-  // SPALSH 화면에서 가져온 데이터 캐싱
-  const { isFetching: buslistLoading, data: busListData } = useQuery(
-    ["busList"],
-    busApi.status,
-    {
-      enabled: false,
-    },
-  );
-
-  const [sineList, setSineList] = useState(
-    busListData.filter(data => data.type === 1).map(data => data.busList),
-  );
-  const [siweList, setSiweList] = useState(
-    busListData.filter(data => data.type === 2).map(data => data.busList),
-  );
-
   const redBusRemain = useQueries({
     queries: [
       { queryKey: ["remain", stationId.JinIpRo], queryFn: stationApi.remain },
-      {
-        queryKey: ["remain", stationId.YongInTerminal],
-        queryFn: stationApi.remain,
-      },
+      // {
+      //   queryKey: ["remain", stationId.YongInTerminal],
+      //   queryFn: stationApi.remain,
+      // },
     ],
   });
 
-  const SiweStatus = useQueries({
-    queries: siweList.map(data => ({
-      queryKey: ["timeTable", data.id],
-      queryFn: busApi.timeTable,
-    })),
-  });
+  // const SiweStatus = useQueries({
+  //   // eslint-disable-next-line react/prop-types
+  //   queries: params.busListData[1].busList.map(data => ({
+  //     queryKey: ["timeTable", data.id],
+  //     queryFn: busApi.timeTable,
+  //   })),
+  // });
+
+  // TEST DATA
+  const SiweStatus = [
+    {
+      id: 100,
+      name: "합정/영등포",
+      stations: [
+        {
+          name: "합정역",
+          timeList: { depart_at: "07:10", arrive_at: "09:00" },
+        },
+        {
+          name: "영등포역",
+          timeList: { depart_at: "07:20", arrive_at: "09:00" },
+        },
+      ],
+    },
+    {
+      id: 110,
+      name: "노원/구리",
+      stations: [
+        {
+          name: "노원역",
+          timeList: { depart_at: "06:40", arrive_at: "09:00" },
+        },
+        {
+          name: "하계1동",
+          timeList: { depart_at: "06:50", arrive_at: "09:00" },
+        },
+        {
+          name: "구리 롯데백화점",
+          timeList: { depart_at: "07:10", arrive_at: "09:00" },
+        },
+      ],
+    },
+    {
+      id: 120,
+      name: "인천",
+      stations: [
+        {
+          name: "인천터미널",
+          timeList: { depart_at: "07:10", arrive_at: "09:00" },
+        },
+      ],
+    },
+  ];
 
   const SineStatus = useQueries({
-    queries: sineList.map(data => ({
+    // eslint-disable-next-line react/prop-types
+    queries: params.busListData[0].busList.map(data => ({
       queryKey: ["status", data.id],
       queryFn: busApi.status,
     })),
@@ -139,10 +167,9 @@ function Home() {
 
   const SineStatusisLoading = SineStatus.some(result => result.isLoading);
   const redBusRemainisLoading = redBusRemain.some(result => result.isLoading);
-  const loading = redBusRemainisLoading || SineStatusisLoading;
-
-  console.log(siweList);
-  console.log(sineList);
+  const SiweStatusisLoading = SiweStatus.some(result => result.isLoading);
+  const loading =
+    redBusRemainisLoading || SineStatusisLoading || SiweStatusisLoading;
 
   return loading ? (
     <Loader>
@@ -167,15 +194,21 @@ function Home() {
                   <Title>운행중인 버스</Title>
                 </TitleContainer>
                 <RunningBus bustype="sine" data={SineStatus} />
-                <TouchableOpacity onPress={onStart}>
-                  {/* <RunningBus bustype="siwe" data={SiweStatus} /> */}
+                {SiweStatus.length === 0 ? (
+                  <NoSiweList />
+                ) : (
+                  <TouchableOpacity onPress={onStart}>
+                    <RunningBus bustype="siwe" data={selectedRoutes} />
+                  </TouchableOpacity>
+                )}
+                {modalVisible ? (
                   <RouteSelect
-                    data={busListData.filter(data => data.type === "1")}
+                    data={SiweStatus}
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
                     selectedRoutes={selectedRoutes}
                   />
-                </TouchableOpacity>
+                ) : null}
               </RunningBusContainer>
 
               <RedBusComingContainer>

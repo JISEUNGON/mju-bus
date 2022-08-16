@@ -86,17 +86,9 @@ const SubmitText = styled.Text`
   font-size: 18px;
 `;
 
-const routeList = [
-  { id: 10, route: "합정/영등포" },
-  { id: 11, route: "노원/구리" },
-  { id: 12, route: "인천" },
-  { id: 13, route: "송내" },
-  { id: 14, route: "안산" },
-  { id: 15, route: "금정/범계" },
-];
 function RouteSelect(props) {
   const { data, selectedRoutes, modalVisible, setModalVisible } = props;
-  const [checkedItems, setcheckedItems] = useState([]);
+  const [checkedItems, setcheckedItems] = useState(selectedRoutes);
 
   const clearCheckedRoute = () => {
     setcheckedItems([]);
@@ -104,14 +96,14 @@ function RouteSelect(props) {
 
   const unSelectedRoutes = selectedList => {
     let restRouteList = [];
-    routeList.map(route => {
+    // eslint-disable-next-line array-callback-return
+    data.map(route => {
       const { id } = route;
       const result = selectedList.findIndex(item => id === item.id);
       if (result === -1) {
         restRouteList = [...restRouteList, route];
       }
     });
-
     return restRouteList;
   };
 
@@ -126,7 +118,6 @@ function RouteSelect(props) {
 
   const onSubmit = async () => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(checkedItems));
-
     clearCheckedRoute();
     setModalVisible(false);
   };
@@ -149,7 +140,7 @@ function RouteSelect(props) {
               <ListTitle>선택된 노선</ListTitle>
               {selectedRoutes.map(item => (
                 <ListItem key={item.id}>
-                  <ListContents>{item.route}</ListContents>
+                  <ListContents>{item.name}</ListContents>
                   <BouncyCheckbox
                     size={25}
                     isChecked
@@ -169,7 +160,7 @@ function RouteSelect(props) {
               <ListTitle>그 외 노선</ListTitle>
               {unSelectedRoutes(selectedRoutes)?.map(item => (
                 <ListItem key={item.id}>
-                  <ListContents>{item.route}</ListContents>
+                  <ListContents>{item.name}</ListContents>
                   <BouncyCheckbox
                     size={25}
                     fillColor="#7974E7"

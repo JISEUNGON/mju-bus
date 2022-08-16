@@ -6,5 +6,5 @@ export const busId = {
 
 export const stationId = {
   JinIpRo: "4",
-  YongInTerminal: "1",
+  YongInTerminal: "200",
 };
