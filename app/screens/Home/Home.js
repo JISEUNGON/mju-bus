@@ -98,59 +98,13 @@ function Home({ route: { params } }) {
     ],
   });
 
-  // const SiweStatus = useQueries({
-  //   // eslint-disable-next-line react/prop-types
-  //   queries: params.busListData[1].busList.map(data => ({
-  //     queryKey: ["timeTable", data.id],
-  //     queryFn: busApi.timeTable,
-  //   })),
-  // });
-
-  // TEST DATA
-  const SiweStatus = [
-    {
-      id: 100,
-      name: "합정/영등포",
-      stations: [
-        {
-          name: "합정역",
-          timeList: { depart_at: "07:10", arrive_at: "09:00" },
-        },
-        {
-          name: "영등포역",
-          timeList: { depart_at: "07:20", arrive_at: "09:00" },
-        },
-      ],
-    },
-    {
-      id: 110,
-      name: "노원/구리",
-      stations: [
-        {
-          name: "노원역",
-          timeList: { depart_at: "06:40", arrive_at: "09:00" },
-        },
-        {
-          name: "하계1동",
-          timeList: { depart_at: "06:50", arrive_at: "09:00" },
-        },
-        {
-          name: "구리 롯데백화점",
-          timeList: { depart_at: "07:10", arrive_at: "09:00" },
-        },
-      ],
-    },
-    {
-      id: 120,
-      name: "인천",
-      stations: [
-        {
-          name: "인천터미널",
-          timeList: { depart_at: "07:10", arrive_at: "09:00" },
-        },
-      ],
-    },
-  ];
+  const SiweStatus = useQueries({
+    // eslint-disable-next-line react/prop-types
+    queries: params.busListData[1].busList.map(data => ({
+      queryKey: ["timeTable", data.id],
+      queryFn: busApi.timeTable,
+    })),
+  });
 
   const SineStatus = useQueries({
     // eslint-disable-next-line react/prop-types

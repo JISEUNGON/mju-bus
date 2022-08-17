@@ -12,7 +12,7 @@ const customFonts = {
 };
 
 // eslint-disable-next-line react/prop-types
-function Splash({ navigation: { navigate }, route: { params } }) {
+function Splash({ navigation: { navigate } }) {
   const [appIsReady, setAppIsReady] = useState(false);
 
   const { isLoading: buslistLoading, data: busListData } = useQuery(
@@ -58,7 +58,7 @@ function Splash({ navigation: { navigate }, route: { params } }) {
         },
       });
     }
-  }, [appIsReady, navigate, loading]);
+  }, [appIsReady, busListData, calendarData, loading, navigate]);
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
