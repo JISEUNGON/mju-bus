@@ -1,6 +1,7 @@
 package com.mjubus.server.exception;
 
 import com.mjubus.server.exception.Bus.BusNotFoundException;
+import com.mjubus.server.exception.BusArrival.BusArrivalNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableDetailNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import com.mjubus.server.exception.Route.RouteInfoNotFoundException;
@@ -53,6 +54,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(RouteInfoNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(RouteInfoNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0007", "No Detail is found in INFO id : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BusArrivalNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(BusArrivalNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0008", "No Bus remains in : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
