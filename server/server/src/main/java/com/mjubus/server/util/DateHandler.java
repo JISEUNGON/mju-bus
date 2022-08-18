@@ -3,9 +3,16 @@ package com.mjubus.server.util;
 import java.time.*;
 
 public class DateHandler {
-
+    private static ZonedDateTime zonedDateTime;
+    public static void setZonedDateTime(LocalDateTime localDateTime) {
+        zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+    }
     private static ZonedDateTime getZonedDateTime() {
-        return ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        if (zonedDateTime == null) {
+            return ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        }
+
+        return zonedDateTime;
     }
 
     public static LocalDateTime getToday() {
