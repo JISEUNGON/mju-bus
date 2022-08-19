@@ -154,7 +154,7 @@ public class BusTimeTableService implements BusTimeTableInterface {
     @Override
     public List<BusTimeTableDetail> findBusTimeTableDetailByInfo(BusTimeTableInfo busTimeTableInfo) {
 
-        Optional<List<BusTimeTableDetail>> optionalBusTimeTableDetails = busTimeTableDetailRepository.findBusTimeTableDetailsByBusTimeTableInfo_Id(busTimeTableInfo.getId());
+        Optional<List<BusTimeTableDetail>> optionalBusTimeTableDetails = busTimeTableDetailRepository.findBusTimeTableDetailsByBusTimeTableInfo_IdOrderByDepart(busTimeTableInfo.getId());
 
         return optionalBusTimeTableDetails.orElseThrow(() -> new BusTimeTableDetailNotFoundException(busTimeTableInfo));
     }
