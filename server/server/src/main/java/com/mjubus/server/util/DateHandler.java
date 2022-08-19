@@ -55,4 +55,8 @@ public class DateHandler {
         int diff_sec = l1.getSecond() - l2.getSecond();
         return (diff_hour * 3600) + (diff_minute * 60) + diff_sec;
     }
+
+    public static void reset() {
+        zonedDateTime = null;
+    }
 }

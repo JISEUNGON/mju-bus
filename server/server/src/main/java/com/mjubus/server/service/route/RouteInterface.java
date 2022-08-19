@@ -1,9 +1,6 @@
 package com.mjubus.server.service.route;
 
-import com.mjubus.server.domain.Bus;
-import com.mjubus.server.domain.Route;
-import com.mjubus.server.domain.RouteInfo;
-import com.mjubus.server.domain.Station;
+import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.StationDTO;
 
 import java.util.List;
@@ -17,6 +14,7 @@ public interface RouteInterface {
     List<StationDTO> findStationsByRouteInfo(RouteInfo routeInfo);
     List<StationDTO> findStationsByBus(Bus bus);
 
+    List<RouteDetail> findRouteDetailByRouteInfo(RouteInfo routeInfo);
     RouteInfo findRouteInfoByBus(Bus bus);
 }
 

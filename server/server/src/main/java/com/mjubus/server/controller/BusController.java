@@ -5,9 +5,9 @@ import com.mjubus.server.domain.Bus;
 import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.BusTimeTableResponseDto;
-import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.dto.busListDto.BusList;
 import com.mjubus.server.dto.busListDto.BusListDto;
+import com.mjubus.server.dto.busRoute.BusRouteDto;
 import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
 import com.mjubus.server.util.DateHandler;
@@ -86,7 +86,7 @@ public class BusController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public List<StationDTO> stationList(@PathVariable(value = "busID") Long id) {
-        return busService.getBusStationsByBusId(id);
+    public BusRouteDto stationList(@PathVariable(value = "busID") Long busId) {
+        return busService.getRouteByBusId(busId);
     }
 }

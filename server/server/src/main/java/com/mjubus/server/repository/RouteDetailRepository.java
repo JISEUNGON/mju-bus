@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface RouteDetailRepository extends JpaRepository<RouteDetail, String> {
 
-    Optional<List<RouteDetail>> findRouteDetailsByRouteInfo_Id(Long routeInfo_id);
+    Optional<List<RouteDetail>> findRouteDetailsByRouteInfo_IdOrderByOrder(Long routeInfo_id);
 
     @Query(value = "SELECT s.*, rd.route_order FROM route_detail rd INNER JOIN station s ON s.id = rd.station_id WHERE rd.route_info_id = ?1 ORDER BY rd.route_order", nativeQuery = true)
     Optional<List<StationDTO>> findStationsByRouteInfo_Id(Long routeInfoId);
