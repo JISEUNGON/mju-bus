@@ -32,4 +32,10 @@ public class DateHandler {
         DayOfWeek day = date.getDayOfWeek();
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
+
+    public static LocalDateTime getTodayWith(LocalTime time) {
+        ZonedDateTime zonedDateTime = getZonedDateTime();
+        zonedDateTime = zonedDateTime.with(time);
+        return zonedDateTime.toLocalDateTime();
+    }
 }

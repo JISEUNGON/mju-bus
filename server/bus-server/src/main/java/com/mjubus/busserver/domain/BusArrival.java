@@ -2,19 +2,17 @@ package com.mjubus.busserver.domain;
 
 import com.mjubus.busserver.util.DateHandler;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "bus_arrival")
+@Table(name="bus_arrival")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BusArrival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
