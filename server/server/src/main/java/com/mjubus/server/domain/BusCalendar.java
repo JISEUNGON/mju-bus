@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Calendar;
 
 @Entity
@@ -27,13 +29,21 @@ public class BusCalendar {
     @ApiModelProperty(example = "학사 일정명")
     private String name;
 
-    @Column(name = "start_at", columnDefinition = "datetime")
+    @Column(name = "start_at", columnDefinition = "date")
     @ApiModelProperty(example = "학사 일정 시작일")
-    private LocalDateTime start;
+    private LocalDate start;
 
-    @Column(name = "end_at", columnDefinition = "datetime")
+    @Column(name = "end_at", columnDefinition = "date")
     @ApiModelProperty(example = "학사 일정 종일")
-    private LocalDateTime end;
+    private LocalDate end;
+
+    @Column(name = "start_time", columnDefinition = "time")
+    @ApiModelProperty(example = "학사 일정 시작시간")
+    private LocalTime startTime;
+
+    @Column(name = "end_time", columnDefinition = "time")
+    @ApiModelProperty(example = "학사 일정 종료시간")
+    private LocalTime startEnd;
 
     @Column(name = "weekend", columnDefinition = "BIT", length = 1)
     @Type(type = "org.hibernate.type.NumericBooleanType")

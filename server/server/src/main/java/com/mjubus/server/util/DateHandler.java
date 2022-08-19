@@ -19,6 +19,13 @@ public class DateHandler {
         return getZonedDateTime().toLocalDateTime();
     }
 
+    public static LocalTime getTodayTime() {
+        return getZonedDateTime().toLocalTime();
+    }
+
+    public static LocalDate getTodayDate() {
+        return getZonedDateTime().toLocalDate();
+    }
     public static LocalDateTime getTodayWith(int hour, int minute) {
         ZonedDateTime zonedDateTime = getZonedDateTime();
         zonedDateTime = zonedDateTime.with(LocalTime.of(hour, minute));
