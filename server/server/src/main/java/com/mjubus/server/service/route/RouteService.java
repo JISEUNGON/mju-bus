@@ -76,6 +76,12 @@ public class RouteService implements RouteInterface {
     }
 
     @Override
+    public List<RouteDetail> findRouteDetailByRouteInfo(RouteInfo routeInfo) {
+        Optional<List<RouteDetail>> optionalRouteDetailList = routeDetailRepository.findRouteDetailsByRouteInfo_IdOrderByOrder(routeInfo.getId());
+        return optionalRouteDetailList.orElseThrow(() -> new RouteInfoNotFoundException(routeInfo));
+    }
+
+    @Override
     public RouteInfo findRouteInfoByBus(Bus bus) {
         Route route = findByBus(bus);
 

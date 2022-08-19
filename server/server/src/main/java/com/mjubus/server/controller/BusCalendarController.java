@@ -53,4 +53,15 @@ public class BusCalendarController {
         return DateHandler.getToday();
     }
 
+    @GetMapping("/set/today")
+    @ApiOperation(value = "서버의 날짜를 현재 시각으로 복귀한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+    })
+    @ResponseBody
+    public LocalDateTime setDateToday() {
+        DateHandler.reset();
+        return DateHandler.getToday();
+    }
+
 }

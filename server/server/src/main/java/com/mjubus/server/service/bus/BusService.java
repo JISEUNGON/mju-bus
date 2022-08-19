@@ -6,6 +6,8 @@ import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.dto.busListDto.BusList;
 import com.mjubus.server.dto.busListDto.BusListDto;
+import com.mjubus.server.dto.busRoute.BusRouteDto;
+import com.mjubus.server.dto.busRoute.RouteOrderDto;
 import com.mjubus.server.enums.BusEnum;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.exception.BusCalenderNotFoundException;
@@ -82,6 +84,29 @@ public class BusService implements BusServiceInterface {
     }
 
     @Override
+    public BusRouteDto getRouteByBusId(Long busId) {
+        Bus bus = findBusByBusId(busId);
+        Route route = routeService.findByBus(bus);
+
+        RouteInfo routeInfo = route.getRouteInfo();
+        List<RouteDetail> routeDetailList = routeService.findRouteDetailByRouteInfo(routeInfo);
+
+        List<RouteOrderDto> routeOrderList = new LinkedList<>();
+        for(RouteDetail routeDetail: routeDetailList) {
+            RouteOrderDto temp = new RouteOrderDto();
+            temp.setStation(routeDetail.getStation());
+            temp.setRoute_order(routeDetail.getOrder());
+
+            routeOrderList.add(temp);
+        }
+
+        BusRouteDto result = new BusRouteDto();
+        result.setBus(bus);
+        result.setStations(routeOrderList);
+        return result;
+    }
+
+    @Override
     public List<BusList> getBusListByDate(LocalDateTime date) {
         // BusCalendar
         BusCalendar busCalendar = busCalendarService.findByDate(date);
@@ -120,13 +145,4 @@ public class BusService implements BusServiceInterface {
 
         return busLists;
     }
-
-
-    public List<StationDTO> getBusStationsByBusId(Long busId) {
-        Bus bus = findBusByBusId(busId);
-        Route route = routeService.findByBus(bus);
-        List<StationDTO> station = routeService.findStationsByRouteInfo(route.getRouteInfo());
-        return station;
-    }
-
 }
