@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -117,35 +118,34 @@ public class BusTimeTableService implements BusTimeTableInterface {
             result.setStations(busTimeTableStationDto);
         } else {
             // 시외 셔틀버스
-            List<StationDTO> stationDTOList = routeService.findStationsByBus(bus);
-            List<BusTimeTableStationDto> busTimeTableStationDtos = new LinkedList<>();
-            for (StationDTO stationDTO: stationDTOList) {
+            // TODO : 모든 시간을 넣어야 됨.
+            BusTimeTable busTimeTable = findBusTimeTableByBus(bus);
+            Route route = routeService.findByBus(bus);
 
-                // 0. Station 객체
-                BusTimeTableStationDto busTimeTableStationDto = new BusTimeTableStationDto();
+            List<BusTimeTableDetail> tableDetailList = findBusTimeTableDetailByInfo(busTimeTable.getBusTimeTableInfo());
+            List<RouteDetail> routeDetailList = routeService.findRouteDetailByRouteInfo(route.getRouteInfo());
 
-                // 1. Station 이름
-                busTimeTableStationDto.setName(stationDTO.getName());
+            List<BusTimeTableStationDto> busTimeTableStationDtoList = new LinkedList<>();
+            for (int i = 0; i < routeDetailList.size(); i++) {
+                RouteDetail routeDetail = routeDetailList.get(i);
+                BusTimeTableDetail busTimeTableDetail = tableDetailList.get(i);
 
-                // 2. 시간표 객체
+                BusTimeTableStationDto temp = new BusTimeTableStationDto();
+                temp.setName(routeDetail.getStation().getName());
+
+                // 시간표 추가
                 List<BusTimeTableTimeDto> timeList = new LinkedList<>();
+                BusTimeTableTimeDto temp_time = new BusTimeTableTimeDto();
+                temp_time.setArrive_at(busTimeTableDetail.getDepart());
+                temp_time.setDepart_at(busTimeTableDetail.getDepart());
+                timeList.add(temp_time);
 
-                // 3. 시간표 추가
-                BusTimeTable busTimeTable = findBusTimeTableByBus(bus);
-                List<BusTimeTableDetail> tableDetailList = findBusTimeTableDetailByInfo(busTimeTable.getBusTimeTableInfo());
-                for(BusTimeTableDetail busTimeTableDetail : tableDetailList) {
-                    BusTimeTableTimeDto temp = new BusTimeTableTimeDto();
-                    temp.setArrive_at(busTimeTableDetail.getDepart());
-                    temp.setDepart_at(busTimeTableDetail.getDepart());
-                    timeList.add(temp);
-                }
+                temp.setTimeList(timeList);
 
-                // 4. 조립
-                busTimeTableStationDto.setTimeList(timeList);
-                busTimeTableStationDtos.add(busTimeTableStationDto);
+                busTimeTableStationDtoList.add(temp);
             }
 
-            result.setStations(busTimeTableStationDtos);
+            result.setStations(busTimeTableStationDtoList);
         }
 
         return result;
