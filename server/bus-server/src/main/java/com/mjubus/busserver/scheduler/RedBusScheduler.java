@@ -13,6 +13,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RedBusScheduler {
+
+    /**
+     * 데이터들을 저장한 클래스
+     * */
+    private static RData rData = new RData();
     @Autowired
     private BusArrivalRepository busArrivalRepository;
 
@@ -27,7 +32,7 @@ public class RedBusScheduler {
 
         // 테스트 데이터
         Bus bus = busRepository.getReferenceById(200L);
-        Station station = stationRepository.getReferenceById(4L);
+        Station station = stationRepository.getReferenceById(rData.getStationId());
 
         BusArrival test =  BusArrival.builder()
                             .bus(bus)
