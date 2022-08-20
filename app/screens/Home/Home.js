@@ -24,27 +24,28 @@ const Loader = styled.View`
 
 const Container = styled.FlatList`
   background-color: #f2f4f6;
+  padding: 0 20px;
 `;
 
 const LinkContainer = styled.View`
-  width: ${SCREEN_WIDTH}px;
+  width: 100%;
   align-items: center;
   margin-top: 20px;
 `;
 
 const RunningBusContainer = styled.View`
-  width: ${SCREEN_WIDTH}px;
+  width: 100%;
   align-items: center;
   margin-top: 30px;
 `;
 const RedBusComingContainer = styled.View`
-  width: ${SCREEN_WIDTH}px;
-  align-items: center;
+  width: 100%;
   margin-top: 20px;
 `;
 
 const TitleContainer = styled.View`
-  width: 85%;
+  width: 100%;
+  padding: 0 10px;
   margin-bottom: 20px;
 `;
 const Title = styled.Text`
@@ -135,6 +136,7 @@ function Home({ route: { params } }) {
         <StatusBar backgroundColor="#f2f4f6" />
 
         <Container
+          width={SCREEN_WIDTH}
           onRefresh={onRefresh}
           refreshing={refreshing}
           ListHeaderComponent={

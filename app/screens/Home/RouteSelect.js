@@ -89,7 +89,6 @@ const SubmitText = styled.Text`
 function RouteSelect(props) {
   const { data, selectedRoutes, modalVisible, setModalVisible } = props;
   const [checkedItems, setcheckedItems] = useState(selectedRoutes);
-
   const clearCheckedRoute = () => {
     setcheckedItems([]);
   };
@@ -98,8 +97,8 @@ function RouteSelect(props) {
     let restRouteList = [];
     // eslint-disable-next-line array-callback-return
     data.map(route => {
-      const { id } = route;
-      const result = selectedList.findIndex(item => id === item.id);
+      const { id } = route.data;
+      const result = selectedList.findIndex(item => id === item.data.id);
       if (result === -1) {
         restRouteList = [...restRouteList, route];
       }
@@ -139,8 +138,8 @@ function RouteSelect(props) {
             <ListContainer>
               <ListTitle>선택된 노선</ListTitle>
               {selectedRoutes.map(item => (
-                <ListItem key={item.id}>
-                  <ListContents>{item.name}</ListContents>
+                <ListItem key={item.data.id}>
+                  <ListContents>{item.data.name}</ListContents>
                   <BouncyCheckbox
                     size={25}
                     isChecked
@@ -159,8 +158,8 @@ function RouteSelect(props) {
             <ListContainer>
               <ListTitle>그 외 노선</ListTitle>
               {unSelectedRoutes(selectedRoutes)?.map(item => (
-                <ListItem key={item.id}>
-                  <ListContents>{item.name}</ListContents>
+                <ListItem key={item.data.id}>
+                  <ListContents>{item.data.name}</ListContents>
                   <BouncyCheckbox
                     size={25}
                     fillColor="#7974E7"

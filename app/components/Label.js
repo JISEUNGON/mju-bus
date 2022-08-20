@@ -9,8 +9,8 @@ const Labelbackground = styled.View`
   width: 85px;
   height: 35px;
   background-color: ${props => {
-    if (props.activated === "1") return props.theme.beforeBgColor;
-    if (props.activated === "2") return props.theme.activatedBgColor;
+    if (props.activated === 1) return props.theme.beforeBgColor;
+    if (props.activated === 2) return props.theme.activatedBgColor;
     return props.theme.excitedBgColor;
   }};
   border-radius: 4px;
@@ -20,8 +20,8 @@ const LabelText = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 13px;
   color: ${props => {
-    if (props.activated === "1") return props.theme.beforeTextColor;
-    if (props.activated === "2") return props.theme.activatedTextColor;
+    if (props.activated === 1) return props.theme.beforeTextColor;
+    if (props.activated === 2) return props.theme.activatedTextColor;
     return props.theme.excitedTextColor;
   }};
 `;

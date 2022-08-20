@@ -5,7 +5,8 @@ import { FlatList } from "react-native";
 import Timer from "./Timer";
 
 const ListContainer = styled.View`
-  height: 350px;
+  margin-left: -20px;
+  margin-bottom: 20px;
 `;
 
 export const HListSeporator = styled.View`
@@ -44,22 +45,22 @@ function RedBusList({ data }) {
     <ListContainer>
       {data.map(station => (
         <FlatList
-          key={station?.data?.sid}
-          keyExtractor={item => item.type}
+          key={station?.data?.station?.id}
+          keyExtractor={item => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
           ItemSeparatorComponent={HListSeporator}
-          data={station?.data?.bus}
+          data={station?.data?.busList}
           extraData={data}
           contentContainerStyle={{
             paddingHorizontal: 30,
           }}
           renderItem={({ item }) => (
             <Board>
-              <Station>{station?.data?.name}</Station>
+              <Station>{station?.data?.station?.name}</Station>
               <BusNumber>{item.name}</BusNumber>
               <RemainTime>
-                <Timer value={item.remain} />
+                <Timer value={item.remains} />
               </RemainTime>
             </Board>
           )}

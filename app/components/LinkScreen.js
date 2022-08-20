@@ -3,15 +3,16 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { TouchableOpacity, Dimensions, View } from "react-native";
 import styled from "styled-components/native";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import BusIcon from "./BusIcon";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Board = styled.View`
-  width: 90%;
+  width: 100%;
   height: 100px;
   background-color: white;
-  padding: 10px ${SCREEN_WIDTH * 0.08}px;
+  padding: 10px ${SCREEN_WIDTH * 0.06}px;
   border-radius: 20px;
   flex-direction: row;
   align-items: center;
@@ -19,6 +20,7 @@ const Board = styled.View`
 `;
 
 const Column = styled.View`
+  margin-left: 5px;
   flex: 3;
 `;
 
@@ -47,13 +49,7 @@ function LinkScreen({ screenName }) {
   return (
     <TouchableOpacity onPress={goToSchedule} style={{}}>
       <Board>
-        <FontAwesome
-          name={screenName === "시간표" ? "calendar-o" : "bus"}
-          size={30}
-          color="black"
-          style={{ flex: 1 }}
-        />
-
+        <BusIcon />
         <Column>
           <SubText>
             {screenName === "시간표"

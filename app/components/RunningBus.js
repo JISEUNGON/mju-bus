@@ -2,8 +2,9 @@
 import React from "react";
 import { Dimensions } from "react-native";
 import styled from "styled-components/native";
-import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import Label from "./Label";
+import XIcon from "./XIcon";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -68,6 +69,7 @@ const NoContents = styled.Text`
   color: #ec6969;
   font-size: 17px;
   margin-top: 25px;
+  margin-bottom: 30px;
 `;
 function SineRunningBus({ data }) {
   return (
@@ -96,16 +98,18 @@ function SiweRunningBus({ data }) {
       </SubTitleContainer>
       <ShuttleList>
         {data?.map(route =>
-          route.stations.map(station => (
-            <Shuttle key={station?.name}>
-              <Label
-                busRoute="siwe"
-                activate="2"
-                time={station?.timeList?.depart_at}
-              />
-              <Contents>{station?.name}</Contents>
-            </Shuttle>
-          )),
+          route?.data?.stations?.map(station =>
+            station?.timeList?.map(time => (
+              <Shuttle key={station?.name}>
+                <Label
+                  busRoute="siwe"
+                  activate={2}
+                  time={time?.depart_at.substr(0, 5)}
+                />
+                <Contents>{station?.name}</Contents>
+              </Shuttle>
+            )),
+          ),
         )}
       </ShuttleList>
     </FlexibleBoard>
@@ -119,12 +123,7 @@ export function NoSiweList() {
         <SubTitle>시외 셔틀</SubTitle>
       </SubTitleContainer>
       <NoContents>운행 중인 시외셔틀이 없습니다</NoContents>
-      <MaterialCommunityIcons
-        name="emoticon-sad-outline"
-        size={40}
-        color="#ec6969"
-        style={{ marginTop: 30 }}
-      />
+      <XIcon />
     </Board>
   );
 }
