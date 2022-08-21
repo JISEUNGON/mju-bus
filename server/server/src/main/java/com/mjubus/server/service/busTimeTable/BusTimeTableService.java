@@ -5,6 +5,7 @@ import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.BusTimeTableStationDto;
 import com.mjubus.server.dto.BusTimeTableTimeDto;
 import com.mjubus.server.dto.StationDTO;
+import com.mjubus.server.exception.BusCalenderNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableDetailNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import com.mjubus.server.repository.BusTimeTableDetailRepository;
@@ -106,7 +107,8 @@ public class BusTimeTableService implements BusTimeTableInterface {
 
                 // 주요 정류장 도착 시각
                 LocalTime arrive_at = detail.getDepart();
-                arrive_at = LocalTime.from(DateHandler.getTodayWith(arrive_at.getHour(), arrive_at.getMinute() + minRequired));
+                arrive_at = LocalTime.from(DateHandler.getTodayWith(arrive_at.getHour(), arrive_at.getMinute()));
+                arrive_at = arrive_at.plusMinutes(minRequired);
 
                 // 조립
                 temp.setDepart_at(depart_at);
@@ -149,6 +151,14 @@ public class BusTimeTableService implements BusTimeTableInterface {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Integer> findBusListByDate(LocalDateTime date) {
+        BusCalendar busCalendar = busCalendarService.findByDate(date);
+
+        Optional<List<Integer>> optionalBusList = busTimeTableRepository.findDistinctBusByBusCalendar_Id(busCalendar.getId());
+        return optionalBusList.orElseThrow(() -> new BusCalenderNotFoundException(date));
     }
 
     @Override

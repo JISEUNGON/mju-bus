@@ -20,7 +20,6 @@ public class BusCalendarService implements BusCalendarInterface {
 
     @Override
     public BusCalendar findByDate(LocalDateTime date) {
-        System.out.println(DateHandler.getDayOfWeek(date));
         Optional<BusCalendar> optionalBusCalendar = busCalendarRepository.findBusCalendarByDate(date.toLocalDate(), date.toLocalTime(), DateHandler.getDayOfWeek(date));
         return optionalBusCalendar.orElseThrow(() -> new BusCalenderNotFoundException(date));
     }
