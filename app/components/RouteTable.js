@@ -279,7 +279,7 @@ function SiweRouteList({ list }) {
   return list.length === 0 ? null : <StationImages list={list} />;
 }
 
-export function RouteTable({ data, value, type }) {
+function RouteTable({ data, value, type }) {
   const [sineList, setSineList] = useState([]);
   const [khList, setKHList] = useState([]);
   const [mjList, setMJList] = useState([]);

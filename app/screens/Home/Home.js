@@ -101,7 +101,7 @@ function Home({ route: { params } }) {
 
   const SiweStatus = useQueries({
     // eslint-disable-next-line react/prop-types
-    queries: params.busListData[1].busList.map(data => ({
+    queries: params?.busListData[1]?.busList.map(data => ({
       queryKey: ["timeTable", data.id],
       queryFn: busApi.timeTable,
     })),
@@ -109,7 +109,7 @@ function Home({ route: { params } }) {
 
   const SineStatus = useQueries({
     // eslint-disable-next-line react/prop-types
-    queries: params.busListData[0].busList.map(data => ({
+    queries: params?.busListData[0]?.busList.map(data => ({
       queryKey: ["status", data.id],
       queryFn: busApi.status,
     })),
