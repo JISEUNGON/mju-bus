@@ -38,6 +38,10 @@ public class DateHandler {
         return zonedDateTime.toLocalDateTime();
     }
 
+    public static int getDayOfWeek(LocalDateTime date) {
+        DayOfWeek day = date.getDayOfWeek();
+        return (int) Math.pow(2, day.getValue() - 1);
+    }
     public static boolean isWeekend(LocalDateTime date) {
         DayOfWeek day = date.getDayOfWeek();
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;

@@ -29,6 +29,10 @@ public class BusCalendar {
     @ApiModelProperty(example = "학사 일정명")
     private String name;
 
+    @Column(name = "description", columnDefinition = "char(36)")
+    @ApiModelProperty(example = "설명")
+    private String description;
+
     @Column(name = "start_at", columnDefinition = "date")
     @ApiModelProperty(example = "학사 일정 시작일")
     private LocalDate start;
@@ -45,10 +49,18 @@ public class BusCalendar {
     @ApiModelProperty(example = "학사 일정 종료시간")
     private LocalTime startEnd;
 
-    @Column(name = "weekend", columnDefinition = "BIT", length = 1)
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    @ApiModelProperty(example = "주말 여부")
-    private boolean weekend;
+    @Column(name = "day_of_week", columnDefinition = "int")
+    @ApiModelProperty(example = "요일 비트마스크")
+    /**
+     * 월 : 1
+     * 화 : 2
+     * 수 : 4
+     * 목 : 8
+     * 금 : 16
+     * 토 : 32
+     * 일 : 64
+     */
+    private int dayOfWeek;
 
     @Column(name = "priority", columnDefinition = "int")
     @ApiModelProperty(example = "일정 우선순위")
