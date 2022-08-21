@@ -107,8 +107,7 @@ public class BusTimeTableService implements BusTimeTableInterface {
 
                 // 주요 정류장 도착 시각
                 LocalTime arrive_at = detail.getDepart();
-                arrive_at = LocalTime.from(DateHandler.getTodayWith(arrive_at.getHour(), arrive_at.getMinute()));
-                arrive_at = arrive_at.plusMinutes(minRequired);
+                arrive_at = LocalTime.from(DateHandler.getTodayWith(arrive_at.getHour(), arrive_at.getMinute())).plusMinutes(minRequired);
 
                 // 조립
                 temp.setDepart_at(depart_at);
@@ -128,9 +127,9 @@ public class BusTimeTableService implements BusTimeTableInterface {
             List<RouteDetail> routeDetailList = routeService.findRouteDetailByRouteInfo(route.getRouteInfo());
 
             List<BusTimeTableStationDto> busTimeTableStationDtoList = new LinkedList<>();
+            LocalTime prevLocalTime = null;
             for (int i = 0; i < routeDetailList.size(); i++) {
                 RouteDetail routeDetail = routeDetailList.get(i);
-                BusTimeTableDetail busTimeTableDetail = tableDetailList.get(i);
 
                 BusTimeTableStationDto temp = new BusTimeTableStationDto();
                 temp.setName(routeDetail.getStation().getName());
@@ -138,13 +137,24 @@ public class BusTimeTableService implements BusTimeTableInterface {
                 // 시간표 추가
                 List<BusTimeTableTimeDto> timeList = new LinkedList<>();
                 BusTimeTableTimeDto temp_time = new BusTimeTableTimeDto();
-                temp_time.setArrive_at(busTimeTableDetail.getDepart());
-                temp_time.setDepart_at(busTimeTableDetail.getDepart());
+
+                if (tableDetailList.size() > i) {
+                    BusTimeTableDetail busTimeTableDetail = tableDetailList.get(i);
+                    temp_time.setArrive_at(busTimeTableDetail.getDepart());
+                    temp_time.setDepart_at(busTimeTableDetail.getDepart());
+
+                    prevLocalTime = busTimeTableDetail.getDepart();
+                } else {
+                    temp_time.setDepart_at(prevLocalTime);
+                    temp_time.setArrive_at(prevLocalTime);
+                }
+
+
                 timeList.add(temp_time);
 
                 temp.setTimeList(timeList);
-
                 busTimeTableStationDtoList.add(temp);
+
             }
 
             result.setStations(busTimeTableStationDtoList);
