@@ -24,7 +24,15 @@ public class PathDetail {
     @ApiModelProperty(example = "버스 경로 INFO 테이블 키")
     private PathInfo pathInfo;
 
-    @Column(name = "data_tbd", columnDefinition = "int")
-    @ApiModelProperty(example = "경로 데이터(미정)")
-    private int data;
+    @Column(name = "latitude", columnDefinition = "decimal(9, 6)")
+    @ApiModelProperty(example = "위도")
+    private Double latitude;
+
+    @Column(name = "longitude", columnDefinition = "decimal(9, 6)")
+    @ApiModelProperty(example = "경도")
+    private Double longitude;
+
+    @Column(name = "path_order", columnDefinition = "int")
+    @ApiModelProperty(example = "경로 순서")
+    private int routeOrder;
 }
