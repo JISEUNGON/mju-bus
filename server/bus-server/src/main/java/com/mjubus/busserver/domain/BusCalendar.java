@@ -23,6 +23,9 @@ public class BusCalendar {
     @Column(name = "name", columnDefinition = "char(36)")
     private String name;
 
+    @Column(name = "description", columnDefinition = "char(36)")
+    private String description;
+
     @Column(name = "start_at", columnDefinition = "date")
     private LocalDate start;
 
@@ -35,9 +38,9 @@ public class BusCalendar {
     @Column(name = "end_time", columnDefinition = "time")
     private LocalTime endTime;
 
-    @Column(name = "weekend", columnDefinition = "BIT", length = 1)
+    /*@Column(name = "weekend", columnDefinition = "BIT", length = 1)
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean weekend;
+    private boolean weekend;*/
 
     @Column(name = "priority", columnDefinition = "int")
     private int priority;

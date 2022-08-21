@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 @Getter
@@ -64,7 +65,7 @@ public class RData {
     Writer out = new StringWriter();
     tf.transform(new DOMSource((Node) myData.getDoc()), new StreamResult(out));
 
-    System.out.println(out.toString());
+    //System.out.println(out.toString());
   }
 
   /**
@@ -212,7 +213,7 @@ public class RData {
     RData.printAll();
   }
 
-  public Long getStationId() {
-    return Long.parseLong(myData.getStationId());
+  public MyData getMyData() {
+    return myData;
   }
 }
