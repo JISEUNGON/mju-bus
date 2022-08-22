@@ -92,17 +92,21 @@ function SineShuttle() {
   const loading = buslistLoading || calendarLoading;
 
   return loading ? (
+    // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
     <Loader>
       <ActivityIndicator />
     </Loader>
   ) : (
     <>
+      {/* 일정표 */}
       <HeaderContainer>
         <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
         <Hr style={{ borderBottomWidth: 1 }} />
       </HeaderContainer>
+      {/* 시내 셔틀 노선도 및 시간표 */}
       <ContentsContainer showsVerticalScrollIndicator={false}>
+        {/* 시간표 */}
         <TimmTableTitleContainer>
           <ContentsTitle>시간표</ContentsTitle>
           <SwitchContatiner>
@@ -124,7 +128,7 @@ function SineShuttle() {
           data={GetTimeTableData(busListData[0]?.busList)}
           value={selectedRoute}
         />
-
+        {/* 노선도 */}
         <RouteTableTitleContainer>
           <ContentsTitle>노선도</ContentsTitle>
         </RouteTableTitleContainer>

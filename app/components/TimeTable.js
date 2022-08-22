@@ -59,8 +59,10 @@ const NoDataContents = styled.Text`
 `;
 const Contents = styled(Header)``;
 
+// 시내 (용인시내 + 명지대역) 시간표
 function SineTableList({ list }) {
   const [dataList, setDataList] = useState([]);
+
   useEffect(() => {
     // 시내 노선 1개일 때
     if (list.length === 1) {
@@ -87,6 +89,8 @@ function SineTableList({ list }) {
   }, [list]);
 
   let counter = 0;
+
+  // 시내 데이터는 항상 1개 이상 이므로 로딩 출력
   return dataList.length === 0 ? (
     <Loader>
       <ActivityIndicator />
@@ -103,11 +107,15 @@ function SineTableList({ list }) {
         counter += 1;
         return (
           <TableContents key={data.depart_at}>
+            {/* 1. 순번 */}
             <Contents style={{ flex: 1 }}>{counter}</Contents>
+            {/* 구분 (명지대역 / 시내) */}
             <Contents style={{ flex: 2 }}>{data.name}</Contents>
+            {/* 출발 시각 */}
             <Contents style={{ flex: 2 }}>
               {data.depart_at.substr(0, 5)}
             </Contents>
+            {/* 진입로 경유 시간 */}
             <Contents style={{ flex: 2 }}>
               {data.arrive_at.substr(0, 5)}
             </Contents>
@@ -118,10 +126,17 @@ function SineTableList({ list }) {
   );
 }
 
+// 기흥역 시간표
 function KiheungStaionTableList({ list }) {
-  const dataList = list[0]?.data?.stations[0]?.timeList;
+  const [dataList, setDataList] = useState([]);
+  useEffect(() => {
+    if (list.length !== 0) {
+      setDataList(list[0]?.data?.stations[0]?.timeList);
+    }
+  }, [list]);
+
   let counter = 0;
-  return dataList === undefined ? (
+  return dataList.length === 0 ? (
     <NoDataTable>
       <NoDataContents>운행 중인 시간표가 없습니다.</NoDataContents>
       <XIcon />
@@ -137,10 +152,13 @@ function KiheungStaionTableList({ list }) {
         counter += 1;
         return (
           <TableContents key={data.depart_at}>
+            {/* 1. 순번 */}
             <Contents style={{ flex: 1 }}>{counter}</Contents>
+            {/* 학교 출발 시각 */}
             <Contents style={{ flex: 2 }}>
               {data.depart_at.substr(0, 5)}
             </Contents>
+            {/* 3. 기흥역 도착 시각 */}
             <Contents style={{ flex: 2 }}>
               {data.arrive_at.substr(0, 5)}
             </Contents>
@@ -151,16 +169,14 @@ function KiheungStaionTableList({ list }) {
   );
 }
 
-// eslint-disable-next-line react/prop-types
+// 시간표 출력 함수
 function TimeTable({ data, value }) {
   const [sineList, setSineList] = useState([]);
   const [khList, setKHList] = useState([]);
   useEffect(() => {
-    // eslint-disable-next-line react/prop-types
     setSineList(
       data.filter(item => item?.data?.id === 20 || item?.data?.id === 10),
     );
-    // eslint-disable-next-line react/prop-types
     setKHList(data.filter(item => item?.data?.id === 30));
   }, [data]);
 
