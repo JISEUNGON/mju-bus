@@ -33,29 +33,29 @@ const RouteImgage = styled.View`
 const StationOuterImage = styled.View`
   position: absolute;
   background-color: #dad8fb;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   border-radius: 9px;
   align-items: center;
   justify-content: center;
   margin-top: ${props => {
     if (props.level === 0) {
-      return -10;
+      return -7;
     }
     if (props.level === 1) {
       return 1;
     }
     if (props.level === 2) {
-      return 63;
+      return 65;
     }
     if (props.level === 3) {
-      return 129;
+      return 132;
     }
-    return 138;
+    return 141;
   }}px;
   margin-left: ${props => {
     if (props.level === 2) {
-      return ROUTE_END_POINT;
+      return ROUTE_END_POINT + 2;
     }
     if (props.level === 1 || props.level === 3) {
       return ROUTE_ROUND_POINT;
@@ -73,7 +73,7 @@ const StaionNameContainer = styled.View`
   position: absolute;
   margin-top: ${props => {
     if (props.level === 0) {
-      return -30;
+      return -22;
     }
     if (props.level === 1) {
       return -2;
@@ -84,16 +84,16 @@ const StaionNameContainer = styled.View`
     if (props.level === 3) {
       return 132;
     }
-    return 160;
+    return 152;
   }}px;
   margin-left: ${props => {
     if (props.level === 2) {
-      return ROUTE_END_POINT + 4;
+      return ROUTE_END_POINT + 2;
     }
     if (props.level === 1 || props.level === 3) {
-      return ROUTE_ROUND_POINT + 18;
+      return ROUTE_ROUND_POINT + 10;
     }
-    return props.value - 20;
+    return props.value - 23;
   }}px;
 `;
 
@@ -105,8 +105,8 @@ const StationName = styled.Text`
 
 const StationInnerImage = styled.View`
   background-color: white;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 4px;
 `;
 
@@ -275,11 +275,7 @@ function SineRouteList({ list }) {
   );
 }
 
-function SiweRouteList({ list }) {
-  return list.length === 0 ? null : <StationImages list={list} />;
-}
-
-function RouteTable({ data, value, type }) {
+function RouteTable({ data, value }) {
   const [sineList, setSineList] = useState([]);
   const [khList, setKHList] = useState([]);
   const [mjList, setMJList] = useState([]);
@@ -292,33 +288,30 @@ function RouteTable({ data, value, type }) {
     setKHList(data.filter(item => item?.data?.id === 30));
   }, [data]);
 
-  if (type === "sine") {
-    if (value === 0) {
-      return mjList.length === 0 && sineList.length === 0 ? (
-        <NoDataTable>
-          <NoDataContents>운행 중인 노선도가 없습니다.</NoDataContents>
-          <XIcon />
-        </NoDataTable>
-      ) : (
-        <Container>
-          <SineRouteList list={mjList} />
-          <SineRouteList list={sineList} />
-        </Container>
-      );
-    }
-
-    return khList.length === 0 ? (
+  if (value === 0) {
+    return mjList.length === 0 && sineList.length === 0 ? (
       <NoDataTable>
         <NoDataContents>운행 중인 노선도가 없습니다.</NoDataContents>
         <XIcon />
       </NoDataTable>
     ) : (
       <Container>
-        <SineRouteList list={khList} />
+        <SineRouteList list={mjList} />
+        <SineRouteList list={sineList} />
       </Container>
     );
   }
-  return <SiweRouteList />;
+
+  return khList.length === 0 ? (
+    <NoDataTable>
+      <NoDataContents>운행 중인 노선도가 없습니다.</NoDataContents>
+      <XIcon />
+    </NoDataTable>
+  ) : (
+    <Container>
+      <SineRouteList list={khList} />
+    </Container>
+  );
 }
 
 export default RouteTable;

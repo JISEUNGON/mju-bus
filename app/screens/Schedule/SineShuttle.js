@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Dimensions } from "react-native";
 import styled from "styled-components";
-import { useQuery, useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import SwitchSelector from "react-native-switch-selector";
 import { busApi, calendarApi } from "../../api";
 import TimeTable from "../../components/TimeTable";
 import RouteTable from "../../components/RouteTable";
+import { GetRouteTableData, GetTimeTableData, highlights } from "../../utils";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -38,12 +39,6 @@ const Title = styled.Text`
   margin-bottom: 20px;
 `;
 
-const HighlightTitle = styled.Text`
-  font-family: "SpoqaHanSansNeo-Bold";
-  font-size: 20px;
-  color: #7974e7;
-`;
-
 const SubTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
@@ -56,14 +51,18 @@ const ContentsContainer = styled.ScrollView`
   background-color: white;
 `;
 
-const ContentsTitleContainer = styled.View`
+const TimmTableTitleContainer = styled.View`
   justify-content: space-between;
   align-items: center;
   width: 100%;
   flex-direction: row;
   margin-bottom: 20px;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 20px;
+`;
+
+const RouteTableTitleContainer = styled(TimmTableTitleContainer)`
+  margin-top: 40px;
 `;
 
 const ContentsTitle = styled.Text`
@@ -92,30 +91,6 @@ function SineShuttle() {
 
   const loading = buslistLoading || calendarLoading;
 
-  // eslint-disable-next-line react/no-unstable-nested-components
-  function SpecialTitle(contents) {
-    return <HighlightTitle>{contents}</HighlightTitle>;
-  }
-
-  function GetTimeTableData(list) {
-    const timeTable = useQueries({
-      queries: list.map(bus => ({
-        queryKey: ["timeTable", bus.id],
-        queryFn: busApi.timeTable,
-      })),
-    });
-    return timeTable;
-  }
-  function GetRouteTableData(list) {
-    const routeTable = useQueries({
-      queries: list.map(bus => ({
-        queryKey: ["route", bus.id],
-        queryFn: busApi.route,
-      })),
-    });
-    return routeTable;
-  }
-
   return loading ? (
     <Loader>
       <ActivityIndicator />
@@ -123,12 +98,12 @@ function SineShuttle() {
   ) : (
     <>
       <HeaderContainer>
-        <Title>현재는 {SpecialTitle(calendarData.name)} 이에요 !</Title>
+        <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
         <Hr style={{ borderBottomWidth: 1 }} />
       </HeaderContainer>
       <ContentsContainer showsVerticalScrollIndicator={false}>
-        <ContentsTitleContainer>
+        <TimmTableTitleContainer>
           <ContentsTitle>시간표</ContentsTitle>
           <SwitchContatiner>
             <SwitchSelector
@@ -144,20 +119,18 @@ function SineShuttle() {
               buttonColor="white"
             />
           </SwitchContatiner>
-        </ContentsTitleContainer>
+        </TimmTableTitleContainer>
         <TimeTable
           data={GetTimeTableData(busListData[0]?.busList)}
           value={selectedRoute}
-          type="sine"
         />
 
-        <ContentsTitleContainer>
+        <RouteTableTitleContainer>
           <ContentsTitle>노선도</ContentsTitle>
-        </ContentsTitleContainer>
+        </RouteTableTitleContainer>
         <RouteTable
           data={GetRouteTableData(busListData[0]?.busList)}
           value={selectedRoute}
-          type="sine"
         />
       </ContentsContainer>
     </>

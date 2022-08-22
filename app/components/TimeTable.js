@@ -1,3 +1,5 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
@@ -57,8 +59,6 @@ const NoDataContents = styled.Text`
 `;
 const Contents = styled(Header)``;
 
-function SiweTableList({ list }) {}
-
 function SineTableList({ list }) {
   const [dataList, setDataList] = useState([]);
   useEffect(() => {
@@ -79,8 +79,8 @@ function SineTableList({ list }) {
       );
       setDataList(
         [
-          ...list[0]?.data?.stations[0]?.timeList,
-          ...list[1]?.data?.stations[0]?.timeList,
+          ...list[0].data.stations[0].timeList,
+          ...list[1].data.stations[0].timeList,
         ].sort(sortTimeTable),
       );
     }
@@ -92,7 +92,7 @@ function SineTableList({ list }) {
       <ActivityIndicator />
     </Loader>
   ) : (
-    <Container>
+    <Container nestedScrollEnabled>
       <TableHeader>
         <Header style={{ flex: 1 }}>순번</Header>
         <Header style={{ flex: 2 }}>구분</Header>
@@ -127,7 +127,7 @@ function KiheungStaionTableList({ list }) {
       <XIcon />
     </NoDataTable>
   ) : (
-    <Container>
+    <Container nestedScrollEnabled>
       <TableHeader>
         <Header style={{ flex: 1 }}>순번</Header>
         <Header style={{ flex: 2 }}>학교출발</Header>
@@ -152,9 +152,8 @@ function KiheungStaionTableList({ list }) {
 }
 
 // eslint-disable-next-line react/prop-types
-function TimeTable({ data, value, type }) {
+function TimeTable({ data, value }) {
   const [sineList, setSineList] = useState([]);
-  const [siweList, setSiweLisit] = useState([]);
   const [khList, setKHList] = useState([]);
   useEffect(() => {
     // eslint-disable-next-line react/prop-types
@@ -165,14 +164,11 @@ function TimeTable({ data, value, type }) {
     setKHList(data.filter(item => item?.data?.id === 30));
   }, [data]);
 
-  if (type === "sine") {
-    if (value === 0) {
-      return <SineTableList list={sineList} />;
-    }
-
-    return <KiheungStaionTableList list={khList} />;
+  if (value === 0) {
+    return <SineTableList list={sineList} />;
   }
-  return <SiweTableList />;
+
+  return <KiheungStaionTableList list={khList} />;
 }
 
 export default TimeTable;
