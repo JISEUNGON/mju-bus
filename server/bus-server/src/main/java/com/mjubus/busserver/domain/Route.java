@@ -29,7 +29,7 @@ public class Route {
     @JoinColumn(name = "bus_calendar_id")
     private BusCalendar busCalendar;
     
-    @Column(name = "type", columnDefinition = "int")
+    /*@Column(name = "type", columnDefinition = "int")
     // 1 : 20시 이전, 2: 20시 이후
-    private int type;
+    private int type;*/
 }
