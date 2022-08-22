@@ -22,7 +22,7 @@ const Container = styled.View`
 
 const RouteImgage = styled.View`
   margin-top: 30px;
-  margin-right: 20px;
+  margin-right: 30px;
   margin-bottom: 70px;
   background-color: white;
   border-color: #c1c6cd;
@@ -79,7 +79,7 @@ const StaionNameContainer = styled.View`
       return -2;
     }
     if (props.level === 2) {
-      return 63;
+      return 62;
     }
     if (props.level === 3) {
       return 132;
@@ -88,7 +88,7 @@ const StaionNameContainer = styled.View`
   }}px;
   margin-left: ${props => {
     if (props.level === 2) {
-      return ROUTE_END_POINT + 2;
+      return ROUTE_END_POINT;
     }
     if (props.level === 1 || props.level === 3) {
       return ROUTE_ROUND_POINT + 10;

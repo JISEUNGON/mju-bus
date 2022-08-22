@@ -16,6 +16,14 @@ const NoDataTable = styled.View`
   align-items: center;
   justify-content: center;
   border-radius: 4px;
+  padding-top: 68px;
+`;
+
+const NoDataContents = styled.Text`
+  font-family: "SpoqaHanSansNeo-Bold";
+  color: #ec6969;
+  font-size: 20px;
+  margin-bottom: 30px;
 `;
 
 const RouteName = styled.Text`
@@ -27,6 +35,7 @@ const RouteName = styled.Text`
 const RouteNameContainer = styled.View`
   width: 100%;
   align-items: flex-end;
+  margin-bottom: 8px;
 `;
 
 const TableHeader = styled.View`
@@ -55,13 +64,6 @@ const TableContents = styled(TableHeader)`
   margin-top: 0px;
   height: 60px;
   flex: 1;
-`;
-
-const NoDataContents = styled.Text`
-  font-family: "SpoqaHanSansNeo-Bold";
-  color: #ec6969;
-  font-size: 20px;
-  margin-bottom: 30px;
 `;
 
 const RouteImgage = styled.View`
@@ -108,8 +110,8 @@ const StationName = styled.Text`
 const StationNameContainer = styled.View`
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 20px;
+  width: 53px;
+  height: 18px;
 `;
 const TimeListsContainer = styled(StationNamesContainer)`
   margin-top: 0px;

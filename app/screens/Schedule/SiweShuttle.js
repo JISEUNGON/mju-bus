@@ -56,6 +56,7 @@ const ContentsTitleContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 30px;
+  margin-bottom: -10px;
 `;
 
 const ContentsTitle = styled.Text`
