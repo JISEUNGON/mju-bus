@@ -58,27 +58,77 @@ public class RedBusScheduler {
         // 테스트 데이터
         for(int i = 0; i < myData.getRouteId().size(); i++) {
             if(busId.containsKey(myData.getRouteId(i))) {
+                boolean one = true, two = true;//predictTime1 과 predictTime2가 존재하는지
+                int pTime1 = -1, pTime2 = -1;//predictTime1, PredictTime2
+
                 Long id = busId.get(myData.getRouteId(i));
 
                 Bus bus = busRepository.getReferenceById(id);
 
                 Station station = stationRepository.getReferenceById(4L);
 
-                BusArrival test =  BusArrival.builder()
-                        .bus(bus)
-                        .station(station)
-                        .expected(DateHandler.getToday())
-                        .build();
+                //예상시간이 없는 경우는 막차
+                if(myData.getPredictTime1(i) == -1){
+                    one = false;
+                }
 
-                busArrivalRepository.save(test);
+                if(myData.getPredictTime2(i) == -1){
+                    two = false;
+                }
 
-                System.out.println("Saved !");
+                /**
+                 * 예상시간 저장하기
+                 * */
+                if(one == true){
+                    pTime1 = myData.getPredictTime1(i);
+
+                    if(two == true) {
+                        pTime2 = myData.getPredictTime2(i);
+                    }
+                }
+                else
+                {
+                    if(two == true) {
+                        pTime2 = myData.getPredictTime2(i);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                /**
+                 * DB에 넣기
+                 * */
+                if(pTime1 != -1) {
+                    BusArrival test = BusArrival.builder()
+                            .bus(bus)
+                            .station(station)
+                            .expected(DateHandler.getToday().plusSeconds(pTime1))
+                            .build();
+
+                    busArrivalRepository.save(test);
+
+                    System.out.println("predict1 Saved !");
+                }
+
+                if(pTime2 != -1) {
+                    BusArrival test = BusArrival.builder()
+                            .bus(bus)
+                            .station(station)
+                            .expected(DateHandler.getToday().plusSeconds(pTime2))
+                            .build();
+
+                    busArrivalRepository.save(test);
+
+                    System.out.println("predict2 Saved !");
+                }
             }
         }
     }
 
     public void setRData() {
-        rData.setStationId("228002024");
+        rData.setStationId("228002023");
         /**
          * 버스 도착 목록 정보 URL
          * */
@@ -106,5 +156,65 @@ public class RedBusScheduler {
         rData.setPredictTime2();
         rData.setRouteId();
         rData.setStaOrder();
+    }
+
+    public static void main(String[] args) {
+        RedBusScheduler redBusScheduler = new RedBusScheduler();
+
+        redBusScheduler.setRData();
+
+        myData = rData.getMyData();
+
+        rData.printAll();
+
+        System.out.println("size: " + myData.getRouteId().size() + "pTime1 size: " + myData.getPredictTime1().size());
+        // 테스트 데이터
+        for(int i = 0; i < myData.getRouteId().size(); i++) {
+            System.out.println("Route id: " + myData.getRouteId(i));
+            if(busId.containsKey(myData.getRouteId(i))) {
+                boolean one = true, two = true;//predictTime1 과 predictTime2가 존재하는지
+                int pTime1 = -1, pTime2 = -1;//predictTime1, PredictTime2
+                Long id = busId.get(myData.getRouteId(i));
+
+
+                System.out.println("예상 시간: " + myData.getPredictTime1(i));
+                //예상시간이 없는 경우는 막차
+                if(myData.getPredictTime1(i) == -1){
+                    System.out.println(myData.getPredictTime1(i));
+                    one = false;
+                }
+
+                if(myData.getPredictTime2(i) == -1) {
+                    System.out.println(myData.getPredictTime2(i));
+                    two = false;
+                }
+
+                if(one == true){
+                    pTime1 = myData.getPredictTime1(i);
+
+                    if(two == true) {
+                        pTime2 = myData.getPredictTime2(i);
+                    }
+                }
+                else
+                {
+                    if(two == true) {
+                        pTime2 = myData.getPredictTime2(i);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                if(pTime1 != -1) {
+                    System.out.println("bus id: " + id + "예상 시간: " + DateHandler.getToday().plusSeconds(pTime1).toString());
+                }
+
+                if(pTime2 != -1) {
+                    System.out.println("bus id: " + id + "예상 시간: " + DateHandler.getToday().plusSeconds(pTime2).toString());
+                }
+            }
+        }
     }
 }

@@ -145,7 +145,7 @@ public class RData {
     for (int i = 0; i < myData.getNList().getLength(); i++) {
       Node nNode = myData.getNList().item(i);
 
-      Element eElement = (Element) nNode;
+      Element eElement;
 
       /*if (getTagValue("routeId", eElement) == null) {
         routeId.add("Error");
