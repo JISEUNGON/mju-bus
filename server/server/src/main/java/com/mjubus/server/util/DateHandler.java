@@ -4,15 +4,19 @@ import java.time.*;
 
 public class DateHandler {
     private static ZonedDateTime zonedDateTime;
+    private static ZonedDateTime stopAt;
+
     public static void setZonedDateTime(LocalDateTime localDateTime) {
         zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+        stopAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
     private static ZonedDateTime getZonedDateTime() {
         if (zonedDateTime == null) {
             return ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         }
 
-        return zonedDateTime;
+        Duration duration = Duration.between(stopAt, ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
+        return zonedDateTime.plus(duration);
     }
 
     public static LocalDateTime getToday() {
