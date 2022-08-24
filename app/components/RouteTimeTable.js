@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import styled from "styled-components";
+import StationIcon from "./StationIcon";
 import XIcon from "./XIcon";
 
 const Container = styled.View`
@@ -116,17 +117,22 @@ const StationNameContainer = styled.View`
 const TimeListsContainer = styled(StationNamesContainer)`
   margin-top: 0px;
 `;
+
+const Absolute = styled.View`
+  position: absolute;
+  flex-direction: row;
+`;
+
 const TimeListContainer = styled(StationNameContainer)``;
 const Time = styled(StationName)`
   font-family: "SpoqaHanSansNeo-Medium";
 `;
+
 function RouteStationImages({ stations }) {
   return (
     <RouteImgage>
       {stations?.map(station => (
-        <StationOuterImage key={station.name}>
-          <StationInnerImage />
-        </StationOuterImage>
+        <StationIcon busRoute="siwe" key={station.name} />
       ))}
     </RouteImgage>
   );

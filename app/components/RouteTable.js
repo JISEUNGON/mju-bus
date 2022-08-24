@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import styled from "styled-components";
+import StationIcon from "./StationIcon";
 import XIcon from "./XIcon";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -28,40 +29,6 @@ const RouteImgage = styled.View`
   border-color: #c1c6cd;
   width: 90%;
   height: 150px;
-`;
-
-const StationOuterImage = styled.View`
-  position: absolute;
-  background-color: #dad8fb;
-  width: 12px;
-  height: 12px;
-  border-radius: 9px;
-  align-items: center;
-  justify-content: center;
-  margin-top: ${props => {
-    if (props.level === 0) {
-      return -7;
-    }
-    if (props.level === 1) {
-      return 1;
-    }
-    if (props.level === 2) {
-      return 65;
-    }
-    if (props.level === 3) {
-      return 132;
-    }
-    return 141;
-  }}px;
-  margin-left: ${props => {
-    if (props.level === 2) {
-      return ROUTE_END_POINT + 2;
-    }
-    if (props.level === 1 || props.level === 3) {
-      return ROUTE_ROUND_POINT;
-    }
-    return props.value;
-  }}px;
 `;
 
 const StaionNameContainer = styled.View`
@@ -101,13 +68,6 @@ const StationName = styled.Text`
   font-size: 6px;
   font-family: "SpoqaHanSansNeo-Medium";
   color: #6d7582;
-`;
-
-const StationInnerImage = styled.View`
-  background-color: white;
-  width: 6px;
-  height: 6px;
-  border-radius: 4px;
 `;
 
 const NoDataTable = styled.View`
@@ -242,30 +202,20 @@ function StationImages({ list }) {
       {/* 정류장 출력 */}
       {/* level 0, 2 정류장 출력 */}
       {count % 2 === 0 ? null : (
-        <StationOuterImage value={0} level={2}>
-          <StationInnerImage />
-        </StationOuterImage>
+        <StationIcon busRoute="sine" value={0} level={2} absolute />
       )}
       {/* level 1, 3 정류장 출력 */}
       {count < 4 ? null : (
         <Absolute>
-          <StationOuterImage value={0} level={1}>
-            <StationInnerImage />
-          </StationOuterImage>
-          <StationOuterImage value={0} level={3}>
-            <StationInnerImage />
-          </StationOuterImage>
+          <StationIcon busRoute="sine" value={0} level={1} absolute />
+          <StationIcon busRoute="sine" value={0} level={3} absolute />
         </Absolute>
       )}
       {/* level 0, 4 정류장 출력 */}
       {result.map(margin => (
         <Absolute key={`${margin}`}>
-          <StationOuterImage value={margin} level={0}>
-            <StationInnerImage />
-          </StationOuterImage>
-          <StationOuterImage value={margin} level={4}>
-            <StationInnerImage />
-          </StationOuterImage>
+          <StationIcon busRoute="sine" value={margin} level={0} absolute />
+          <StationIcon busRoute="sine" value={margin} level={4} absolute />
         </Absolute>
       ))}
     </RouteImgage>

@@ -5,6 +5,8 @@ export const SineRunning = {
   excitedTextColor: "#EC6969",
   beforeBgColor: "#E0E0E0",
   beforeTextColor: "#8D94A0",
+  defaultBgColor: "#DAD8FB",
+  defaultTextColor: "#7974E7",
 };
 
 export const SiweRunning = {
@@ -14,4 +16,6 @@ export const SiweRunning = {
   excitedTextColor: "#8D94A0",
   beforeBgColor: "#E0E0E0",
   beforeTextColor: "#8D94A0",
+  defaultBgColor: "#F6E3E3",
+  defaultTextColor: "#EC6969",
 };

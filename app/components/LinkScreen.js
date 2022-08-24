@@ -49,7 +49,7 @@ function LinkScreen({ screenName }) {
   return (
     <TouchableOpacity onPress={goToSchedule} style={{}}>
       <Board>
-        <BusIcon />
+        <BusIcon busRoute="sine" />
         <Column>
           <SubText>
             {screenName === "시간표"

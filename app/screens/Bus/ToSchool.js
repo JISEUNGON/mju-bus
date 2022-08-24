@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 function ToSchool({ navigation: { navigate } }) {
+  const [selectedStations, setSelectedStations] = useState([
+    { name: "진입로(명지대행)" },
+    { name: "명지대학교" },
+  ]);
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>ToSchool</Text>
       <TouchableOpacity
-        onPress={() => navigate("SearchStack", { screen: "BusList" })}
+        onPress={() =>
+          navigate("SearchStack", {
+            screen: "BusList",
+            params: {
+              selectedStations,
+            },
+          })
+        }
         style={{
           padding: 10,
           justifyContent: "center",

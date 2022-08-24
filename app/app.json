@@ -6,7 +6,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "description": "TimeTable bug fixed 1.0"
+    "description": "TimeTable bug fixed 1.1"
   },
   "name": "front"
 }
