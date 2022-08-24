@@ -19,6 +19,8 @@ const Container = styled.View`
   border-radius: 20px;
   width: ${SCREEN_WIDTH}px;
   height: ${SCREEN_HEIGHT * 0.8}px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
 `;
 
 const TitleContainer = styled.View`

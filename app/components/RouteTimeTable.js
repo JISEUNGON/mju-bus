@@ -76,21 +76,6 @@ const RouteImgage = styled.View`
   flex-direction: row;
   justify-content: space-around;
 `;
-const StationInnerImage = styled.View`
-  background-color: white;
-  width: 6px;
-  height: 6px;
-  border-radius: 4px;
-`;
-const StationOuterImage = styled.View`
-  background-color: #f6e3e3;
-  width: 12px;
-  height: 12px;
-  border-radius: 9px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 23px;
-`;
 
 const StationNamesContainer = styled.View`
   height: 14px;
@@ -116,11 +101,6 @@ const StationNameContainer = styled.View`
 `;
 const TimeListsContainer = styled(StationNamesContainer)`
   margin-top: 0px;
-`;
-
-const Absolute = styled.View`
-  position: absolute;
-  flex-direction: row;
 `;
 
 const TimeListContainer = styled(StationNameContainer)``;

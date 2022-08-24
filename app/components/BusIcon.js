@@ -1,10 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 
 import React from "react";
-import styled, { ThemeProvider } from "styled-components";
-import { SineRunning, SiweRunning } from "../styled";
+import styled from "styled-components";
 
 const Circle = styled.View`
+  position: ${props => {
+    if (props.absolute === true) return "absolute";
+    return "static";
+  }};
   width: ${props => {
     if (props.size === "small") return 25;
     return 50;
@@ -36,18 +39,16 @@ const Board = styled.View`
 `;
 
 // eslint-disable-next-line react/prop-types
-function BusIcon({ busRoute, size }) {
+function BusIcon({ busRoute, size, absolute }) {
   return (
-    <ThemeProvider theme={busRoute === "sine" ? SineRunning : SiweRunning}>
-      <Circle busRoute={busRoute} size={size}>
-        <Board size={size} />
-        <Ionicons
-          name="ios-bus"
-          size={size === "small" ? 15 : 30}
-          color={busRoute === "sine" ? "#7974E7" : "#EC6969"}
-        />
-      </Circle>
-    </ThemeProvider>
+    <Circle busRoute={busRoute} size={size} absolute={absolute}>
+      <Board size={size} />
+      <Ionicons
+        name="ios-bus"
+        size={size === "small" ? 15 : 30}
+        color={busRoute === "sine" ? "#7974E7" : "#EC6969"}
+      />
+    </Circle>
   );
 }
 

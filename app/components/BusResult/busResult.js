@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-
 import { Ionicons } from "@expo/vector-icons";
+import StationIcon from "../StationIcon";
 import BusIcon from "../BusIcon";
 
 const Container = styled.View`
@@ -127,18 +127,14 @@ function BusRoute(props) {
       return (
         <Container>
           <StartLine />
-          <StartCity>
-            <BusIcon busRoute="red" size="small" />
-          </StartCity>
+          <BusIcon busRoute="red" size="small" absolute />
         </Container>
       );
     }
     return (
       <Container>
         <StartLine />
-        <Startshuttle>
-          <BusIcon busRoute="sine" size="small" />
-        </Startshuttle>
+        <BusIcon busRoute="sine" size="small" absolute />
       </Container>
     );
 
@@ -148,18 +144,14 @@ function BusRoute(props) {
     return (
       <Container>
         <EndLine />
-        <EndCity>
-          <EndCircle />
-        </EndCity>
+        <StationIcon busRoute="red" absolute />
       </Container>
     );
   }
   return (
     <Container>
       <EndLine />
-      <EndShuttle>
-        <EndCircle />
-      </EndShuttle>
+      <StationIcon busRoute="sine" absolute />
     </Container>
   );
 }
