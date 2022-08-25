@@ -76,11 +76,8 @@ const SubmitText = styled.Text`
 
 const SubmitButton = styled.TouchableOpacity``;
 
+// eslint-disable-next-line react/prop-types
 function ToSchool({ navigation: { navigate } }) {
-  const [selectedStations, setSelectedStations] = useState([
-    { name: "진입로(명지대행)" },
-    { name: "명지대학교" },
-  ]);
   const [modalVisible, setModalVisible] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
