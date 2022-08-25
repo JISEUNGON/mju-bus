@@ -27,11 +27,7 @@ public class InterCityShuttleScheduler {
 
     private BusCalendar getBusCalendar() {
         LocalDateTime today = DateHandler.getToday();
-        if (DateHandler.isWeekend(today)) {
-            return busCalendarRepository.findBusCalendarByDateOnWeekend(today.toLocalDate(), today.toLocalTime());
-        } else {
-            return busCalendarRepository.findBusCalendarByDateOnWeekday(today.toLocalDate(), today.toLocalTime());
-        }
+        return busCalendarRepository.findBusCalendarByDate(today.toLocalDate(), today.toLocalTime(), DateHandler.getDayOfWeek(today)).get();
     }
     private List<Station> getBusStationList() {
         Long route_info_id = 21L;

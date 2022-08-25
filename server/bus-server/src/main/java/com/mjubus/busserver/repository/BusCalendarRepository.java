@@ -12,11 +12,8 @@ import java.util.Optional;
 
 public interface BusCalendarRepository extends JpaRepository<BusCalendar, Long> {
 
-    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.start_time <= :time and :time <= bc.end_time and bc.weekend = 1 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
-    BusCalendar findBusCalendarByDateOnWeekend(@Param("date") LocalDate date, @Param("time")LocalTime time);
-
-    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.start_time <= :time and :time <= bc.end_time and bc.weekend = 0 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
-    BusCalendar findBusCalendarByDateOnWeekday(@Param("date") LocalDate date, @Param("time")LocalTime time);
+    @Query(value = "SELECT * from bus_calendar bc WHERE bc.start_at <= :date and :date <= bc.end_at and bc.start_time <= :time and :time <= bc.end_time and  bc.day_of_week & :day > 0 ORDER BY priority DESC LIMIT 1", nativeQuery = true)
+    Optional<BusCalendar> findBusCalendarByDate(@Param("date") LocalDate date, @Param("time") LocalTime time, @Param("day") int day);
 
 
 }

@@ -15,6 +15,10 @@ public class DateHandler {
         return getZonedDateTime();
     }
 
+    public static int getDayOfWeek(LocalDateTime date) {
+        DayOfWeek day = date.getDayOfWeek();
+        return (int) Math.pow(2, day.getValue() - 1);
+    }
 
     public static LocalDateTime getTodayWith(int hour, int minute) {
         ZonedDateTime zonedDateTime = getZonedDateTime();
