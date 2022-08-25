@@ -21,8 +21,18 @@ public class InterCityShuttleScheduler {
     private BusRepository busRepository;
 
     @Autowired
+    private BusCalendarRepository busCalendarRepository;
+    @Autowired
     private RouteDetailRepository routeDetailRepository;
 
+    private BusCalendar getBusCalendar() {
+        LocalDateTime today = DateHandler.getToday();
+        if (DateHandler.isWeekend(today)) {
+            return busCalendarRepository.findBusCalendarByDateOnWeekend(today.toLocalDate(), today.toLocalTime());
+        } else {
+            return busCalendarRepository.findBusCalendarByDateOnWeekday(today.toLocalDate(), today.toLocalTime());
+        }
+    }
     private List<Station> getBusStationList() {
         Long route_info_id = 21L;
         List<RouteDetail> detailList = routeDetailRepository.findRouteDetailByRouteInfo_IdOrderByOrder(route_info_id);
