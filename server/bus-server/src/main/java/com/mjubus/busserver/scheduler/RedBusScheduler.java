@@ -50,7 +50,7 @@ public class RedBusScheduler {
     @Autowired
     private StationRepository stationRepository;
 
-    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "0/15 * * * * *")
     public void printDate() {
         setRData();
         myData = rData.getMyData();
