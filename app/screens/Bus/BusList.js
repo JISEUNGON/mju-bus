@@ -103,7 +103,7 @@ function CustomNavButton(navigation) {
 function BusList({ navigation, route: { params } }) {
   useEffect(() => {
     navigation.setOptions({
-      title: `${params.selectedStations[0].name} -> ${params.selectedStations[1].name}`,
+      title: `${params.station.name} -> 명지대학교`,
       headerLeft: () => CustomNavButton(navigation),
     });
   }, []);

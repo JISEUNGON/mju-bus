@@ -146,7 +146,17 @@ function ToSchool({ navigation: { navigate } }) {
       </SelectContainer>
 
       {isSelected ? (
-        <SubmitButton onPress={() => {}}>
+        <SubmitButton
+          onPress={() =>
+            navigate("SearchStack", {
+              screen: "BusList",
+              params: {
+                toSchool: true,
+                station,
+              },
+            })
+          }
+        >
           <SubmitContainer>
             <SubmitText>버스 검색</SubmitText>
           </SubmitContainer>
