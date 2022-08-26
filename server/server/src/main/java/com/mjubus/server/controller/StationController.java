@@ -1,9 +1,7 @@
 package com.mjubus.server.controller;
 
-import com.mjubus.server.domain.Bus;
 import com.mjubus.server.domain.Station;
-import com.mjubus.server.dto.busArrival.BusArrivalDto;
-import com.mjubus.server.exception.Bus.BusNotFoundException;
+import com.mjubus.server.dto.busArrival.BusArrivalResponse;
 import com.mjubus.server.service.busArrival.BusArrivalService;
 import com.mjubus.server.service.station.StationService;
 import io.swagger.annotations.Api;
@@ -16,9 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/station")
@@ -47,7 +42,9 @@ public class StationController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public BusArrivalDto busRemains(@PathVariable(value = "stationID") Long stationId) {
-        return busArrivalService.findBusArrivalByStationId(stationId);
+    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId) {
+        // todo : Query String 에 따른 결과 값 다르게.
+        Station station = stationService.findStationById(stationId);
+        return busArrivalService.findBusArrivalRemainByStation(station);
     }
 }

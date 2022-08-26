@@ -1,11 +1,10 @@
 package com.mjubus.server.service.busArrival;
 
-import com.mjubus.server.domain.Bus;
 import com.mjubus.server.domain.Station;
-import com.mjubus.server.dto.busArrival.BusArrivalDto;
-
-import java.util.List;
+import com.mjubus.server.dto.busArrival.BusArrivalResponse;
 
 public interface BusArrivalInterface {
-    BusArrivalDto findBusArrivalByStationId(Long stationId);
+
+    BusArrivalResponse findBusArrivalRemainByStation(Station station);
+
 }
