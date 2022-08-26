@@ -78,7 +78,6 @@ function Home({ route: { params } }) {
       console.log(error);
     }
   };
-
   const onRefresh = async () => {
     setRefreshing(true);
     await queryClient.refetchQueries(["remain", "status"]);
