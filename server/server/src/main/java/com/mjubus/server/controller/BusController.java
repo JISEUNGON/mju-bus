@@ -2,11 +2,9 @@ package com.mjubus.server.controller;
 
 
 import com.mjubus.server.domain.Bus;
-import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.busListDto.BusList;
-import com.mjubus.server.dto.busListDto.BusListDto;
 import com.mjubus.server.dto.busRoute.BusRouteDto;
 import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/bus")
