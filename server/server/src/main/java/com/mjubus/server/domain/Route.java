@@ -35,9 +35,5 @@ public class Route {
     @JoinColumn(name = "bus_calendar_id")
     @ApiModelProperty(example = "명지대 학사일정 ID")
     private BusCalendar busCalendar;
-    
-    @Column(name = "type", columnDefinition = "int")
-    @ApiModelProperty(example = "20시 이후 시간표 결정 요소")
-    // 1 : 20시 이전, 2: 20시 이후
-    private int type;
+
 }

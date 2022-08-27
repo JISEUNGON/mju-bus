@@ -112,7 +112,7 @@ public class BusService implements BusServiceInterface {
         BusCalendar busCalendar = busCalendarService.findByDate(date);
 
         // 현재 일정으로 운행중인 버스 운행표
-        List<BusTimeTable> busTimeTableList = busTimeTableService.findBusTimeTableListByCalendar(busCalendar);
+        List<Integer> busIdList = busTimeTableService.findBusListByDate(date);
 
         // 시내버스
         BusList busList_IN = new BusList();
@@ -125,8 +125,8 @@ public class BusService implements BusServiceInterface {
         List<Bus> busListOuter = new LinkedList<>();
 
         // 시내/시외 분류
-        for(BusTimeTable busTimeTable : busTimeTableList) {
-            Bus bus = busTimeTable.getBus();
+        for(Integer busId : busIdList) {
+            Bus bus = findBusByBusId(Long.valueOf(busId));
             if (bus.getId() < 100) {
                 busListInner.add(bus);
             } else {

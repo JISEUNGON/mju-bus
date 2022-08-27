@@ -1,19 +1,23 @@
 package com.mjubus.server.dto.busArrival;
 
-import com.mjubus.server.domain.Station;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class BusArrivalDto {
 
-    @ApiModelProperty(example = "정류장 정보")
-    private Station station;
-    
-    @ApiModelProperty(reference = "BusRemainDto")
-    private List<BusRemainDto> busList;
+    @ApiModelProperty(example = "200", dataType = "int")
+    private String id;
+
+    @ApiModelProperty(example = "5001")
+    private String name;
+
+    @ApiModelProperty(example = "2022-08-26 18:00:03")
+    private LocalDateTime expected_at;
 }

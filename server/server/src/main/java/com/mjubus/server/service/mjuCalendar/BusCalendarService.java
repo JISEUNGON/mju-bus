@@ -20,11 +20,7 @@ public class BusCalendarService implements BusCalendarInterface {
 
     @Override
     public BusCalendar findByDate(LocalDateTime date) {
-        if (DateHandler.isWeekend(date)) {
-            Optional<BusCalendar> optionalBusCalendar = busCalendarRepository.findBusCalendarByDateOnWeekend(date.toLocalDate(), date.toLocalTime());
-            return optionalBusCalendar.orElseThrow(() -> new BusCalenderNotFoundException(date));
-        }
-        Optional<BusCalendar> optionalBusCalendar = busCalendarRepository.findBusCalendarByDateOnWeekday(date.toLocalDate(), date.toLocalTime());
+        Optional<BusCalendar> optionalBusCalendar = busCalendarRepository.findBusCalendarByDate(date.toLocalDate(), date.toLocalTime(), DateHandler.getDayOfWeek(date));
         return optionalBusCalendar.orElseThrow(() -> new BusCalenderNotFoundException(date));
     }
 
