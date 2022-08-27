@@ -52,7 +52,32 @@ public class RedBusScheduler {
 
     @Scheduled(cron = "0/15 * * * * *")
     public void printDate() {
-        setRData();
+        /**
+         * 진입로(명지대 방향)
+         * */
+        setRData("228000192");
+
+        /**
+         * DB에 데이터 넣는 함수
+         * */
+        putData();
+
+        /**
+         * 용인터미널1(용터 방면)
+         * */
+        setRData("228000197");
+
+        putData();
+
+        /**
+         * 용인터미널1(용터 방면)
+         * */
+        setRData("228001414");
+
+        putData();
+    }
+
+    public void putData() {
         myData = rData.getMyData();
 
         // 테스트 데이터
@@ -127,8 +152,8 @@ public class RedBusScheduler {
         }
     }
 
-    public void setRData() {
-        rData.setStationId("228002023");
+    public void setRData(String stationId) {
+        rData.setStationId(stationId);
         /**
          * 버스 도착 목록 정보 URL
          * */
@@ -161,17 +186,23 @@ public class RedBusScheduler {
     public static void main(String[] args) {
         RedBusScheduler redBusScheduler = new RedBusScheduler();
 
-        redBusScheduler.setRData();
+        redBusScheduler.setRData("228000197");
 
+        redBusScheduler.printData();
+    }
+
+    public void printData() {
         myData = rData.getMyData();
 
         rData.printAll();
 
         System.out.println("size: " + myData.getRouteId().size() + "pTime1 size: " + myData.getPredictTime1().size());
+
         // 테스트 데이터
         for(int i = 0; i < myData.getRouteId().size(); i++) {
-            System.out.println("Route id: " + myData.getRouteId(i));
             if(busId.containsKey(myData.getRouteId(i))) {
+                System.out.println("Route id: " + myData.getRouteId(i));
+
                 boolean one = true, two = true;//predictTime1 과 predictTime2가 존재하는지
                 int pTime1 = -1, pTime2 = -1;//predictTime1, PredictTime2
                 Long id = busId.get(myData.getRouteId(i));
@@ -180,12 +211,10 @@ public class RedBusScheduler {
                 System.out.println("예상 시간: " + myData.getPredictTime1(i));
                 //예상시간이 없는 경우는 막차
                 if(myData.getPredictTime1(i) == -1){
-                    System.out.println(myData.getPredictTime1(i));
                     one = false;
                 }
 
                 if(myData.getPredictTime2(i) == -1) {
-                    System.out.println(myData.getPredictTime2(i));
                     two = false;
                 }
 
@@ -208,11 +237,11 @@ public class RedBusScheduler {
                 }
 
                 if(pTime1 != -1) {
-                    System.out.println("bus id: " + id + "예상 시간: " + DateHandler.getToday().plusSeconds(pTime1).toString());
+                    System.out.println("bus id: " + id + " 예상 시간: " + DateHandler.getToday().plusSeconds(pTime1).toString());
                 }
 
                 if(pTime2 != -1) {
-                    System.out.println("bus id: " + id + "예상 시간: " + DateHandler.getToday().plusSeconds(pTime2).toString());
+                    System.out.println("bus id: " + id + " 예상 시간: " + DateHandler.getToday().plusSeconds(pTime2).toString());
                 }
             }
         }
