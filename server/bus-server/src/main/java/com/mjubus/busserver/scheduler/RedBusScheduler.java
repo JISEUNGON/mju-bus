@@ -60,24 +60,24 @@ public class RedBusScheduler {
         /**
          * DB에 데이터 넣는 함수
          * */
-        putData();
+        putData(4L);
+
+        /**
+         * 용인터미널1(용터 방면)
+         * */
+        setRData("228001320");
+
+        putData(200L);
 
         /**
          * 용인터미널1(용터 방면)
          * */
         setRData("228000197");
 
-        putData();
-
-        /**
-         * 용인터미널1(용터 방면)
-         * */
-        setRData("228001414");
-
-        putData();
+        putData(202L);
     }
 
-    public void putData() {
+    public void putData(Long stationId) {
         myData = rData.getMyData();
 
         // 테스트 데이터
@@ -90,7 +90,7 @@ public class RedBusScheduler {
 
                 Bus bus = busRepository.getReferenceById(id);
 
-                Station station = stationRepository.getReferenceById(4L);
+                Station station = stationRepository.getReferenceById(stationId);
 
                 //예상시간이 없는 경우는 막차
                 if(myData.getPredictTime1(i) == -1){
@@ -133,8 +133,6 @@ public class RedBusScheduler {
                             .build();
 
                     busArrivalRepository.save(test);
-
-                    System.out.println("predict1 Saved !");
                 }
 
                 if(pTime2 != -1) {
@@ -145,8 +143,6 @@ public class RedBusScheduler {
                             .build();
 
                     busArrivalRepository.save(test);
-
-                    System.out.println("predict2 Saved !");
                 }
             }
         }
@@ -186,7 +182,7 @@ public class RedBusScheduler {
     public static void main(String[] args) {
         RedBusScheduler redBusScheduler = new RedBusScheduler();
 
-        redBusScheduler.setRData("228000197");
+        redBusScheduler.setRData("228001320");
 
         redBusScheduler.printData();
     }
