@@ -70,7 +70,7 @@ public class RedBusScheduler {
         putData(200L);
 
         /**
-         * 용인터미널1(용터 방면)
+         * 용인터미널2(명지대 방면)
          * */
         setRData("228000197");
 
