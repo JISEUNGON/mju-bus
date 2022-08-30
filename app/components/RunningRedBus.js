@@ -54,10 +54,11 @@ function RedBusList({ data }) {
           extraData={data}
           contentContainerStyle={{
             paddingHorizontal: 30,
+            marginBottom: 20,
           }}
           renderItem={({ item }) => (
             <Board>
-              <Station>{station?.data?.station?.name}</Station>
+              <Station>{station?.data?.name}</Station>
               <BusNumber>{item.name}</BusNumber>
               <RemainTime>
                 <Timer value={item.remains} />

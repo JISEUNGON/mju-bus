@@ -91,10 +91,10 @@ function Home({ route: { params } }) {
   const redBusRemain = useQueries({
     queries: [
       { queryKey: ["remain", stationId.JinIpRo], queryFn: stationApi.remain },
-      // {
-      //   queryKey: ["remain", stationId.YongInTerminal],
-      //   queryFn: stationApi.remain,
-      // },
+      {
+        queryKey: ["remain", stationId.YongInTerminal],
+        queryFn: stationApi.remain,
+      },
     ],
   });
 
