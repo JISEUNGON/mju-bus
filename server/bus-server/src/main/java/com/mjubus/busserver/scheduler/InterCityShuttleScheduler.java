@@ -5,6 +5,7 @@ import com.mjubus.busserver.repository.*;
 import com.mjubus.busserver.util.DateHandler;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -43,7 +44,9 @@ public class InterCityShuttleScheduler {
         return busRepository.getReferenceById(20L);
     }
 
-    public void scheduler() throws IOException, ParseException {
+
+    @Scheduled(cron = "20 * * * * *")
+    public void run() throws IOException, ParseException {
         List<Station> stationList = getBusStationList();
         LocalDateTime expected = DateHandler.getToday();
         Bus bus = getBus();

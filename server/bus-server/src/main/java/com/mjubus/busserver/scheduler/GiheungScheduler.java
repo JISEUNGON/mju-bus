@@ -5,6 +5,7 @@ import com.mjubus.busserver.repository.*;
 import com.mjubus.busserver.util.DateHandler;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ public class GiheungScheduler {
         return routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
     }
 
+    @Scheduled(cron = "30 * * * * *")
     public void run() throws IOException, ParseException {
         Bus bus = getBus();
         BusCalendar busCalendar = getBusCalendar();
