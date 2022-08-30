@@ -13,6 +13,25 @@ import java.time.LocalDateTime;
 @Table(name="bus_arrival")
 @Getter
 @Setter
+@NamedNativeQuery(
+        name = "bus_arrival_list",
+        query ="SELECT id, station_id as stationId, bus_id as busId, expected_at as expectedAt, max(created_at) as createdAt" +
+        "       FROM bus_arrival" +
+        "       WHERE station_id = :stationId" +
+        "       GROUP BY bus_id",
+        resultSetMapping = "busArrivalDto"
+)
+@SqlResultSetMapping(
+        name = "busArrivalDto", classes = @ConstructorResult(
+        targetClass = BusArrival.class,
+        columns = {
+                @ColumnResult(name = "id", type = Long.class),
+                @ColumnResult(name = "station_Id", type = Long.class),
+                @ColumnResult(name = "bus_id", type = Long.class),
+                @ColumnResult(name = "expected_at", type = LocalDateTime.class),
+                @ColumnResult(name = "created", type = LocalDateTime.class)
+        }
+))
 public class BusArrival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +56,5 @@ public class BusArrival {
     @Column(name = "created_at", columnDefinition = "datetime")
     @ApiModelProperty(example = "생성일")
     private LocalDateTime created;
+
 }
