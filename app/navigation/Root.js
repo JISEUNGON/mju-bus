@@ -23,7 +23,7 @@ function Root() {
       <Nav.Screen
         name="SearchStack"
         component={SearchStack}
-        options={{ headerBackVisible: true }}
+        options={{ headerShown: false }}
       />
     </Nav.Navigator>
   );

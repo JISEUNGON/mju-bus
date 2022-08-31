@@ -9,10 +9,15 @@ function ScheduleTopTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarIndicatorStyle: {
+          backgroundColor: "black",
+        },
         tabBarLabelStyle: {
           fontSize: 13,
-          fontFamily: "SpoqaHanSansNeo-Medium",
+          fontFamily: "SpoqaHanSansNeo-Bold",
         },
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: "#6D7582",
       }}
       sceneContainerStyle={{}}
     >
