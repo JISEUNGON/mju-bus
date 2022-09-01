@@ -9,13 +9,15 @@ function BusTopTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "gray",
-        tabBarShowIcon: false,
+        tabBarIndicatorStyle: {
+          backgroundColor: "black",
+        },
         tabBarLabelStyle: {
           fontSize: 13,
-          fontFamily: "SpoqaHanSansNeo-Medium",
+          fontFamily: "SpoqaHanSansNeo-Bold",
         },
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: "#6D7582",
       }}
     >
       <Tab.Screen name="학교로" component={ToSchool} />

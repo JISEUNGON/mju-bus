@@ -1,6 +1,5 @@
 package com.mjubus.busserver.scheduler;
 
-import com.mjubus.busserver.domain.Bus;
 import com.mjubus.busserver.domain.BusArrival;
 import com.mjubus.busserver.domain.Station;
 import com.mjubus.busserver.repository.BusArrivalRepository;
@@ -10,36 +9,49 @@ import com.mjubus.busserver.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 @Component
 public class RedBusScheduler {
+    private final String SERVICE_KEY = "ZJF99uIbDjNnsZBlrbDg%2BDL%2FCyHI2Vc%2BATgI41upeL1%2FGf2jjy8keoY%2FEb6E6CLtokViU7v8bN8tRY0vJ2x3EQ%3D%3D";
+    private final String BASE_URL = "http://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList";
 
-    /**
-     * 데이터들을 저장한 클래스
-     * */
-    private static RData rData = new RData();
-    private static MyData myData;
-
-    private static HashMap<String, Long> busId = new HashMap<String, Long>(){{
-        put("228000176", 200L);//5001
-        put("228000177", 201L);//5001-1
-        put("228000182", 202L);//5003B
-        put("228000174", 210L);//5000B
-        put("228000394", 211L);//5002A
-        put("228000183", 212L);//5002B
-        put("228000175", 213L);//5005
-        put("228000184", 214L);//5600
-        put("228000395", 215L);//5700A
-        put("228000271", 216L);//5700B
+    // Route ID <-> Bus Id
+    private static final HashMap<String, Long> busId = new HashMap<String, Long>(){{
+        put("228000176", 200L); //5001
+        put("228000177", 201L); //5001-1
+        put("228000182", 202L); //5003B
+        put("228000174", 210L); //5000B
+        put("228000394", 211L); //5002A
+        put("228000183", 212L); //5002B
+        put("228000175", 213L); //5005
+        put("228000184", 214L); //5600
+        put("228000395", 215L); //5700A
+        put("228000271", 216L); //5700B
     }};
+
+    private static final HashMap<String, Long> stationIdList = new HashMap<String, Long>() {{
+        put("228000192", 4L); // 진입로 (명지대 방향)
+        put("228001320", 200L); // 용인터미널 1
+        put("228000197", 202L); // 용인터미널 2 TODO : 정류장 Check
+    }};
+
+    private Document doc;
 
     @Autowired
     private BusArrivalRepository busArrivalRepository;
@@ -50,171 +62,91 @@ public class RedBusScheduler {
     @Autowired
     private StationRepository stationRepository;
 
-    @Scheduled(cron = "0/15 * * * * *")
-    public void printDate() {
-        setRData();
-        myData = rData.getMyData();
-
-        // 테스트 데이터
-        for(int i = 0; i < myData.getRouteId().size(); i++) {
-            if(busId.containsKey(myData.getRouteId(i))) {
-                boolean one = true, two = true;//predictTime1 과 predictTime2가 존재하는지
-                int pTime1 = -1, pTime2 = -1;//predictTime1, PredictTime2
-
-                Long id = busId.get(myData.getRouteId(i));
-
-                Bus bus = busRepository.getReferenceById(id);
-
-                Station station = stationRepository.getReferenceById(4L);
-
-                //예상시간이 없는 경우는 막차
-                if(myData.getPredictTime1(i) == -1){
-                    one = false;
-                }
-
-                if(myData.getPredictTime2(i) == -1){
-                    two = false;
-                }
-
-                /**
-                 * 예상시간 저장하기
-                 * */
-                if(one == true){
-                    pTime1 = myData.getPredictTime1(i);
-
-                    if(two == true) {
-                        pTime2 = myData.getPredictTime2(i);
-                    }
-                }
-                else
-                {
-                    if(two == true) {
-                        pTime2 = myData.getPredictTime2(i);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-                /**
-                 * DB에 넣기
-                 * */
-                if(pTime1 != -1) {
-                    BusArrival test = BusArrival.builder()
-                            .bus(bus)
-                            .station(station)
-                            .expected(DateHandler.getToday().plusSeconds(pTime1))
-                            .build();
-
-                    busArrivalRepository.save(test);
-
-                    System.out.println("predict1 Saved !");
-                }
-
-                if(pTime2 != -1) {
-                    BusArrival test = BusArrival.builder()
-                            .bus(bus)
-                            .station(station)
-                            .expected(DateHandler.getToday().plusSeconds(pTime2))
-                            .build();
-
-                    busArrivalRepository.save(test);
-
-                    System.out.println("predict2 Saved !");
-                }
-            }
-        }
+    private String buildURL(String stationId) throws UnsupportedEncodingException {
+        return new StringBuilder(BASE_URL)
+                .append("?")
+                .append(URLEncoder.encode("serviceKey", "UTF-8"))
+                .append("=")
+                .append(SERVICE_KEY)
+                .append("&")
+                .append(URLEncoder.encode("stationId", "UTF-8"))
+                .append("=")
+                .append(stationId)
+                .toString();
     }
 
-    public void setRData() {
-        rData.setStationId("228002023");
-        /**
-         * 버스 도착 목록 정보 URL
-         * */
-        try {
-            rData.makeUrl();//url 생성
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            rData.getXml();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (TransformerException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
-
-        rData.setPredictTime1();
-        rData.setPredictTime2();
-        rData.setRouteId();
-        rData.setStaOrder();
+    private Document GET(String URL) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
+        return dBuilder.parse(URL);
     }
 
-    public static void main(String[] args) {
-        RedBusScheduler redBusScheduler = new RedBusScheduler();
+    private String getRouteId(Element element) {
+        NodeList nodeList = element.getElementsByTagName("routeId").item(0).getChildNodes();
+        Node node = nodeList.item(0);
+        if (node != null) {
+            return node.getNodeValue();
+        }
+        return null;
+    }
 
-        redBusScheduler.setRData();
+    private List<String> getPredictTimes(Element element) {
+        LinkedList<String> list = new LinkedList<>();
 
-        myData = rData.getMyData();
+        NodeList nodeList = element.getElementsByTagName("predictTime1").item(0).getChildNodes();
+        Node node = nodeList.item(0);
 
-        rData.printAll();
+        if (node != null)
+            list.add(node.getNodeValue());
 
-        System.out.println("size: " + myData.getRouteId().size() + "pTime1 size: " + myData.getPredictTime1().size());
-        // 테스트 데이터
-        for(int i = 0; i < myData.getRouteId().size(); i++) {
-            System.out.println("Route id: " + myData.getRouteId(i));
-            if(busId.containsKey(myData.getRouteId(i))) {
-                boolean one = true, two = true;//predictTime1 과 predictTime2가 존재하는지
-                int pTime1 = -1, pTime2 = -1;//predictTime1, PredictTime2
-                Long id = busId.get(myData.getRouteId(i));
+        nodeList = element.getElementsByTagName("predictTime2").item(0).getChildNodes();
+        node = nodeList.item(0);
 
+        if (node != null)
+            list.add(node.getNodeValue());
 
-                System.out.println("예상 시간: " + myData.getPredictTime1(i));
-                //예상시간이 없는 경우는 막차
-                if(myData.getPredictTime1(i) == -1){
-                    System.out.println(myData.getPredictTime1(i));
-                    one = false;
-                }
+        return list;
+    }
 
-                if(myData.getPredictTime2(i) == -1) {
-                    System.out.println(myData.getPredictTime2(i));
-                    two = false;
-                }
+    @Scheduled(cron = "0 * * * * *") // 1분 마다
+    public void run() {
+        try{
+            for (String stationId: stationIdList.keySet()) {
+                // URL, 정류장, 도착 정보
+                String URL = buildURL(stationId);
+                Station station = stationRepository.getReferenceById(stationIdList.get(stationId));
 
-                if(one == true){
-                    pTime1 = myData.getPredictTime1(i);
+                // Request 및 parsing
+                Document res = GET(URL);
+                NodeList busArrivalList = res.getElementsByTagName("busArrivalList");
 
-                    if(two == true) {
-                        pTime2 = myData.getPredictTime2(i);
+                for (int i = 0; i < busArrivalList.getLength(); i++) {
+                    Node node = busArrivalList.item(i);
+
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        String routeId = getRouteId((Element) node);
+                        List<String> predictTimes = getPredictTimes((Element) node);
+
+                        System.out.println("URL" + URL);
+                        System.out.println("RouteId : " + routeId);
+                        System.out.println("PredictTimes : " + predictTimes);
+
+                        for(String predict: predictTimes) {
+                            if (busId.get(routeId) != null) {
+                                BusArrival busArrival = BusArrival.builder()
+                                        .bus(busRepository.getReferenceById(busId.get(routeId)))
+                                        .station(station)
+                                        .expected(DateHandler.getToday().plusSeconds(Long.parseLong(predict) * 60))
+                                        .build();
+                                busArrivalRepository.save(busArrival);
+                            }
+                        }
+
                     }
-                }
-                else
-                {
-                    if(two == true) {
-                        pTime2 = myData.getPredictTime2(i);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-                if(pTime1 != -1) {
-                    System.out.println("bus id: " + id + "예상 시간: " + DateHandler.getToday().plusSeconds(pTime1).toString());
-                }
-
-                if(pTime2 != -1) {
-                    System.out.println("bus id: " + id + "예상 시간: " + DateHandler.getToday().plusSeconds(pTime2).toString());
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
