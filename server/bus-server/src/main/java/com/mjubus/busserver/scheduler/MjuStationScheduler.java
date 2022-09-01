@@ -47,7 +47,7 @@ public class MjuStationScheduler {
     }
 
     // 명지대역 셔틀버스 예측
-    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "* 0/10 * * * *") // 10분 마다
     public void run() throws IOException, ParseException {
         Bus bus = getBus();
         BusCalendar busCalendar = getBusCalendar();

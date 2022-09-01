@@ -42,7 +42,7 @@ public class GiheungScheduler {
         return routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
     }
 
-    @Scheduled(cron = "30 * * * * *")
+    @Scheduled(cron = "* 0/10 * * * *") // 10분 마다
     public void run() throws IOException, ParseException {
         Bus bus = getBus();
         BusCalendar busCalendar = getBusCalendar();
