@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GetBusInfoData, GetRouteTableData, highlights } from "../../utils";
+import { ActivityIndicator, Dimensions, TouchableOpacity } from "react-native";
+import { GetRouteTableData, highlights } from "../../utils";
 import { busApi, calendarApi } from "../../api";
 import StationSelect from "./StationSelect";
 import NMap from "./NMap";
@@ -111,6 +111,7 @@ function ToSchool({ navigation: { navigate } }) {
   }, [calendarData, modalVisible]);
 
   const routeData = GetRouteTableData(busListData[0].busList);
+
   const loading = buslistLoading || calendarLoading;
 
   const onStart = () => {
@@ -124,9 +125,7 @@ function ToSchool({ navigation: { navigate } }) {
     </Loader>
   ) : (
     <Conatiner>
-      <NaverMap>
-        <NMap method={setStation} />
-      </NaverMap>
+      <NMap method={setStation} />
       <SelectContainer>
         <TouchableOpacity onPress={onStart}>
           <TextContainer>

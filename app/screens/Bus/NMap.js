@@ -1,22 +1,29 @@
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import styled from "styled-components";
-import NaverMapView, {
-  Align,
-  Circle,
-  Marker,
-  Path,
-  Polygon,
-  Polyline,
-} from "react-native-nmap";
+import NaverMapView, { Marker } from "react-native-nmap";
 
 const Container = styled.View`
   width: 100%;
   height: 100%;
 `;
 
+function setCenter(station) {
+  return {
+    latitude: station.latitude,
+    longitude: station.longitude,
+    zoom: 16.9,
+  };
+}
+
 function NMap({ method }) {
+  const mapRef = useRef(null);
+  const handleSetMapRef = useCallback(_ref => {
+    mapRef.current = {
+      ..._ref,
+    };
+  }, []);
+
   const setStation = method;
-  const P0 = { latitude: 37.234, longitude: 127.188613 };
   const stationData = [
     { id: 26, name: "명현관", latitude: 37.223013, longitude: 127.182092 },
     { id: 25, name: "함박관", latitude: 37.22158, longitude: 127.188257 },
@@ -39,11 +46,15 @@ function NMap({ method }) {
   function renderMarker(data, callback) {
     const Markers = data.map(item => (
       <Marker
+        key={item.id}
         coordinate={item}
         pinColor="blue"
-        onClick={() => callback(item)}
-        width={30}
-        height={40}
+        onClick={() => {
+          mapRef.current.animateToCoordinate(item);
+          callback(item);
+        }}
+        width={25}
+        height={32}
       />
     ));
     return Markers;
@@ -52,14 +63,12 @@ function NMap({ method }) {
   return (
     <Container>
       <NaverMapView
+        ref={handleSetMapRef}
         style={{ width: "100%", height: "100%" }}
         showsMyLocationButton
-        center={{ ...P0, zoom: 15.8 }}
-        onTouch={e => console.warn("onTouch", JSON.stringify(e.nativeEvent))}
-        onCameraChange={e => console.warn("onCameraChange", JSON.stringify(e))}
-        onMapClick={e => console.warn("onMapClick", JSON.stringify(e))}
-        useTextureView
+        center={setCenter(stationData[4])}
       >
+        {console.log("AAAA")}
         {renderMarker(stationData, setStation)}
       </NaverMapView>
     </Container>
