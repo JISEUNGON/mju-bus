@@ -102,7 +102,6 @@ function StationSelect(props) {
     data,
     staredStation,
     storageKey,
-    setSubmitBtn,
     modalVisible,
     setModalVisible,
     setStation,
@@ -158,7 +157,6 @@ function StationSelect(props) {
                         JSON.stringify(checkedStation),
                       );
                       setModalVisible(false);
-                      setSubmitBtn(true);
                       setStation({ name: item.name, id: item.id });
                     }}
                   >
@@ -200,7 +198,6 @@ function StationSelect(props) {
                         JSON.stringify(checkedStation),
                       );
                       setModalVisible(false);
-                      setSubmitBtn(true);
                       setStation({ name: item.name, id: item.id });
                     }}
                   >

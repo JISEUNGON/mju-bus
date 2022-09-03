@@ -1,4 +1,5 @@
-import React, { useCallback, useRef } from "react";
+/* eslint-disable react/prop-types */
+import React, { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import NaverMapView, { Marker } from "react-native-nmap";
 
@@ -15,7 +16,7 @@ function setCenter(station) {
   };
 }
 
-function NMap({ method }) {
+function NMap({ setStation, station }) {
   const mapRef = useRef(null);
   const handleSetMapRef = useCallback(_ref => {
     mapRef.current = {
@@ -23,7 +24,6 @@ function NMap({ method }) {
     };
   }, []);
 
-  const setStation = method;
   const stationData = [
     { id: 26, name: "명현관", latitude: 37.223013, longitude: 127.182092 },
     { id: 25, name: "함박관", latitude: 37.22158, longitude: 127.188257 },
@@ -42,6 +42,13 @@ function NMap({ method }) {
     { id: 5, name: "이마트", latitude: 37.230369, longitude: 127.187997 },
     { id: 24, name: "제1공학관", latitude: 37.222711, longitude: 127.186784 },
   ];
+
+  useEffect(() => {
+    const data = stationData.filter(item => item.id === station.id);
+    if (data.length !== 0) {
+      mapRef.current.animateToCoordinate(data[0]);
+    }
+  }, [station]);
 
   function renderMarker(data, callback) {
     const Markers = data.map(item => (
@@ -68,7 +75,6 @@ function NMap({ method }) {
         showsMyLocationButton
         center={setCenter(stationData[4])}
       >
-        {console.log("AAAA")}
         {renderMarker(stationData, setStation)}
       </NaverMapView>
     </Container>

@@ -52,13 +52,6 @@ const SelectTextSub = styled.Text`
   margin-top: 10px;
 `;
 
-const NaverMap = styled.View`
-  width: 100%;
-  height: 100%;
-  background-color: green;
-  flex: 8;
-`;
-
 const SubmitContainer = styled.View`
   width: 100%;
   height: 60px;
@@ -80,7 +73,6 @@ const SubmitButton = styled.TouchableOpacity``;
 // eslint-disable-next-line react/prop-types
 function ToSchool({ navigation: { navigate } }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
   const [staredStation, setStaredStation] = useState([]);
 
@@ -125,7 +117,7 @@ function ToSchool({ navigation: { navigate } }) {
     </Loader>
   ) : (
     <Conatiner>
-      <NMap method={setStation} />
+      <NMap setStation={setStation} station={station} />
       <SelectContainer>
         <TouchableOpacity onPress={onStart}>
           <TextContainer>
@@ -165,7 +157,6 @@ function ToSchool({ navigation: { navigate } }) {
           staredStation={staredStation}
           storageKey={calendarData.description}
           modalVisible={modalVisible}
-          setSubmitBtn={setIsSelected}
           setModalVisible={setModalVisible}
           setStation={setStation}
         />
