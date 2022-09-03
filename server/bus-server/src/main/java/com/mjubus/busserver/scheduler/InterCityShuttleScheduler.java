@@ -45,7 +45,7 @@ public class InterCityShuttleScheduler {
     }
 
 
-    @Scheduled(cron = "20 * * * * *")
+    @Scheduled(cron = "0 0/10 * * * *") // 10분 마다
     public void run() throws IOException, ParseException {
         List<Station> stationList = getBusStationList();
         LocalDateTime expected = DateHandler.getToday();

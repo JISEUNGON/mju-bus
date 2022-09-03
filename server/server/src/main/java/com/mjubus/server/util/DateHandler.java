@@ -65,10 +65,8 @@ public class DateHandler {
     }
 
     public static int minus_LocalTime(LocalDateTime l1, LocalDateTime l2) {
-        int diff_hour = l1.getHour() - l2.getHour();
-        int diff_minute = l1.getMinute() - l2.getMinute();
-        int diff_sec = l1.getSecond() - l2.getSecond();
-        return (diff_hour * 3600) + (diff_minute * 60) + diff_sec;
+        Duration duration = Duration.between(l2, l1);
+        return (int) duration.getSeconds();
     }
 
     public static void reset() {
