@@ -47,8 +47,6 @@ public class BusArrivalService implements BusArrivalInterface {
         response.setResponse_at(now);
         response.setId(station.getId());
         response.setName(station.getName());
-        response.setLongitude(station.getLongitude());
-        response.setLatitude(station.getLatitude());
         response.setBusList(busRemainAsSecondList);
         return response;
     }
