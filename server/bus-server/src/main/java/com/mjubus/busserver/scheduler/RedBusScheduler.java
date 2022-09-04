@@ -46,7 +46,7 @@ public class RedBusScheduler {
     }};
 
     private static final HashMap<String, Long> stationIdList = new HashMap<String, Long>() {{
-        put("228000192", 4L); // 진입로 (명지대 방향)
+        put("228002023", 4L); // 진입로 (명지대 방향)
         put("228001320", 200L); // 용인터미널 1
         put("228000197", 202L); // 용인터미널 2 TODO : 정류장 Check
     }};
@@ -130,6 +130,7 @@ public class RedBusScheduler {
                         System.out.println("URL" + URL);
                         System.out.println("RouteId : " + routeId);
                         System.out.println("PredictTimes : " + predictTimes);
+                        System.out.println("Expected : " + DateHandler.getToday().plusSeconds(Long.parseLong(predictTimes.get(0)) * 60));
 
                         for(String predict: predictTimes) {
                             if (busId.get(routeId) != null) {

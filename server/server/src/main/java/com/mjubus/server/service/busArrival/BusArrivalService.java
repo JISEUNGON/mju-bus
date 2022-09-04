@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,18 +28,27 @@ public class BusArrivalService implements BusArrivalInterface {
 
     @Autowired
     private BusArrivalRepository busArrivalRepository;
-    @Override
-    public BusArrivalResponse findBusArrivalRemainByStation(Station station) {
-        List<BusArrivalDto> busArrivalList = busArrivalRepository.findBusArrivalByStationId(station.getId());
-        LocalDateTime now = DateHandler.getToday();
 
+    @Override
+    public BusArrivalResponse findBusArrivalRemainByStation(Station station, Station dest) {
+        // TODO : 시간 측정
+        List<BusArrivalDto> busArrivalList;
+        LocalDateTime now = DateHandler.getToday();
         List<BusRemainAsSecond> busRemainAsSecondList = new LinkedList<>();
+
+        if (dest == null) {  // 버스 도착지와 무관한, 현 정류장에 오는 버스
+            busArrivalList = busArrivalRepository.findBusArrivalByStationId(station.getId());
+        } else {  // TODO : 좀 더 일반화된 함수 작성
+            busArrivalList = busArrivalRepository.findRedBusArrivalByStationId(station.getId()); // 빨간 버스만 가져오기
+        }
+
         for(BusArrivalDto busArrival: busArrivalList) {
             Bus bus = busService.findBusByBusId(busArrival.getBusId());
-            BusRemainAsSecond remainAsSecond =  BusRemainAsSecond.builder()
+            BusRemainAsSecond remainAsSecond = BusRemainAsSecond.builder()
                     .id(bus.getId())
                     .name(bus.getName())
                     .remains(DateHandler.minus_LocalTime(busArrival.getExpectedAt(), now))
+                    .depart_at(LocalTime.from(busArrival.getExpectedAt()))
                     .build();
             busRemainAsSecondList.add(remainAsSecond);
         }
