@@ -31,7 +31,7 @@ function NMap({ routeData, setStation, station }) {
     if (data.length !== 0) {
       mapRef.current.animateToCoordinate(data[0]);
     }
-  }, [station]);
+  }, [station, stationData]);
 
   function renderMarker(data, callback) {
     const Markers = data.map(item => (
