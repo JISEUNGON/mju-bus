@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RemoveDuplicateStation } from "../../utils";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -78,25 +79,6 @@ const ListCheckBox = styled.View`
   flex: 1;
 `;
 
-function removeDuplicate(data) {
-  let stationList = [];
-
-  const stations = data.map(route => route.data.stations);
-  // eslint-disable-next-line array-callback-return
-  stations.map(list => {
-    stationList.push(...list);
-  });
-
-  stationList = stationList.reduce((acc, current) => {
-    if (acc.findIndex(({ id }) => id === current.id) === -1) {
-      acc.push(current);
-    }
-    return acc;
-  }, []);
-
-  return stationList;
-}
-
 function StationSelect(props) {
   const {
     data,
@@ -131,7 +113,7 @@ function StationSelect(props) {
     setCheckedStation(newCheckItems.filter(checked => checked.id !== item.id));
   };
 
-  const stationList = removeDuplicate(data);
+  const stationList = RemoveDuplicateStation(data);
   return (
     <Modal animationType="slide" transparent visible={modalVisible}>
       <ScreenContainer>

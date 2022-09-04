@@ -117,7 +117,13 @@ function ToSchool({ navigation: { navigate } }) {
     </Loader>
   ) : (
     <Conatiner>
-      <NMap setStation={setStation} station={station} />
+      {routeData[0].data !== undefined ? (
+        <NMap routeData={routeData} setStation={setStation} station={station} />
+      ) : (
+        <Loader>
+          <ActivityIndicator />
+        </Loader>
+      )}
       <SelectContainer>
         <TouchableOpacity onPress={onStart}>
           <TextContainer>

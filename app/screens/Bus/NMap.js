@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import NaverMapView, { Marker } from "react-native-nmap";
+import { RemoveDuplicateStation } from "../../utils";
 
 const Container = styled.View`
   width: 100%;
@@ -16,32 +17,14 @@ function setCenter(station) {
   };
 }
 
-function NMap({ setStation, station }) {
+function NMap({ routeData, setStation, station }) {
+  const stationData = RemoveDuplicateStation(routeData);
   const mapRef = useRef(null);
   const handleSetMapRef = useCallback(_ref => {
     mapRef.current = {
       ..._ref,
     };
   }, []);
-
-  const stationData = [
-    { id: 26, name: "명현관", latitude: 37.223013, longitude: 127.182092 },
-    { id: 25, name: "함박관", latitude: 37.22158, longitude: 127.188257 },
-    { id: 23, name: "명지대 정문", latitude: 37.2241, longitude: 127.188018 },
-    { id: 2, name: "상공회의소", latitude: 37.23068, longitude: 127.188246 },
-    { id: 3, name: "진입로", latitude: 37.233992, longitude: 127.188829 },
-    { id: 20, name: "동부경찰서", latitude: 37.234755, longitude: 127.198177 },
-    {
-      id: 21,
-      name: "중앙공영주차장",
-      latitude: 37.23543,
-      longitude: 127.206678,
-    },
-    { id: 10, name: "명지대역", latitude: 37.238513, longitude: 127.189606 },
-    { id: 4, name: "진입로", latitude: 37.234, longitude: 127.188613 },
-    { id: 5, name: "이마트", latitude: 37.230369, longitude: 127.187997 },
-    { id: 24, name: "제1공학관", latitude: 37.222711, longitude: 127.186784 },
-  ];
 
   useEffect(() => {
     const data = stationData.filter(item => item.id === station.id);
@@ -55,7 +38,6 @@ function NMap({ setStation, station }) {
       <Marker
         key={item.id}
         coordinate={item}
-        pinColor="blue"
         onClick={() => {
           mapRef.current.animateToCoordinate(item);
           callback(item);
@@ -72,7 +54,7 @@ function NMap({ setStation, station }) {
       <NaverMapView
         ref={handleSetMapRef}
         style={{ width: "100%", height: "100%" }}
-        showsMyLocationButton
+        showsMyLocationButton={false}
         center={setCenter(stationData[4])}
       >
         {renderMarker(stationData, setStation)}

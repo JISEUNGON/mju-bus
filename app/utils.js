@@ -49,3 +49,22 @@ export function GetBusInfoData(list) {
   });
   return busTable;
 }
+
+export function RemoveDuplicateStation(data) {
+  let stationList = [];
+
+  const stations = data.map(route => route.data.stations);
+  // eslint-disable-next-line array-callback-return
+  stations.map(list => {
+    stationList.push(...list);
+  });
+
+  stationList = stationList.reduce((acc, current) => {
+    if (acc.findIndex(({ id }) => id === current.id) === -1) {
+      acc.push(current);
+    }
+    return acc;
+  }, []);
+
+  return stationList;
+}
