@@ -33,7 +33,8 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
             "           FROM bus_arrival" +
             "           WHERE station_id = :station_id " +
             "           GROUP BY bus_id " +
-            "       ) temp ON temp.bus_id = ba.bus_id AND temp.station_id = ba.station_id AND temp.lastest_created_at = ba.created_at " +
+            "       ) temp ON temp.bus_id = ba.bus_id AND temp.station_id = ba.station_id AND temp.lastest_created_at = ba.created_at" +
+            "       WHERE ba.sid = ba.pre_bus_arrival_sid" +
             "       GROUP BY ba.station_id, ba.bus_id, ba.created_at " +
             "       HAVING expectedAt > NOW()" +
             "       AND ba.bus_id >= 200", nativeQuery = true)

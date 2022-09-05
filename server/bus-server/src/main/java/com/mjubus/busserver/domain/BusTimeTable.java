@@ -2,6 +2,7 @@ package com.mjubus.busserver.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name="bus_timetable")
 @Getter
 @Setter
+@ToString
 public class BusTimeTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

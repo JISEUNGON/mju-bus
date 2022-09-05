@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class RedBusScheduler {
@@ -134,7 +135,10 @@ public class RedBusScheduler {
 
                         for(String predict: predictTimes) {
                             if (busId.get(routeId) != null) {
+                                UUID uuid = UUID.randomUUID();
                                 BusArrival busArrival = BusArrival.builder()
+                                        .sid(uuid.toString())
+                                        .preSid(uuid.toString())
                                         .bus(busRepository.getReferenceById(busId.get(routeId)))
                                         .station(station)
                                         .expected(DateHandler.getToday().plusSeconds(Long.parseLong(predict) * 60))
