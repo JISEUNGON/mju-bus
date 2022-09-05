@@ -1,4 +1,4 @@
-package com.mjubus.busserver.scheduler;
+package com.mjubus.busserver.util;
 
 import com.mjubus.busserver.domain.Station;
 import org.json.simple.JSONArray;

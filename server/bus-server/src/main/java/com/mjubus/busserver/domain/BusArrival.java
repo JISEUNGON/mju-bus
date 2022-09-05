@@ -19,6 +19,9 @@ public class BusArrival {
     @Column(name ="id", columnDefinition = "int")
     private Long id;
 
+    @Column(name = "pre_id", columnDefinition = "int")
+    private Long preId;
+
     @JoinColumn(name = "station_id", columnDefinition = "int")
     @ManyToOne
     private Station station;

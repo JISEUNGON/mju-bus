@@ -3,7 +3,7 @@ package com.mjubus.busserver.scheduler;
 import com.mjubus.busserver.domain.*;
 import com.mjubus.busserver.repository.*;
 import com.mjubus.busserver.util.DateHandler;
-import net.bytebuddy.asm.Advice;
+import com.mjubus.busserver.util.NaverHandler;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
