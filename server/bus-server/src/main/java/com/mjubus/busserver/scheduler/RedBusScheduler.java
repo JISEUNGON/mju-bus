@@ -48,8 +48,8 @@ public class RedBusScheduler {
 
     private static final HashMap<String, Long> stationIdList = new HashMap<String, Long>() {{
         put("228002023", 4L); // 진입로 (명지대 방향)
-        put("228001320", 200L); // 용인터미널 1
-        put("228000197", 202L); // 용인터미널 2 TODO : 정류장 Check
+        put("228001414", 202L); // 용인터미널 1 : 5001, 5600
+        put("228000197", 200L); // 용인터미널 2 : 5700, 5002 , 5005
     }};
 
     private Document doc;

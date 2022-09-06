@@ -49,7 +49,7 @@ public class ShuttleScheduler {
     }
 
     public List<BusArrival> findBusArrivalByDate(LocalDateTime date) {
-        return busArrivalRepository.findBusArrivalsByExpected(date);
+        return busArrivalRepository.findBusArrivalsByExpectedShuttleBus(date);
     }
 
     @Scheduled(cron = "0 0 * * * *")
