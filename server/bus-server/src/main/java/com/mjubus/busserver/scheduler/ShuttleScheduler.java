@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class ShuttleScheduler {
     }
 
     public List<BusArrival> findBusArrivalByDate(LocalDateTime date) {
-        return busArrivalRepository.findBusArrivalsByExpectedShuttleBus(date);
+        return busArrivalRepository.findBusArrivalsByExpectedShuttleBus(date.truncatedTo(ChronoUnit.MINUTES));
     }
 
     @Scheduled(cron = "0 0 * * * *")
@@ -75,12 +76,14 @@ public class ShuttleScheduler {
         }
     }
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "10 * * * * *") // 1분 마다
     public void dispatcher() throws IOException, ParseException {
         List<BusArrival> arrivalList = findBusArrivalByDate(DateHandler.getToday());
 
         if (arrivalList.isEmpty()) return;
+
         for(BusArrival busArrival: arrivalList) {
+            System.out.println(busArrival.getExpected());
             shuttleBusHandler.predict(busArrival.getBus(), busArrival.getStation(), busArrival.getPreSid());
         }
     }

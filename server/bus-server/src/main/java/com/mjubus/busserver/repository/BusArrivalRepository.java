@@ -15,11 +15,14 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, Long> {
 
     @Query(value = "SELECT *" +
             "       FROM bus_arrival" +
-            "       WHERE expected_at = :datetime" +
+            "       WHERE DATE_FORMAT(expected_at, '%Y-%m-%d %H:%i') = :datetime" +
             "       AND bus_id < 100", nativeQuery = true)
     List<BusArrival> findBusArrivalsByExpectedShuttleBus(@Param(value = "datetime") LocalDateTime expected);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE bus_arrival SET bus_arrival.expected_at = :expectedAt WHERE bus_arrival.pre_bus_arrival_sid = :pre_busArrival_sid AND bus_arrival.station_id = :stationId", nativeQuery = true)
+    @Query(value = "UPDATE bus_arrival" +
+            "       SET bus_arrival.expected_at = :expectedAt " +
+            "       WHERE bus_arrival.pre_bus_arrival_sid = :pre_busArrival_sid " +
+            "       AND bus_arrival.station_id = :stationId", nativeQuery = true)
     void updateBusArrivalByPreSid(@Param(value = "pre_busArrival_sid") String pre_busArrival_sid, @Param("expectedAt") LocalDateTime expectedAt, @Param("stationId") Long StationId);
 }

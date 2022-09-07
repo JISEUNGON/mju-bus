@@ -57,6 +57,7 @@ public class ShuttleBusHandler {
         for(int i = i_start; i < stationList.size() - 1; i++ ) {
             Station src = stationList.get(i); // 출발지
             Station dest = stationList.get(i + 1); // 목적지
+            System.out.println(src.getName() + " ~ " + dest.getName());
 
             Long duration = NaverHandler.getDuration(src, dest); // 예상 시간
             LocalDateTime expected = now.plusSeconds(duration);
