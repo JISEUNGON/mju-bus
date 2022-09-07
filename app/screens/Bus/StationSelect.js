@@ -139,7 +139,7 @@ function StationSelect(props) {
                         JSON.stringify(checkedStation),
                       );
                       setModalVisible(false);
-                      setStation({ name: item.name, id: item.id });
+                      setStation(item);
                     }}
                   >
                     <Contnets>{item?.name}</Contnets>
@@ -180,7 +180,7 @@ function StationSelect(props) {
                         JSON.stringify(checkedStation),
                       );
                       setModalVisible(false);
-                      setStation({ name: item.name, id: item.id });
+                      setStation(item);
                     }}
                   >
                     <Contnets>{item?.name}</Contnets>

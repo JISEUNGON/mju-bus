@@ -9,6 +9,8 @@ import { GetRouteTableData, highlights } from "../../utils";
 import { busApi, calendarApi } from "../../api";
 import StationSelect from "./StationSelect";
 import NMap from "./NMap";
+import SchoolStationSelect from "./SchoolStatonSelect";
+import { stationId } from "../../id";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -74,6 +76,7 @@ const SubmitButton = styled.TouchableOpacity``;
 // eslint-disable-next-line react/prop-types
 function ToSchool({ navigation: { navigate } }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [schoolModalVisible, setSchoolModalVisible] = useState(false);
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
   const [staredStation, setStaredStation] = useState([]);
 
@@ -95,6 +98,23 @@ function ToSchool({ navigation: { navigate } }) {
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const onPressSubmitButton = () => {
+    // 주말일 때:  Set Modal Comp for Selecting Station around School
+    if (calendarData.id === 5) {
+      setSchoolModalVisible(true);
+      // 평일 일 때
+    } else {
+      navigate("SearchStack", {
+        screen: "BusList",
+        params: {
+          toSchool: false,
+          src: stationId.ChapleGwan,
+          dest: station,
+        },
+      });
     }
   };
 
@@ -143,17 +163,7 @@ function ToSchool({ navigation: { navigate } }) {
       </SelectContainer>
 
       {station.name !== "정류장을 선택하세요" ? (
-        <SubmitButton
-          onPress={() =>
-            navigate("SearchStack", {
-              screen: "BusList",
-              params: {
-                toSchool: true,
-                station,
-              },
-            })
-          }
-        >
+        <SubmitButton onPress={onPressSubmitButton}>
           <SubmitContainer>
             <SubmitText>버스 검색</SubmitText>
           </SubmitContainer>
@@ -167,6 +177,15 @@ function ToSchool({ navigation: { navigate } }) {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           setStation={setStation}
+        />
+      ) : null}
+      {schoolModalVisible ? (
+        <SchoolStationSelect
+          modalVisible={schoolModalVisible}
+          setModalVisible={setSchoolModalVisible}
+          setStation={setStation}
+          navigate={navigate}
+          station={station}
         />
       ) : null}
     </Conatiner>

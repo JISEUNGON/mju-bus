@@ -53,9 +53,9 @@ export function GetBusInfoData(list) {
 export function RemoveDuplicateStation(data) {
   let stationList = [];
 
-  const stations = data.map(route => route.data.stations);
+  const stations = data?.map(route => route.data.stations);
   // eslint-disable-next-line array-callback-return
-  stations.map(list => {
+  stations?.map(list => {
     stationList.push(...list);
   });
 
