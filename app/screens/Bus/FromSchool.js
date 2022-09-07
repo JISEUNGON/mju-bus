@@ -2,25 +2,15 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import {
-  TouchableOpacity,
-  Dimensions,
-  ActivityIndicator,
-  View,
-  Text,
-} from "react-native";
+import { TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NaverMapView, {
-  Align,
-  Circle,
-  Marker,
-  Path,
-  Polygon,
-  Polyline,
-} from "react-native-nmap";
+
 import { GetRouteTableData, highlights } from "../../utils";
 import { busApi, calendarApi } from "../../api";
 import StationSelect from "./StationSelect";
+import NMap from "./NMap";
+import SchoolStationSelect from "./SchoolStatonSelect";
+import { stationId } from "../../id";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -65,13 +55,6 @@ const SelectTextSub = styled.Text`
   margin-top: 10px;
 `;
 
-const NaverMap = styled.View`
-  width: 100%;
-  height: 100%;
-  background-color: green;
-  flex: 8;
-`;
-
 const SubmitContainer = styled.View`
   width: 100%;
   height: 60px;
@@ -93,14 +76,9 @@ const SubmitButton = styled.TouchableOpacity``;
 // eslint-disable-next-line react/prop-types
 function ToSchool({ navigation: { navigate } }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
+  const [schoolModalVisible, setSchoolModalVisible] = useState(false);
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
   const [staredStation, setStaredStation] = useState([]);
-
-  const P0 = { latitude: 37.564362, longitude: 126.977011 };
-  const P1 = { latitude: 37.565051, longitude: 126.978567 };
-  const P2 = { latitude: 37.565383, longitude: 126.976292 };
-  const P4 = { latitude: 37.564834, longitude: 126.977218 };
 
   const { isLoading: buslistLoading, data: busListData } = useQuery(
     ["busList"],
@@ -123,12 +101,29 @@ function ToSchool({ navigation: { navigate } }) {
     }
   };
 
+  const onPressSubmitButton = () => {
+    // 주말일 때:  Set Modal Comp for Selecting Station around School
+    if (calendarData.id === 5) {
+      setSchoolModalVisible(true);
+      // 평일 일 때
+    } else {
+      navigate("SearchStack", {
+        screen: "BusList",
+        params: {
+          toSchool: false,
+          src: stationId.ChapleGwan,
+          dest: station,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
     loadSelectedRoutes(calendarData.description);
   }, [calendarData, modalVisible]);
 
-  const stationData = GetRouteTableData(busListData[0].busList);
+  const routeData = GetRouteTableData(busListData[0].busList);
 
   const loading = buslistLoading || calendarLoading;
 
@@ -143,78 +138,13 @@ function ToSchool({ navigation: { navigate } }) {
     </Loader>
   ) : (
     <Conatiner>
-      <NaverMap>
-        <NaverMapView
-          style={{ width: "100%", height: "100%" }}
-          showsMyLocationButton
-          center={{ ...P0, zoom: 16 }}
-          onTouch={e => console.warn("onTouch", JSON.stringify(e.nativeEvent))}
-          onCameraChange={e =>
-            console.warn("onCameraChange", JSON.stringify(e))
-          }
-          onMapClick={e => console.warn("onMapClick", JSON.stringify(e))}
-          useTextureView
-        >
-          <Marker
-            coordinate={P0}
-            onClick={() => console.warn("onClick! p0")}
-            caption={{ text: "test caption", align: Align.Left }}
-          />
-          <Marker
-            coordinate={P1}
-            pinColor="blue"
-            onClick={() => console.warn("onClick! p1")}
-          />
-          <Marker
-            coordinate={P2}
-            pinColor="red"
-            onClick={() => console.warn("onClick! p2")}
-          />
-          <Marker
-            coordinate={P4}
-            onClick={() => console.warn("onClick! p4")}
-            width={48}
-            height={48}
-          />
-          <Path
-            coordinates={[P0, P1]}
-            onClick={() => console.warn("onClick! path")}
-            width={10}
-          />
-          <Polyline
-            coordinates={[P1, P2]}
-            onClick={() => console.warn("onClick! polyline")}
-          />
-          <Circle
-            coordinate={P0}
-            color="rgba(255,0,0,0.3)"
-            radius={200}
-            onClick={() => console.warn("onClick! circle")}
-          />
-          <Polygon
-            coordinates={[P0, P1, P2]}
-            color="rgba(0, 0, 0, 0.5)"
-            onClick={() => console.warn("onClick! polygon")}
-          />
-        </NaverMapView>
-        <TouchableOpacity
-          style={{ position: "absolute", bottom: "10%", right: 8 }}
-        >
-          <View style={{ backgroundColor: "gray", padding: 4 }}>
-            <Text style={{ color: "white" }}>open stack</Text>
-          </View>
-        </TouchableOpacity>
-        <Text
-          style={{
-            position: "absolute",
-            top: "95%",
-            width: "100%",
-            textAlign: "center",
-          }}
-        >
-          Icon made by Pixel perfect from www.flaticon.com
-        </Text>
-      </NaverMap>
+      {routeData[0].data !== undefined ? (
+        <NMap routeData={routeData} setStation={setStation} station={station} />
+      ) : (
+        <Loader>
+          <ActivityIndicator />
+        </Loader>
+      )}
 
       <SelectContainer>
         <TouchableOpacity onPress={onStart}>
@@ -232,32 +162,30 @@ function ToSchool({ navigation: { navigate } }) {
         <SelectTextSub>학교에서 가는 가장 빠른 버스를 탐색해요</SelectTextSub>
       </SelectContainer>
 
-      {isSelected ? (
-        <SubmitButton
-          onPress={() =>
-            navigate("SearchStack", {
-              screen: "BusList",
-              params: {
-                toSchool: false,
-                station,
-              },
-            })
-          }
-        >
+      {station.name !== "정류장을 선택하세요" ? (
+        <SubmitButton onPress={onPressSubmitButton}>
           <SubmitContainer>
             <SubmitText>버스 검색</SubmitText>
           </SubmitContainer>
         </SubmitButton>
       ) : null}
-      {modalVisible ? (
+      {modalVisible && routeData[0].data !== undefined ? (
         <StationSelect
-          data={stationData}
+          data={routeData}
           staredStation={staredStation}
           storageKey={calendarData.description}
           modalVisible={modalVisible}
-          setSubmitBtn={setIsSelected}
           setModalVisible={setModalVisible}
           setStation={setStation}
+        />
+      ) : null}
+      {schoolModalVisible ? (
+        <SchoolStationSelect
+          modalVisible={schoolModalVisible}
+          setModalVisible={setSchoolModalVisible}
+          setStation={setStation}
+          navigate={navigate}
+          station={station}
         />
       ) : null}
     </Conatiner>
