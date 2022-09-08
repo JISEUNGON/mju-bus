@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Component
@@ -45,24 +47,41 @@ public class ShuttleBusHandler {
     }
 
     public void predict(Bus bus, Station start, String pre_busArrival_sid) throws IOException, ParseException {
-        LocalDateTime now = DateHandler.getToday();
+        LocalDateTime expected = DateHandler.getToday();
 
         // 현재 노선 정보 가져오기
         List<RouteDetail> detailList = getCurrentRoute(bus);
 
         // 정류장 리스트 추출
-        List<Station> stationList = (List<Station>) detailList.stream().map((routeDetail -> routeDetail.getStation()));
-        int i_start = stationList.indexOf(start); // 정류장 idx
+        LinkedList<Station> stationList = new LinkedList<>();
+        int offset_station = -1;
+        for (int i = 0; i < detailList.size(); i++) {
+            RouteDetail routeDetail = detailList.get(i);
 
-        for(int i = i_start; i < stationList.size() - 1; i++ ) {
+            if (Objects.equals(start.getId(), routeDetail.getStation().getId())) offset_station = i; // 출발 지점 탐색
+            stationList.add(routeDetail.getStation());
+        }
+
+        if (offset_station == -1) return;
+
+        for(int i = offset_station; i < stationList.size() - 1; i++ ) {
             Station src = stationList.get(i); // 출발지
             Station dest = stationList.get(i + 1); // 목적지
             System.out.println(src.getName() + " ~ " + dest.getName());
 
             Long duration = NaverHandler.getDuration(src, dest); // 예상 시간
-            LocalDateTime expected = now.plusSeconds(duration);
-
-            busArrivalRepository.updateBusArrivalByPreSid(pre_busArrival_sid, expected, dest.getId());
+            expected = expected.plusSeconds(duration);
+            if (offset_station == 0) {
+                busArrivalRepository.save(BusArrival.builder()
+                                .sid(UUID.randomUUID().toString())
+                                .preSid(pre_busArrival_sid)
+                                .bus(bus)
+                                .station(dest)
+                                .expected(expected)
+                                .build());
+            } else {
+                busArrivalRepository.updateBusArrivalByPreSid(pre_busArrival_sid, expected, dest.getId());
+            }
         }
     }
 }

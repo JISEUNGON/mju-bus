@@ -128,10 +128,10 @@ public class RedBusScheduler {
                         String routeId = getRouteId((Element) node);
                         List<String> predictTimes = getPredictTimes((Element) node);
 
-                        System.out.println("URL" + URL);
-                        System.out.println("RouteId : " + routeId);
-                        System.out.println("PredictTimes : " + predictTimes);
-                        System.out.println("Expected : " + DateHandler.getToday().plusSeconds(Long.parseLong(predictTimes.get(0)) * 60));
+//                        System.out.println("URL" + URL);
+//                        System.out.println("RouteId : " + routeId);
+//                        System.out.println("PredictTimes : " + predictTimes);
+//                        System.out.println("Expected : " + DateHandler.getToday().plusSeconds(Long.parseLong(predictTimes.get(0)) * 60));
 
                         for(String predict: predictTimes) {
                             if (busId.get(routeId) != null) {

@@ -15,7 +15,7 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, Long> {
 
     @Query(value = "SELECT *" +
             "       FROM bus_arrival" +
-            "       WHERE DATE_FORMAT(expected_at, '%Y-%m-%d %H:%i') = :datetime" +
+            "       WHERE DATE_FORMAT(expected_at, '%Y-%m-%d %H:%i') = DATE_FORMAT(:datetime, '%Y-%m-%d %H:%i')" +
             "       AND bus_id < 100", nativeQuery = true)
     List<BusArrival> findBusArrivalsByExpectedShuttleBus(@Param(value = "datetime") LocalDateTime expected);
 
