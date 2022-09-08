@@ -4,7 +4,6 @@ import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.StationDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RouteInterface {
     Route findByBus(Bus bus);
@@ -16,5 +15,7 @@ public interface RouteInterface {
 
     List<RouteDetail> findRouteDetailByRouteInfo(RouteInfo routeInfo);
     RouteInfo findRouteInfoByBus(Bus bus);
+
+    List<RouteDetail> findRouteDetailByStation(Station station);
 }
 

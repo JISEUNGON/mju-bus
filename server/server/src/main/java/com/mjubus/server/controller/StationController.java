@@ -6,7 +6,6 @@ import com.mjubus.server.service.busArrival.BusArrivalService;
 import com.mjubus.server.service.station.StationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +40,8 @@ public class StationController {
             @ApiResponse(responseCode = "404", description = "해당 버스 정보 없음")
     })
     @ResponseBody
-    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId, @RequestParam(value = "dest", required = false) Long destStationId) {
+    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId, @RequestParam(value = "toSchool") Boolean toSchool, @RequestParam(value = "redBus", required = false) Boolean redBus) {
         Station station = stationService.findStationById(stationId);
-        if (destStationId == null)
-            return busArrivalService.findBusArrivalRemainByStation(station, null);
-        Station dest = stationService.findStationById(destStationId);
-        return busArrivalService.findBusArrivalRemainByStation(station, dest);
+        return busArrivalService.findBusArrivalRemainByStation(station, toSchool, redBus != null && redBus);
     }
 }
