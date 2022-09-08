@@ -51,19 +51,6 @@ public class DateHandler {
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 
-    /**
-     * l1 - l2 를 초단위로 돌려줍니다.
-     * @param l1 expected
-     * @param l2 현재 시간
-     * @return l1 - l2 as sec
-     */
-    public static int minus_LocalTime(LocalTime l1, LocalTime l2) {
-        int diff_hour = l1.getHour() - l2.getHour();
-        int diff_minute = l1.getMinute() - l2.getMinute();
-        int diff_sec = l1.getSecond() - l2.getSecond();
-        return (diff_hour * 3600) + (diff_minute * 60) + diff_sec;
-    }
-
     public static int minus_LocalTime(LocalDateTime l1, LocalDateTime l2) {
         Duration duration = Duration.between(l2, l1);
         return (int) duration.getSeconds();

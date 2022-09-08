@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class RedBusScheduler {
@@ -46,9 +47,9 @@ public class RedBusScheduler {
     }};
 
     private static final HashMap<String, Long> stationIdList = new HashMap<String, Long>() {{
-        put("228000192", 4L); // 진입로 (명지대 방향)
-        put("228001320", 200L); // 용인터미널 1
-        put("228000197", 202L); // 용인터미널 2 TODO : 정류장 Check
+        put("228002023", 4L); // 진입로 (명지대 방향)
+        put("228001414", 202L); // 용인터미널 1 : 5001, 5600
+        put("228000197", 200L); // 용인터미널 2 : 5700, 5002 , 5005
     }};
 
     private Document doc;
@@ -127,13 +128,17 @@ public class RedBusScheduler {
                         String routeId = getRouteId((Element) node);
                         List<String> predictTimes = getPredictTimes((Element) node);
 
-                        System.out.println("URL" + URL);
-                        System.out.println("RouteId : " + routeId);
-                        System.out.println("PredictTimes : " + predictTimes);
+//                        System.out.println("URL" + URL);
+//                        System.out.println("RouteId : " + routeId);
+//                        System.out.println("PredictTimes : " + predictTimes);
+//                        System.out.println("Expected : " + DateHandler.getToday().plusSeconds(Long.parseLong(predictTimes.get(0)) * 60));
 
                         for(String predict: predictTimes) {
                             if (busId.get(routeId) != null) {
+                                UUID uuid = UUID.randomUUID();
                                 BusArrival busArrival = BusArrival.builder()
+                                        .sid(uuid.toString())
+                                        .preSid(uuid.toString())
                                         .bus(busRepository.getReferenceById(busId.get(routeId)))
                                         .station(station)
                                         .expected(DateHandler.getToday().plusSeconds(Long.parseLong(predict) * 60))
