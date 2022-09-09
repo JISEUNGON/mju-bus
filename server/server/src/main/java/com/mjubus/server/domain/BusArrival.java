@@ -15,10 +15,12 @@ import java.time.LocalDateTime;
 @Setter
 public class BusArrival {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id", columnDefinition = "int")
-    @ApiModelProperty(example = "고유 식별 ID")
-    private Long id;
+    @Column(name ="sid", columnDefinition = "char(36)")
+    @ApiModelProperty(example = "고유 식별 SID")
+    private String sid;
+
+    @Column(name = "pre_bus_arrival_sid", columnDefinition = "char(36)")
+    private String preBusArrivalSid;
 
     @JoinColumn(name = "station_id", columnDefinition = "int")
     @ApiModelProperty(example = "정류장 ID")

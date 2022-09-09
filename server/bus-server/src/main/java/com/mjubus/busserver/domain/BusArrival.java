@@ -15,9 +15,11 @@ import java.time.LocalDateTime;
 @Builder
 public class BusArrival {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="id", columnDefinition = "int")
-    private Long id;
+    @Column(name ="sid", columnDefinition = "char(36)")
+    private String sid;
+
+    @Column(name = "pre_bus_arrival_sid", columnDefinition = "char(36)")
+    private String preSid;
 
     @JoinColumn(name = "station_id", columnDefinition = "int")
     @ManyToOne

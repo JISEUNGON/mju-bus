@@ -4,23 +4,20 @@ import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.BusTimeTableStationDto;
 import com.mjubus.server.dto.BusTimeTableTimeDto;
-import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.exception.BusCalenderNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableDetailNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import com.mjubus.server.repository.BusTimeTableDetailRepository;
 import com.mjubus.server.repository.BusTimeTableRepository;
 import com.mjubus.server.service.bus.BusService;
-import com.mjubus.server.service.mjuCalendar.BusCalendarService;
+import com.mjubus.server.service.busCalendar.BusCalendarService;
 import com.mjubus.server.service.route.RouteService;
-import com.mjubus.server.service.station.StationService;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -169,6 +166,13 @@ public class BusTimeTableService implements BusTimeTableInterface {
 
         Optional<List<Integer>> optionalBusList = busTimeTableRepository.findDistinctBusByBusCalendar_Id(busCalendar.getId());
         return optionalBusList.orElseThrow(() -> new BusCalenderNotFoundException(date));
+    }
+
+    @Override
+    public BusTimeTable findAnyBusTimeTableByBusCalendar(BusCalendar busCalendar) {
+        Optional<List<BusTimeTable>> optionalBusTimeTableList = busTimeTableRepository.findBusTimeTablesByBusCalendar_Id(busCalendar.getId());
+        List<BusTimeTable> busTimeTableList = optionalBusTimeTableList.orElseThrow(() -> new BusTimeTableNotFoundException(null, busCalendar, null));
+        return busTimeTableList.get(0);
     }
 
     @Override

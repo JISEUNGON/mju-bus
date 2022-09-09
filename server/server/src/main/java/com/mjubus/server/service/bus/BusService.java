@@ -1,23 +1,17 @@
 package com.mjubus.server.service.bus;
 
 import com.mjubus.server.domain.*;
-import com.mjubus.server.dto.BusResponseDto;
 import com.mjubus.server.dto.BusStatusDto;
-import com.mjubus.server.dto.StationDTO;
 import com.mjubus.server.dto.busListDto.BusList;
-import com.mjubus.server.dto.busListDto.BusListDto;
 import com.mjubus.server.dto.busRoute.BusRouteDto;
 import com.mjubus.server.dto.busRoute.RouteOrderDto;
 import com.mjubus.server.enums.BusEnum;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
-import com.mjubus.server.exception.BusCalenderNotFoundException;
-import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
 import com.mjubus.server.repository.*;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
-import com.mjubus.server.service.mjuCalendar.BusCalendarService;
+import com.mjubus.server.service.busCalendar.BusCalendarService;
 import com.mjubus.server.service.route.RouteService;
 import com.mjubus.server.util.DateHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +64,7 @@ public class BusService implements BusServiceInterface {
         LocalDateTime first_bus = busTimeTableService.getFirstBus(timeTableDetails);
 
         // 막차
-        LocalDateTime last_bus = busTimeTableService.getLastBus(timeTableDetails);
+        LocalDateTime last_bus = busTimeTableService.getLastBus(timeTableDetails).plusMinutes(15);
 
         if (now.isBefore(first_bus)) { // 첫차 전
             busStatusDto.setStatus(BusStatusDto.BEFORE_RUNNING);
@@ -108,9 +102,6 @@ public class BusService implements BusServiceInterface {
 
     @Override
     public List<BusList> getBusListByDate(LocalDateTime date) {
-        // BusCalendar
-        BusCalendar busCalendar = busCalendarService.findByDate(date);
-
         // 현재 일정으로 운행중인 버스 운행표
         List<Integer> busIdList = busTimeTableService.findBusListByDate(date);
 

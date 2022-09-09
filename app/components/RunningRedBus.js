@@ -45,7 +45,7 @@ function RedBusList({ data }) {
     <ListContainer>
       {data.map(station => (
         <FlatList
-          key={station?.data?.station?.id}
+          key={station?.data?.id}
           keyExtractor={item => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}

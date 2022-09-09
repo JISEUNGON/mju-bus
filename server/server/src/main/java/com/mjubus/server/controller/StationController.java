@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/station")
@@ -40,11 +37,19 @@ public class StationController {
     @ApiOperation(value = "정류장에 도착하는 버스 정보를 조회한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "해당 버스 정보 없음")
     })
     @ResponseBody
-    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId) {
-        // todo : Query String 에 따른 결과 값 다르게.
-        Station station = stationService.findStationById(stationId);
-        return busArrivalService.findBusArrivalRemainByStation(station);
+    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId,
+                                         @RequestParam(value = "dest", required = false) Long destStationId,
+                                         @RequestParam(value = "toSchool") Boolean toSchool,
+                                         @RequestParam(value = "redBus", required = false) Boolean redBus) {
+        Station srcStation, destStation = null;
+
+        srcStation = stationService.findStationById(stationId);
+        if (destStationId != null)
+            destStation = stationService.findStationById(destStationId);
+
+        return busArrivalService.findBusArrivalRemainByStation(srcStation, destStation, toSchool, redBus != null && redBus);
     }
 }
