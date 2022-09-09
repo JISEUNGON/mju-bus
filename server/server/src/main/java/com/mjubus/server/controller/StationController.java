@@ -40,8 +40,16 @@ public class StationController {
             @ApiResponse(responseCode = "404", description = "해당 버스 정보 없음")
     })
     @ResponseBody
-    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId, @RequestParam(value = "toSchool") Boolean toSchool, @RequestParam(value = "redBus", required = false) Boolean redBus) {
-        Station station = stationService.findStationById(stationId);
-        return busArrivalService.findBusArrivalRemainByStation(station, toSchool, redBus != null && redBus);
+    public BusArrivalResponse busRemains(@PathVariable(value = "stationID") Long stationId,
+                                         @RequestParam(value = "dest", required = false) Long destStationId,
+                                         @RequestParam(value = "toSchool") Boolean toSchool,
+                                         @RequestParam(value = "redBus", required = false) Boolean redBus) {
+        Station srcStation, destStation = null;
+
+        srcStation = stationService.findStationById(stationId);
+        if (destStationId != null)
+            destStation = stationService.findStationById(destStationId);
+
+        return busArrivalService.findBusArrivalRemainByStation(srcStation, destStation, toSchool, redBus != null && redBus);
     }
 }
