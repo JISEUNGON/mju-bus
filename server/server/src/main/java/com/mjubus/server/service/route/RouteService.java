@@ -7,7 +7,7 @@ import com.mjubus.server.exception.Route.RouteNotFoundException;
 import com.mjubus.server.exception.Station.StationNotFoundException;
 import com.mjubus.server.repository.RouteDetailRepository;
 import com.mjubus.server.repository.RouteRepository;
-import com.mjubus.server.service.mjuCalendar.BusCalendarService;
+import com.mjubus.server.service.busCalendar.BusCalendarService;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
