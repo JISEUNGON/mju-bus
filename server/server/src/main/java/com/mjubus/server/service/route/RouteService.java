@@ -22,7 +22,6 @@ public class RouteService implements RouteInterface {
     @Autowired
     private BusCalendarService busCalendarService;
 
-
     @Autowired
     private RouteRepository routeRepository;
 
@@ -90,5 +89,12 @@ public class RouteService implements RouteInterface {
     public List<RouteDetail> findRouteDetailByStation(Station station) {
         Optional<List<RouteDetail>> optionalRouteDetails = routeDetailRepository.findRouteDetailsByStation_Id(station.getId());
         return optionalRouteDetails.orElseThrow(() -> new StationNotFoundException(station.getId()));
+    }
+
+    @Override
+    public Route findAnyRouteByBusCalendar(BusCalendar busCalendar) {
+        Optional<Route> optionalRoute = routeRepository.findRouteByBusCalendar_Id(busCalendar.getId());
+
+        return optionalRoute.orElseThrow(() -> new RouteNotFoundException(null, null, busCalendar));
     }
 }
