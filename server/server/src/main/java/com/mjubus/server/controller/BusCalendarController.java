@@ -1,11 +1,8 @@
 package com.mjubus.server.controller;
 
 
-import com.mjubus.server.domain.Bus;
 import com.mjubus.server.domain.BusCalendar;
-import com.mjubus.server.exception.Bus.BusNotFoundException;
-import com.mjubus.server.exception.BusCalenderNotFoundException;
-import com.mjubus.server.service.mjuCalendar.BusCalendarService;
+import com.mjubus.server.service.busCalendar.BusCalendarService;
 import com.mjubus.server.util.DateHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,11 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/calendar")

@@ -1,8 +1,6 @@
-package com.mjubus.server.service.mjuCalendar;
+package com.mjubus.server.service.busCalendar;
 
 import com.mjubus.server.domain.BusCalendar;
-import com.mjubus.server.domain.BusTimeTable;
-import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.exception.BusCalenderNotFoundException;
 import com.mjubus.server.repository.BusCalendarRepository;
 import com.mjubus.server.util.DateHandler;
