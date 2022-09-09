@@ -138,7 +138,7 @@ function ToSchool({ navigation: { navigate } }) {
     </Loader>
   ) : (
     <Conatiner>
-      {routeData[0].data !== undefined ? (
+      {routeData.every(item => item.data !== undefined) ? (
         <NMap routeData={routeData} setStation={setStation} station={station} />
       ) : (
         <Loader>
@@ -169,7 +169,8 @@ function ToSchool({ navigation: { navigate } }) {
           </SubmitContainer>
         </SubmitButton>
       ) : null}
-      {modalVisible && routeData[0].data !== undefined ? (
+      {modalVisible &&
+      routeData.every(item => item.data !== undefined) !== undefined ? (
         <StationSelect
           data={routeData}
           staredStation={staredStation}

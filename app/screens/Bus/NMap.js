@@ -56,6 +56,7 @@ function NMap({ routeData, setStation, station }) {
         style={{ width: "100%", height: "100%" }}
         showsMyLocationButton={false}
         center={setCenter(stationData[4])}
+        useTextureView
       >
         {renderMarker(stationData, setStation)}
       </NaverMapView>
