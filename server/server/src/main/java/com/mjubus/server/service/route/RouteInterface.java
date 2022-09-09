@@ -17,5 +17,7 @@ public interface RouteInterface {
     RouteInfo findRouteInfoByBus(Bus bus);
 
     List<RouteDetail> findRouteDetailByStation(Station station);
+
+    Route findAnyRouteByBusCalendar(BusCalendar busCalendar);
 }
 

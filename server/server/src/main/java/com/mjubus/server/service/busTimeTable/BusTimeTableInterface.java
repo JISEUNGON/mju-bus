@@ -5,7 +5,6 @@ import com.mjubus.server.dto.BusTimeTableResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface BusTimeTableInterface {
 
@@ -17,6 +16,8 @@ public interface BusTimeTableInterface {
     List<BusTimeTable> findBusTimeTableListByCalendar(BusCalendar busCalendar);
     BusTimeTableResponseDto makeBusTimeTableByBusId(Long busId);
     List<Integer> findBusListByDate(LocalDateTime date);
+
+    BusTimeTable findAnyBusTimeTableByBusCalendar(BusCalendar busCalendar);
 
     /**
      * bus_timetable_info 테이블 관련 Service

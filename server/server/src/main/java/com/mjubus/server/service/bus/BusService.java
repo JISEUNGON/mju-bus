@@ -64,7 +64,7 @@ public class BusService implements BusServiceInterface {
         LocalDateTime first_bus = busTimeTableService.getFirstBus(timeTableDetails);
 
         // 막차
-        LocalDateTime last_bus = busTimeTableService.getLastBus(timeTableDetails);
+        LocalDateTime last_bus = busTimeTableService.getLastBus(timeTableDetails).plusMinutes(15);
 
         if (now.isBefore(first_bus)) { // 첫차 전
             busStatusDto.setStatus(BusStatusDto.BEFORE_RUNNING);
