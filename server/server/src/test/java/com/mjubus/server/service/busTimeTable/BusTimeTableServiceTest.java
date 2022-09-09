@@ -5,6 +5,7 @@ import com.mjubus.server.domain.BusTimeTable;
 import com.mjubus.server.domain.BusTimeTableInfo;
 import com.mjubus.server.repository.BusTimeTableInfoRepository;
 import com.mjubus.server.service.bus.BusService;
+import com.mjubus.server.util.DateHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,8 @@ class BusTimeTableServiceTest {
 
     BusTimeTable result = busTimeTableService.findBusTimeTableByBus(busService.findBusByBusId(10L));
 
+    DateHandler.reset();
+
     assertThat(result).isNotNull();
   }
 
@@ -42,6 +45,8 @@ class BusTimeTableServiceTest {
     BusTimeTableInfo info = busTimeTableInfo.findById(2L).get();
 
     BusTimeTable result = busTimeTableService.findBusTimeTableByBusTimeTableInfo(info);
+
+    DateHandler.reset();
 
     assertThat(result.getBus()).isEqualTo(busService.findBusByBusId(10L));
   }

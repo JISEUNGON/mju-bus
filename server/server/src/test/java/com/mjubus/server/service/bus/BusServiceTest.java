@@ -4,7 +4,7 @@ import com.mjubus.server.controller.BusCalendarController;
 import com.mjubus.server.domain.Bus;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.busRoute.BusRouteDto;
-import org.assertj.core.api.Assertions;
+import com.mjubus.server.util.DateHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -50,5 +49,7 @@ class BusServiceTest {
     LocalDateTime today = busCalendarController.setDate("2022-11-01 23:00");
 
     System.out.println(busService.getBusListByDate(today).get(0).getBusList().size());
+    DateHandler.reset();
+
   }
 }

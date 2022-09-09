@@ -6,7 +6,6 @@ import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.busListDto.BusList;
 import com.mjubus.server.dto.busRoute.BusRouteDto;
 import com.mjubus.server.util.DateHandler;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -38,6 +36,8 @@ class BusControllerTest {
         System.out.println(result.get(i).getBusList().get(j).getName());
       }
     }
+    DateHandler.reset();
+
   }
 
   @Test
@@ -73,6 +73,8 @@ class BusControllerTest {
         System.out.println("운행 종료");
         break;
     }
+    DateHandler.reset();
+
   }
 
   @Test

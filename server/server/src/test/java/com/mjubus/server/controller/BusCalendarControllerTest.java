@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 class BusCalendarControllerTest {
@@ -23,6 +21,8 @@ class BusCalendarControllerTest {
     BusCalendar info = busCalendarController.info();
 
     System.out.println(info.getDescription());
+    DateHandler.reset();
+
   }
 
   @Test
@@ -30,6 +30,7 @@ class BusCalendarControllerTest {
     LocalDateTime today = busCalendarController.setDate("2022-11-01 09:00");
 
     System.out.println("Today is " + today.getMonth());
+    DateHandler.reset();
 
   }
 
@@ -38,5 +39,6 @@ class BusCalendarControllerTest {
     LocalDateTime today = busCalendarController.setDateToday();
 
     System.out.println("Today is " + today.getMonthValue());
+    DateHandler.reset();
   }
 }

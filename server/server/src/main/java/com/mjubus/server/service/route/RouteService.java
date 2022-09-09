@@ -2,13 +2,11 @@ package com.mjubus.server.service.route;
 
 import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.StationDTO;
-import com.mjubus.server.exception.Bus.BusNotFoundException;
-import com.mjubus.server.exception.BusCalenderNotFoundException;
 import com.mjubus.server.exception.Route.RouteInfoNotFoundException;
 import com.mjubus.server.exception.Route.RouteNotFoundException;
+import com.mjubus.server.exception.Station.StationNotFoundException;
 import com.mjubus.server.repository.RouteDetailRepository;
 import com.mjubus.server.repository.RouteRepository;
-import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.mjuCalendar.BusCalendarService;
 import com.mjubus.server.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +84,11 @@ public class RouteService implements RouteInterface {
         Route route = findByBus(bus);
 
         return route.getRouteInfo();
+    }
+
+    @Override
+    public List<RouteDetail> findRouteDetailByStation(Station station) {
+        Optional<List<RouteDetail>> optionalRouteDetails = routeDetailRepository.findRouteDetailsByStation_Id(station.getId());
+        return optionalRouteDetails.orElseThrow(() -> new StationNotFoundException(station.getId()));
     }
 }
