@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -30,6 +31,9 @@ public class ShuttleScheduler {
     private BusTimeTableRepository busTimeTableRepository;
 
     @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
     private BusArrivalRepository busArrivalRepository;
 
     @Autowired
@@ -37,6 +41,9 @@ public class ShuttleScheduler {
 
     @Autowired
     private ShuttleBusHandler shuttleBusHandler;
+
+    @Autowired
+    private RouteDetailRepository routeDetailRepository;
 
     public BusCalendar findCalendarByDate(LocalDateTime date) {
             return busCalendarRepository.findBusCalendarByDate(date.toLocalDate(), date.toLocalTime(), DateHandler.getDayOfWeek(date)).get();
@@ -46,8 +53,22 @@ public class ShuttleScheduler {
         return busTimeTableDetailRepository.findBusTimeTableDetailsByBusTimeTableInfo_Id(busTimeTableInfo.getId());
     }
 
-    public List<BusTimeTable> findBusTimeTableByBusCalendar(BusCalendar busCalendar) {
+    public List<BusTimeTable> findTodayBusTimeTable() {
+        LocalDateTime now = DateHandler.getToday();
+        BusCalendar busCalendar = busCalendarRepository.findBusCalendarByDate(now.toLocalDate(), now.toLocalTime(), DateHandler.getDayOfWeek(now)).get();
+
         return busTimeTableRepository.findBusTimeTablesByBusCalendar_Id(busCalendar.getId());
+    }
+
+    public Route findRouteByBus(Bus bus) {
+        LocalDateTime now = DateHandler.getToday();
+        BusCalendar busCalendar = busCalendarRepository.findBusCalendarByDate(now.toLocalDate(), now.toLocalTime(), DateHandler.getDayOfWeek(now)).get();
+
+        return routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
+    }
+
+    public List<RouteDetail> findRouteDetailByRouteInfo(RouteInfo routeInfo) {
+        return routeDetailRepository.findRouteDetailByRouteInfo_IdOrderByOrder(routeInfo.getId());
     }
 
     public List<BusArrival> findBusArrivalByDate(LocalDateTime date) {
@@ -57,17 +78,22 @@ public class ShuttleScheduler {
     @Scheduled(cron = "0 0 0 * * *")
     // 매일 0 0시에 당일 시간표를 생성한다.
     public void makeBusTimeTable() {
-        BusCalendar busCalendar = findCalendarByDate(DateHandler.getToday());
-        List<BusTimeTable> timeTableList = findBusTimeTableByBusCalendar(busCalendar);
+        List<BusTimeTable> timeTableList = findTodayBusTimeTable();
 
         for(BusTimeTable busTimeTable: timeTableList) {
+            // 첫 정류장 알아내기
+            Bus bus = busTimeTable.getBus();
+            Route route = findRouteByBus(bus);
+            List<RouteDetail> routeDetails = findRouteDetailByRouteInfo(route.getRouteInfo());
+            Station startStation = routeDetails.get(0).getStation();
+
             List<BusTimeTableDetail> busTimeTableDetailList = findBusTimeTableDetailListByInfo(busTimeTable.getBusTimeTableInfo());
             for (BusTimeTableDetail busTimeTableDetail: busTimeTableDetailList) {
                 UUID uuid = UUID.randomUUID();
                 busArrivalRepository.save(
                         BusArrival.builder()
                                 .bus(busTimeTable.getBus())
-                                .station(stationRepository.getReferenceById(1L))
+                                .station(startStation)
                                 .expected(DateHandler.getTodayWith(busTimeTableDetail.getDepart()))
                                 .sid(uuid.toString())
                                 .preSid(uuid.toString())
