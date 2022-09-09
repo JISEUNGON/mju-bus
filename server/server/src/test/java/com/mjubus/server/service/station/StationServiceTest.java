@@ -1,26 +1,32 @@
 package com.mjubus.server.service.station;
 
 import com.mjubus.server.domain.Station;
-import org.assertj.core.api.Assertions;
+import com.mjubus.server.exception.Station.StationNotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
-class StationServiceTest {
+public class StationServiceTest {
 
   @Autowired
-  StationService stationService;
+  private StationService stationService;
 
   @Test
-  void findStationById() {
-    Station result = stationService.findStationById(2L);
+  void 테스트_findStationById() {
+    Station stationById = stationService.findStationById(1L);
 
-    assertThat(result.getName()).isEqualTo("상공회의소");
+    Assertions.assertNotNull(stationById);
+    Assertions.assertEquals(stationById.getId(), 1L);
+  }
+
+  @Test()
+  void 테스트_StationNotFoundException() {
+    Assertions.assertThrows(StationNotFoundException.class, () -> {
+      stationService.findStationById(999L);
+    });
   }
 }
