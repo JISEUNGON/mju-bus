@@ -4,12 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { GetRouteTableData, highlights } from "../../utils";
 import { busApi, calendarApi } from "../../api";
 import StationSelect from "./StationSelect";
 import NMap from "./NMap";
-import SchoolStationSelect from "./SchoolStatonSelect";
 import { stationId } from "../../id";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -74,9 +72,8 @@ const SubmitText = styled.Text`
 const SubmitButton = styled.TouchableOpacity``;
 
 // eslint-disable-next-line react/prop-types
-function ToSchool({ navigation: { navigate } }) {
+function FromSchool({ navigation: { navigate } }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [schoolModalVisible, setSchoolModalVisible] = useState(false);
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
   const [staredStation, setStaredStation] = useState([]);
 
@@ -98,23 +95,6 @@ function ToSchool({ navigation: { navigate } }) {
       }
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const onPressSubmitButton = () => {
-    // 주말일 때:  Set Modal Comp for Selecting Station around School
-    if (calendarData.id === 5) {
-      setSchoolModalVisible(true);
-      // 평일 일 때
-    } else {
-      navigate("SearchStack", {
-        screen: "BusList",
-        params: {
-          toSchool: false,
-          src: stationId.ChapleGwan,
-          dest: station,
-        },
-      });
     }
   };
 
@@ -163,14 +143,25 @@ function ToSchool({ navigation: { navigate } }) {
       </SelectContainer>
 
       {station.name !== "정류장을 선택하세요" ? (
-        <SubmitButton onPress={onPressSubmitButton}>
+        <SubmitButton
+          onPress={() =>
+            navigate("SearchStack", {
+              screen: "BusList",
+              params: {
+                toSchool: false,
+                redBus: false,
+                stationId: stationId.ChapleGwan,
+                dest: station,
+              },
+            })
+          }
+        >
           <SubmitContainer>
             <SubmitText>버스 검색</SubmitText>
           </SubmitContainer>
         </SubmitButton>
       ) : null}
-      {modalVisible &&
-      routeData.every(item => item.data !== undefined) !== undefined ? (
+      {modalVisible && routeData.every(item => item.data !== undefined) ? (
         <StationSelect
           data={routeData}
           staredStation={staredStation}
@@ -180,17 +171,8 @@ function ToSchool({ navigation: { navigate } }) {
           setStation={setStation}
         />
       ) : null}
-      {schoolModalVisible ? (
-        <SchoolStationSelect
-          modalVisible={schoolModalVisible}
-          setModalVisible={setSchoolModalVisible}
-          setStation={setStation}
-          navigate={navigate}
-          station={station}
-        />
-      ) : null}
     </Conatiner>
   );
 }
 
-export default ToSchool;
+export default FromSchool;

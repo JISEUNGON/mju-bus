@@ -147,7 +147,8 @@ function ToSchool({ navigation: { navigate } }) {
               screen: "BusList",
               params: {
                 toSchool: true,
-                src: station,
+                redBus: false,
+                stationId: station,
               },
             })
           }
