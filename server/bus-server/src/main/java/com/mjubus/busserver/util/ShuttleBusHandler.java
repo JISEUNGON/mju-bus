@@ -51,6 +51,9 @@ public class ShuttleBusHandler {
 
         // 현재 노선 정보 가져오기
         List<RouteDetail> detailList = getCurrentRoute(bus);
+        for(RouteDetail routeDetail: detailList) {
+            System.out.println(routeDetail.getStation().getName());
+        }
 
         // 정류장 리스트 추출
         LinkedList<Station> stationList = new LinkedList<>();
@@ -58,7 +61,9 @@ public class ShuttleBusHandler {
         for (int i = 0; i < detailList.size(); i++) {
             RouteDetail routeDetail = detailList.get(i);
 
-            if (Objects.equals(start.getId(), routeDetail.getStation().getId())) offset_station = i; // 출발 지점 탐색
+            if (offset_station == -1 && Objects.equals(start.getId(), routeDetail.getStation().getId()))
+                offset_station = i; // 출발 지점 탐색
+
             stationList.add(routeDetail.getStation());
         }
 
