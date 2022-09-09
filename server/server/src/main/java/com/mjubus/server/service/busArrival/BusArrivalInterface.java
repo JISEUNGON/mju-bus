@@ -5,5 +5,5 @@ import com.mjubus.server.dto.busArrival.BusArrivalResponse;
 
 public interface BusArrivalInterface {
 
-    BusArrivalResponse findBusArrivalRemainByStation(Station station, Boolean toSchool, Boolean redBus);
+    BusArrivalResponse findBusArrivalRemainByStation(Station srcStation, Station destStation, Boolean toSchool, Boolean redBus);
 }
