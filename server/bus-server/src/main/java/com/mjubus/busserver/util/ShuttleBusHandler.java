@@ -51,11 +51,8 @@ public class ShuttleBusHandler {
 
         // 현재 노선 정보 가져오기
         List<RouteDetail> detailList = getCurrentRoute(bus);
-        for(RouteDetail routeDetail: detailList) {
-            System.out.println(routeDetail.getStation().getName());
-        }
 
-        // 정류장 리스트 추출
+        // 정류장 리스트 추출 및 출발 정류장 탐색
         LinkedList<Station> stationList = new LinkedList<>();
         int offset_station = -1;
         for (int i = 0; i < detailList.size(); i++) {
@@ -69,14 +66,20 @@ public class ShuttleBusHandler {
 
         if (offset_station == -1) return;
 
+        // 출발 정류장 ~ 종점까지 데이터 Update or Insert
+        Station startStation = stationList.getFirst();
         for(int i = offset_station; i < stationList.size() - 1; i++ ) {
             Station src = stationList.get(i); // 출발지
+
             Station dest = stationList.get(i + 1); // 목적지
             System.out.println(src.getName() + " ~ " + dest.getName());
 
+            // 기점이 서로 같은 경우는 제외
+            if (startStation.getId().equals(dest.getId())) continue;
+
             Long duration = NaverHandler.getDuration(src, dest); // 예상 시간
             expected = expected.plusSeconds(duration);
-            if (offset_station == 0) {
+            if (offset_station == 0) { // 처음인 경우 INSERT
                 busArrivalRepository.save(BusArrival.builder()
                                 .sid(UUID.randomUUID().toString())
                                 .preSid(pre_busArrival_sid)
