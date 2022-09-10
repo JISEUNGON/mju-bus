@@ -4,7 +4,9 @@ import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
+import { busApi, stationApi } from "../../api";
 
 const Container = styled.View`
   flex: 1;
@@ -99,14 +101,58 @@ function CustomNavButton(navigation) {
   );
 }
 
+function SearchBus(params) {
+  const { isLoading: Loading, data: busListData } = useQuery(
+    ["params.src.id"],
+    stationApi.remain,
+  );
+
+  if (!Loading) {
+    console.log(busListData);
+  }
+}
+
 // eslint-disable-next-line react/prop-types
 function BusList({ navigation, route: { params } }) {
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("BusDetail", {
+          params: {
+            item,
+          },
+        })
+      }
+    >
+      <BusInfoList
+        totaltime={item.totaltime}
+        arrivlatime={item.arrivlatime}
+        start={item.start}
+        end={item.end}
+        type={item.type}
+        num={item.num}
+        time={item.time}
+      />
+    </TouchableOpacity>
+  );
+
+  // 타이틀 글씨 설정
+  function TitleName() {
+    if (params.toSchool) {
+      return `${params.src.name} ->  명지대학교`;
+    }
+
+    return `명지대학교 ->  ${params.dest.name}`;
+  }
+
   useEffect(() => {
     navigation.setOptions({
-      title: `${params.src.name} ->  명지대학교`,
+      title: TitleName(),
       headerLeft: () => CustomNavButton(navigation),
     });
   }, []);
+
+  SearchBus(params);
 
   return (
     <Container>
