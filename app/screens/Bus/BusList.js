@@ -1,12 +1,19 @@
+/* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import { ActivityIndicator, TouchableOpacity } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
-import { busApi, stationApi } from "../../api";
+import { stationApi } from "../../api";
+
+const Loader = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Container = styled.View`
   flex: 1;
@@ -81,18 +88,6 @@ const DATA = [
   },
 ];
 
-const renderItem = ({ item }) => (
-  <BusInfoList
-    totaltime={item.totaltime}
-    arrivlatime={item.arrivlatime}
-    start={item.start}
-    end={item.end}
-    type={item.type}
-    num={item.num}
-    time={item.time}
-  />
-);
-
 function CustomNavButton(navigation) {
   return (
     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -101,49 +96,10 @@ function CustomNavButton(navigation) {
   );
 }
 
-function SearchBus(params) {
-  const { isLoading: Loading, data: busListData } = useQuery(
-    ["params.src.id"],
-    stationApi.remain,
-  );
-
-  if (!Loading) {
-    console.log(busListData);
-  }
-}
-
 // eslint-disable-next-line react/prop-types
 function BusList({ navigation, route: { params } }) {
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("BusDetail", {
-          params: {
-            item,
-          },
-        })
-      }
-    >
-      <BusInfoList
-        totaltime={item.totaltime}
-        arrivlatime={item.arrivlatime}
-        start={item.start}
-        end={item.end}
-        type={item.type}
-        num={item.num}
-        time={item.time}
-      />
-    </TouchableOpacity>
-  );
-
-  // 타이틀 글씨 설정
-  function TitleName() {
-    if (params.toSchool) {
-      return `${params.src.name} ->  명지대학교`;
-    }
-
-    return `명지대학교 ->  ${params.dest.name}`;
-  }
+  // PARMAS
+  const { stationId, dest, redBus, toSchool } = params;
 
   useEffect(() => {
     navigation.setOptions({
@@ -152,16 +108,62 @@ function BusList({ navigation, route: { params } }) {
     });
   }, []);
 
-  SearchBus(params);
+  // 목적지 Param 유무에 따른 queryKey 설정
+  const destId = () => {
+    if (dest === undefined) {
+      return undefined;
+    }
+    return dest.id;
+  };
 
-  return (
+  // 타이틀 글씨 설정
+  function TitleName() {
+    if (toSchool) {
+      return `${stationId.name}   →   명지대학교`;
+    }
+
+    return `명지대학교   →  ${dest.name}`;
+  }
+
+  // Remain 데이터 불러오기
+  const { isLoading: busRemainLoading, data: busRemainData } = useQuery(
+    ["remain", parseInt(stationId.id, 10), destId(), redBus, toSchool],
+    stationApi.remain,
+  );
+
+  return busRemainLoading ? (
+    // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
+    <Loader>
+      <ActivityIndicator />
+    </Loader>
+  ) : (
     <Container>
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
           <StatusBar backgroundColor="#f2f4f6" />
           <ListView
             data={DATA}
-            renderItem={renderItem}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("BusDetail", {
+                    params: {
+                      item,
+                    },
+                  })
+                }
+              >
+                <BusInfoList
+                  totaltime={item.totaltime}
+                  arrivlatime={item.arrivlatime}
+                  start={item.start}
+                  end={item.end}
+                  type={item.type}
+                  num={item.num}
+                  time={item.time}
+                />
+              </TouchableOpacity>
+            )}
             // keyExtractor={item => item.id}
           />
         </SafeAreaView>
