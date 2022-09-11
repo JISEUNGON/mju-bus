@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import NaverMapView, { Marker } from "react-native-nmap";
 import { RemoveDuplicateStation } from "../../utils";
@@ -19,11 +19,13 @@ function setCenter(station) {
 
 function NMap({ routeData, setStation, station }) {
   const stationData = RemoveDuplicateStation(routeData);
+  const [selectedMarker, selectMarker] = useState(-1);
   const mapRef = useRef(null);
   const handleSetMapRef = useCallback(_ref => {
     mapRef.current = {
       ..._ref,
     };
+    _ref.setLayerGroupEnabled('transit', true); // Transit Layer
   }, []);
 
   useEffect(() => {
@@ -38,8 +40,11 @@ function NMap({ routeData, setStation, station }) {
       <Marker
         key={item.id}
         coordinate={item}
+        caption = {{text: item.name}}
+        pinColor = {item.id === selectedMarker ? 'blue' : 0}
         onClick={() => {
           mapRef.current.animateToCoordinate(item);
+          selectMarker(item.id);
           callback(item);
         }}
         width={25}
@@ -55,7 +60,7 @@ function NMap({ routeData, setStation, station }) {
         ref={handleSetMapRef}
         style={{ width: "100%", height: "100%" }}
         showsMyLocationButton={false}
-        center={setCenter(stationData[4])}
+        center={setCenter(stationData[0])}
         useTextureView
       >
         {renderMarker(stationData, setStation)}
