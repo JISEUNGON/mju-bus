@@ -8,6 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
 import { stationApi } from "../../api";
+import { CalculatorTime, DeleteSecond } from "../../utils";
 
 const Loader = styled.View`
   flex: 1;
@@ -27,6 +28,7 @@ const ListView = styled.FlatList`
 
 function CustomNavButton(navigation) {
   return (
+    // eslint-disable-next-line react/destructuring-assignment
     <TouchableOpacity onPress={() => navigation.goBack()}>
       <Entypo name="chevron-left" size={24} color="gray" />
     </TouchableOpacity>
@@ -39,18 +41,18 @@ function BusList({ navigation, route: { params } }) {
   const { stationId, dest, redBus, toSchool } = params;
 
   const [start, setStart] = useState("");
-  const [end, setend] = useState("");
+  const [end, setEnd] = useState("");
 
   // 목적지,출발지 설정
   function SetStartAndDest() {
     if (toSchool) {
       setStart(stationId.name);
-      setend("명지대학교");
+      setEnd("명지대학교");
       return `${stationId.name}   →   명지대학교`;
     }
-    setStart("명지대학교");
-    setend(dest.name);
-    return `명지대학교   →  ${dest.name}`;
+    setStart(stationId.name);
+    setEnd(dest.name);
+    return `${stationId.name}   →  ${dest.name}`;
   }
 
   useEffect(() => {
@@ -75,28 +77,7 @@ function BusList({ navigation, route: { params } }) {
   );
 
   // 총 소요시간 계산
-  function CalculatorTime(start, end) {
-    const start_second = start.split(":");
-    const end_second = end.split(":");
-
-    const start_result =
-      Math.floor(start_second[0]) * 3600 + Math.floor(start_second[1]) * 60;
-
-    const end_result =
-      Math.floor(end_second[0]) * 3600 + Math.floor(end_second[1]) * 60;
-
-    const result = Math.floor((end_result - start_result) / 60);
-
-    return result;
-  }
-
-  function DeleteSecond(str) {
-    const temp = str.split(":");
-
-    const result = `${temp[0]}:${temp[1]}`;
-
-    return result;
-  }
+  // eslint-disable-next-line no-shadow
 
   return busRemainLoading ? (
     // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력

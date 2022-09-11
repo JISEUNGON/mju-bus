@@ -68,3 +68,25 @@ export function RemoveDuplicateStation(data) {
 
   return stationList;
 }
+
+export function CalculatorTime(start, end) {
+  const startSec = start.split(":");
+  const endSec = end.split(":");
+
+  const startResult =
+    Math.floor(startSec[0]) * 3600 + Math.floor(startSec[1]) * 60;
+
+  const endResult = Math.floor(endSec[0]) * 3600 + Math.floor(endSec[1]) * 60;
+
+  const result = Math.floor((endResult - startResult) / 60);
+
+  return result;
+}
+
+export function DeleteSecond(str) {
+  const temp = str.split(":");
+
+  const result = `${temp[0]}:${temp[1]}`;
+
+  return result;
+}

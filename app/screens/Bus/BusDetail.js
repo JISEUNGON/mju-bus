@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
 import { busApi } from "../../api";
 import NMap from "./NMap";
+import { DeleteSecond } from "../../utils";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -66,18 +67,17 @@ function CustomNavButton(navigation) {
 }
 
 function BusDetail({ navigation, route: { params } }) {
+  // PARAMS DATA
   const { item, start, end, totaltime } = params.params;
 
   // Route 데이터 불러오기
   const { isLoading: busRouteLoading, data: busRouteData } = useQuery(
-    ["route", parseInt(params.params.item.id, 10)],
+    ["route", parseInt(item.id, 10)],
     busApi.route,
   );
 
   function TitleName() {
-    const name = `${start}  →  ${end}`;
-
-    return name;
+    return `${start}  →  ${end}`;
   }
 
   useEffect(() => {
@@ -97,11 +97,11 @@ function BusDetail({ navigation, route: { params } }) {
       <BusContainer>
         <ScrollView>
           <BusInfoList
-            totaltime={params.params.totaltime}
-            arrivlatime={item.arrive_at}
-            departtime={item.depart_at}
-            start={params.params.start}
-            end={params.params.end}
+            totaltime={totaltime}
+            arrivlatime={DeleteSecond(item.arrive_at)}
+            departtime={DeleteSecond(item.depart_at)}
+            start={start}
+            end={end}
             type={item.id >= 200 ? "red" : "sine"}
             num={item.name}
             time={item.remains}
