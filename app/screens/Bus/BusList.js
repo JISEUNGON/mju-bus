@@ -7,6 +7,7 @@ import { ActivityIndicator, TouchableOpacity } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
+<<<<<<< HEAD
 import { stationApi } from "../../api";
 
 const Loader = styled.View`
@@ -14,6 +15,9 @@ const Loader = styled.View`
   justify-content: center;
   align-items: center;
 `;
+=======
+import { busApi, stationApi } from "../../api";
+>>>>>>> 24c6bca474dc1faed0cbb3ad9806d012e886edb4
 
 const Container = styled.View`
   flex: 1;
@@ -96,10 +100,54 @@ function CustomNavButton(navigation) {
   );
 }
 
+function SearchBus(params) {
+  const { isLoading: Loading, data: busListData } = useQuery(
+    ["params.src.id"],
+    stationApi.remain,
+  );
+
+  if (!Loading) {
+    console.log(busListData);
+  }
+}
+
 // eslint-disable-next-line react/prop-types
 function BusList({ navigation, route: { params } }) {
+<<<<<<< HEAD
   // PARMAS
   const { stationId, dest, redBus, toSchool } = params;
+=======
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("BusDetail", {
+          params: {
+            item,
+          },
+        })
+      }
+    >
+      <BusInfoList
+        totaltime={item.totaltime}
+        arrivlatime={item.arrivlatime}
+        start={item.start}
+        end={item.end}
+        type={item.type}
+        num={item.num}
+        time={item.time}
+      />
+    </TouchableOpacity>
+  );
+
+  // 타이틀 글씨 설정
+  function TitleName() {
+    if (params.toSchool) {
+      return `${params.src.name} ->  명지대학교`;
+    }
+
+    return `명지대학교 ->  ${params.dest.name}`;
+  }
+>>>>>>> 24c6bca474dc1faed0cbb3ad9806d012e886edb4
 
   useEffect(() => {
     navigation.setOptions({
@@ -108,6 +156,7 @@ function BusList({ navigation, route: { params } }) {
     });
   }, []);
 
+<<<<<<< HEAD
   // 목적지 Param 유무에 따른 queryKey 설정
   const destId = () => {
     if (dest === undefined) {
@@ -137,6 +186,11 @@ function BusList({ navigation, route: { params } }) {
       <ActivityIndicator />
     </Loader>
   ) : (
+=======
+  SearchBus(params);
+
+  return (
+>>>>>>> 24c6bca474dc1faed0cbb3ad9806d012e886edb4
     <Container>
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
