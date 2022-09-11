@@ -4,6 +4,8 @@ import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.exception.BusArrival.BusArrivalNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableDetailNotFoundException;
 import com.mjubus.server.exception.BusTimeTable.BusTimeTableNotFoundException;
+import com.mjubus.server.exception.Path.PathDetailNotFoundException;
+import com.mjubus.server.exception.Path.PathInfoNotFoundException;
 import com.mjubus.server.exception.Route.RouteInfoNotFoundException;
 import com.mjubus.server.exception.Route.RouteNotFoundException;
 import com.mjubus.server.exception.Station.StationNotFoundException;
@@ -60,6 +62,18 @@ public class ApiExceptionHandler {
     @ExceptionHandler(BusArrivalNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(BusArrivalNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0008", "No Bus remains in : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PathDetailNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(PathDetailNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0009", "No PathDetail remains in : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PathInfoNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(PathInfoNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0010", "No PathInfo remains in : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
