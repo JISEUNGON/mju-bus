@@ -66,19 +66,16 @@ function CustomNavButton(navigation) {
 }
 
 function BusDetail({ navigation, route: { params } }) {
+  const { item, start, end, totaltime } = params.params;
+
   // Route 데이터 불러오기
-  const { isLoading: busRouteLoading, data: busRemainData } = useQuery(
+  const { isLoading: busRouteLoading, data: busRouteData } = useQuery(
     ["route", parseInt(params.params.item.id, 10)],
     busApi.route,
   );
 
-  const { item } = params.params;
-
   function TitleName() {
-    const { start } = params.params;
-    const { end } = params.params;
-
-    const name = `${start}->${end}`;
+    const name = `${start}  →  ${end}`;
 
     return name;
   }
@@ -109,7 +106,7 @@ function BusDetail({ navigation, route: { params } }) {
             num={item.name}
             time={item.remains}
             canexpand
-            stationlist={busRemainData.stations}
+            stationlist={busRouteData.stations}
           />
         </ScrollView>
       </BusContainer>

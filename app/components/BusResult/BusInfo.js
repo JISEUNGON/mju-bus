@@ -15,8 +15,11 @@ const Container = styled.View`
   border-bottom-color: #d3d7dc;
   height: auto;
   width: 100%;
+
   padding-left: 32px;
   padding-right: 32px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
 
 const InfoContainer = styled.View`

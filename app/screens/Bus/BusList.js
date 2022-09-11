@@ -41,8 +41,8 @@ function BusList({ navigation, route: { params } }) {
   const [start, setStart] = useState("");
   const [end, setend] = useState("");
 
-  // 타이틀 글씨 설정
-  function TitleName() {
+  // 목적지,출발지 설정
+  function SetStartAndDest() {
     if (toSchool) {
       setStart(stationId.name);
       setend("명지대학교");
@@ -55,7 +55,7 @@ function BusList({ navigation, route: { params } }) {
 
   useEffect(() => {
     navigation.setOptions({
-      title: TitleName(),
+      title: SetStartAndDest(),
       headerLeft: () => CustomNavButton(navigation),
     });
   }, []);

@@ -41,7 +41,15 @@ function SearchStack() {
           headerTitleStyle: {},
         }}
       />
-      <Search.Screen name="BusDetail" component={BusDetail} options={{}} />
+      <Search.Screen
+        name="BusDetail"
+        component={BusDetail}
+        options={{
+          headerTitle: ({ children }) => renderHeader(children),
+          headerTitleAlign: "center",
+          headerTitleStyle: {},
+        }}
+      />
     </Search.Navigator>
   );
 }
