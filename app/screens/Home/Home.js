@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
-import { ActivityIndicator, Dimensions, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  AppState,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -68,6 +73,24 @@ function Home({ route: { params } }) {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedRoutes, setSelectedRoutes] = useState([]);
 
+  // 앱이 백그라운드에서 돌아왔을 때 강제 refetch 진행
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        queryClient.invalidateQueries();
+        queryClient.refetchQueries(["remain", "status"]);
+      }
+      appState.current = nextAppState;
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, [queryClient]);
+
   const loadSelectedRoutes = async () => {
     try {
       const string = await AsyncStorage.getItem(STORAGE_KEY);
@@ -80,6 +103,7 @@ function Home({ route: { params } }) {
   };
   const onRefresh = async () => {
     setRefreshing(true);
+    await queryClient.invalidateQueries();
     await queryClient.refetchQueries(["remain", "status"]);
     setRefreshing(false);
   };
@@ -142,7 +166,6 @@ function Home({ route: { params } }) {
     <SafeAreaProvider>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
         <StatusBar backgroundColor="#f2f4f6" />
-
         <Container
           width={SCREEN_WIDTH}
           onRefresh={onRefresh}
