@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { BackHandler, Text, View } from "react-native";
 import * as Font from "expo-font";
 import { useQuery } from "@tanstack/react-query";
 import { busApi, calendarApi } from "../api";
@@ -44,6 +44,13 @@ function Splash({ navigation: { navigate } }) {
   }, []);
 
   useEffect(() => {
+    const backAction = () => false;
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
     if (appIsReady && !loading) {
       // This tells the splash screen to hide immediately! If we call this after
       // `setAppIsReady`, then we may see a blank screen while the app is
