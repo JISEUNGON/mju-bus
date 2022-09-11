@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
 import { ActivityIndicator, TouchableOpacity } from "react-native";
@@ -25,69 +25,6 @@ const ListView = styled.FlatList`
   background-color: white;
 `;
 
-const DATA = [
-  {
-    id: "01",
-    totaltime: "20분",
-    arrivlatime: "오후 1:58 ~ 2:18",
-    start: "진입로(명지대방향)",
-    end: "명지대학교",
-    type: "red",
-    num: "5000",
-    time: 80,
-  },
-  {
-    id: "02",
-    totaltime: "24분",
-    arrivlatime: "오후 1:58 ~ 2:22",
-    start: "진입로(명지대방향)",
-    end: "명지대학교",
-    type: "red",
-    num: "5000-1",
-    time: 200,
-  },
-  {
-    id: "03",
-    totaltime: "32분",
-    arrivlatime: "오후 1:58 ~ 2:30",
-    start: "진입로(명지대방향)",
-    end: "명지대학교",
-    type: "sine",
-    num: "",
-    time: 300,
-  },
-  {
-    id: "04",
-    totaltime: "65분",
-    arrivlatime: "오후 1:58 ~ 2:18",
-    start: "진입로(명지대방향)",
-    end: "명지대학교",
-    type: "sine",
-    num: "9999",
-    time: 555,
-  },
-  {
-    id: "05",
-    totaltime: "32분",
-    arrivlatime: "오후 1:58 ~ 2:30",
-    start: "진입로(명지대방향)",
-    end: "명지대학교",
-    type: "sine",
-    num: "",
-    time: 300,
-  },
-  {
-    id: "06",
-    totaltime: "41분",
-    arrivlatime: "오후 1:58 ~ 5:45",
-    start: "진입로(명지대방향)",
-    end: "명지대학교",
-    type: "sine",
-    num: "",
-    time: 300,
-  },
-];
-
 function CustomNavButton(navigation) {
   return (
     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -101,11 +38,18 @@ function BusList({ navigation, route: { params } }) {
   // PARMAS
   const { stationId, dest, redBus, toSchool } = params;
 
+  const [start, setStart] = useState("");
+  const [end, setend] = useState("");
+
   // 타이틀 글씨 설정
   function TitleName() {
     if (toSchool) {
+      setStart(stationId.name);
+      setend("명지대학교");
       return `${stationId.name}   →   명지대학교`;
     }
+    setStart("명지대학교");
+    setend(dest.name);
     return `명지대학교   →  ${dest.name}`;
   }
 
@@ -130,6 +74,30 @@ function BusList({ navigation, route: { params } }) {
     stationApi.remain,
   );
 
+  // 총 소요시간 계산
+  function CalculatorTime(start, end) {
+    const start_second = start.split(":");
+    const end_second = end.split(":");
+
+    const start_result =
+      Math.floor(start_second[0]) * 3600 + Math.floor(start_second[1]) * 60;
+
+    const end_result =
+      Math.floor(end_second[0]) * 3600 + Math.floor(end_second[1]) * 60;
+
+    const result = Math.floor((end_result - start_result) / 60);
+
+    return result;
+  }
+
+  function DeleteSecond(str) {
+    const temp = str.split(":");
+
+    const result = `${temp[0]}:${temp[1]}`;
+
+    return result;
+  }
+
   return busRemainLoading ? (
     // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
     <Loader>
@@ -137,30 +105,34 @@ function BusList({ navigation, route: { params } }) {
     </Loader>
   ) : (
     <Container>
-      {console.log(busRemainData)}
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
           <StatusBar backgroundColor="#f2f4f6" />
           <ListView
-            data={DATA}
+            data={busRemainData.busList}
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("BusDetail", {
+                    screen: "BusDetail",
                     params: {
                       item,
+                      totaltime: CalculatorTime(item.depart_at, item.arrive_at),
+                      start,
+                      end,
                     },
                   })
                 }
               >
                 <BusInfoList
-                  totaltime={item.totaltime}
-                  arrivlatime={item.arrivlatime}
-                  start={item.start}
-                  end={item.end}
-                  type={item.type}
-                  num={item.num}
-                  time={item.time}
+                  totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
+                  arrivlatime={DeleteSecond(item.arrive_at)}
+                  departtime={DeleteSecond(item.depart_at)}
+                  start={start}
+                  end={end}
+                  type={item.id >= 200 ? "red" : "sine"}
+                  num={item.name}
+                  time={item.remains}
                 />
               </TouchableOpacity>
             )}

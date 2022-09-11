@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { Entypo } from "@expo/vector-icons";
+import { createIconSetFromFontello, Entypo } from "@expo/vector-icons";
 import BusRoute from "./BusRoute";
 import Label from "../Label";
 import Timer from "../Timer";
@@ -14,19 +14,14 @@ const Container = styled.View`
   border-top-color: #d3d7dc;
   border-bottom-color: #d3d7dc;
   height: auto;
+  width: 100%;
   padding-left: 32px;
   padding-right: 32px;
 `;
 
-const ResultContainer = styled.View`
-  background-color: white;
-  height: 100%;
-  width: 30px;
-`;
-
 const InfoContainer = styled.View`
   background-color: white;
-  height: 100%;
+  height: auto;
   width: 100%;
 `;
 
@@ -45,7 +40,7 @@ const Topcontainer = styled.View`
 
 const Bottomontainer = styled.View`
   background-color: white;
-  height: 118px;
+  height: auto;
   flex-direction: row;
 
   padding-right: 32px;
@@ -68,31 +63,20 @@ const ArrivalTime = styled.Text`
 `;
 
 const StartContainer = styled.View`
-  flex: 1;
   background-color: white;
 
   flex-direction: row;
   align-items: center;
+  height: 35px;
 `;
 
 const MidContainer = styled.View`
-  flex: 1;
   background-color: white;
 
   flex-direction: row;
   align-items: center;
 
-  margin-left: 10px;
-`;
-
-const ReduceContainer = styled.View`
-  flex: 1;
-  background-color: white;
-
-  flex-direction: row;
-  align-items: center;
-
-  margin-left: 10px;
+  height: 30px;
 `;
 
 const RouteContainer = styled.View`
@@ -104,7 +88,7 @@ const RouteContainer = styled.View`
 
   margin-left: 10px;
 
-  height: auto;
+  height: 30px;
 `;
 
 const MixText = styled.View`
@@ -113,14 +97,17 @@ const MixText = styled.View`
 
   flex-direction: row;
   align-items: center;
+
+  margin-left: 8px;
 `;
 
 const EndContainer = styled.View`
-  flex: 1;
   background-color: white;
 
   flex-direction: row;
   align-items: center;
+
+  height: 30px;
 `;
 
 const Station = styled.Text`
@@ -166,43 +153,64 @@ function BusDetail({ busRoute, busNumber, time }) {
 }
 
 function RouteList(props) {
-  const { buslist } = props;
+  const { stationlist } = props;
 
-  const nameList = buslist.map(name => <Station>{name}</Station>);
+  const nameList = stationlist.map(name => (
+    <MidContainer>
+      <BusRoute location="mid" />
+      <Station>{name.name}</Station>
+    </MidContainer>
+  ));
 
-  return <RouteContainer>{nameList}</RouteContainer>;
+  return <View>{nameList}</View>;
 }
 
 function ReduceList(props) {
-  const { totaltime, arrivlatime, type, start, end, num, time, buslist } =
-    props;
+  const {
+    totaltime,
+    arrivlatime,
+    departtime,
+    type,
+    start,
+    end,
+    num,
+    time,
+    stationlist,
+    Stationnum,
+  } = props;
 
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
+
+  function WaitTime(total, remain) {
+    const temp = remain % 60 > 30 ? remain / 60 + 1 : remain / 60;
+
+    const result = Math.floor(temp - total);
+    return result;
+  }
 
   return (
     <Container>
       <Topcontainer>
-        <TotalTime>{totaltime}</TotalTime>
+        <TotalTime>{totaltime}분</TotalTime>
+        <ArrivalTime>{departtime}</ArrivalTime>
+        <ArrivalTime>~</ArrivalTime>
         <ArrivalTime>{arrivlatime}</ArrivalTime>
       </Topcontainer>
       <Bottomontainer>
-        <ResultContainer>
-          <BusRoute
-            type={type}
-            num={buslist.length}
-            canexpand
-            visible={visible}
-          />
-        </ResultContainer>
         <InfoContainer>
           <StartContainer>
+            <BusRoute type={type} visible={visible} location="start" />
             <Station>{start}</Station>
           </StartContainer>
           <MidContainer>
+            <BusRoute type={type} visible={visible} location="mid" />
             <BusDetail busRoute={type} busNumber={num} time={time} />
           </MidContainer>
-          <ReduceContainer>
-            <Text>5분, {buslist.length}개 정류장 이동</Text>
+          <MidContainer>
+            <BusRoute type={type} location="mid" />
+            <Station>
+              {WaitTime(totaltime, time)}분, {Stationnum}개 정류장 이동
+            </Station>
             <TouchableOpacity
               onPress={() => {
                 setVisible(!visible);
@@ -214,10 +222,10 @@ function ReduceList(props) {
                 <Entypo name="chevron-small-down" size={24} color="gray" />
               )}
             </TouchableOpacity>
-          </ReduceContainer>
-          {visible && <RouteList buslist={buslist} />}
-
+          </MidContainer>
+          {visible === true && <RouteList stationlist={stationlist} />}
           <EndContainer>
+            <BusRoute type={type} visible={visible} location="end" />
             <Station>{end}</Station>
           </EndContainer>
         </InfoContainer>
@@ -228,22 +236,40 @@ function ReduceList(props) {
 
 function BusInfoList(props) {
   // eslint-disable-next-line react/prop-types
-  const { totaltime, arrivlatime, type, start, end, num, time, buslist } =
-    props;
+  const {
+    totaltime,
+    arrivlatime,
+    departtime,
+    type,
+    start,
+    end,
+    num,
+    time,
+    stationlist,
+  } = props;
 
   const { canexpand } = props;
 
   if (canexpand) {
+    // 마지막 정류장 재거 작업
+    const lastname = stationlist[stationlist.length - 1].name;
+    const StationNum = stationlist.length;
+
+    // 마지막 정류장 제거 작업
+    stationlist.pop();
+
     return (
       <ReduceList
         totaltime={totaltime}
         arrivlatime={arrivlatime}
+        departtime={departtime}
         type={type}
         start={start}
-        end={end}
+        end={lastname}
         num={num}
         time={time}
-        buslist={buslist}
+        stationlist={stationlist}
+        Stationnum={StationNum}
       />
     );
   }
@@ -251,22 +277,24 @@ function BusInfoList(props) {
   return (
     <Container>
       <Topcontainer>
-        <TotalTime>{totaltime}</TotalTime>
+        <TotalTime>{totaltime}분</TotalTime>
+        <ArrivalTime>{departtime}</ArrivalTime>
+        <ArrivalTime>~</ArrivalTime>
         <ArrivalTime>{arrivlatime}</ArrivalTime>
       </Topcontainer>
       <Bottomontainer>
-        <ResultContainer>
-          <BusRoute type={type} num={-1} canexpand={false} visible={false} />
-        </ResultContainer>
         <InfoContainer>
           <StartContainer>
+            <BusRoute type={type} location="start" />
             <Station>{start}</Station>
           </StartContainer>
           <MidContainer>
+            <BusRoute type={type} location="mid" />
             <BusDetail busRoute={type} busNumber={num} time={time} />
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </MidContainer>
           <EndContainer>
+            <BusRoute type={type} location="end" />
             <Station>{end}</Station>
           </EndContainer>
         </InfoContainer>

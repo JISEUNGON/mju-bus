@@ -11,38 +11,18 @@ const Container = styled.View`
 
   justify-content: center;
   align-items: center;
-
-  flex-direction: column;
-`;
-
-const TopContainer = styled.View`
-  background-color: white;
-
-  width: 30px;
-  flex: 1;
-
-  justify-content: center;
-  align-items: center;
 `;
 
 const MidContainer = styled.View`
   background-color: white;
 
+  height: 100%;
   width: 30px;
-  flex: 1;
 
   justify-content: center;
   align-items: center;
-`;
 
-const BottomContainer = styled.View`
-  background-color: white;
-
-  width: 30px;
-  flex: 1;
-
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 `;
 
 const MidLine = styled.View`
@@ -70,95 +50,49 @@ const EndLine = styled.View`
   margin-bottom: 100%;
 `;
 
-function LineList(num) {
-  const rendering = () => {
-    for (let i = 0; i < num.length; i++) {
-      <MidLine />;
-    }
-    return null;
-  };
-
-  return { rendering };
-}
 function BusRoute(props) {
   // eslint-disable-next-line react/prop-types
-  const { num, type, canexpand, visible } = props;
+  const { type, location } = props;
 
-  // 간단히 보기 화면
-
-  if (canexpand) {
+  if (location === "start") {
     if (type === "red") {
       return (
         <Container>
-          <TopContainer>
-            <StartLine />
-            <BusIcon busRoute="red" size="small" absolute />
-          </TopContainer>
-          <MidContainer>
-            <MidLine />
-            <MidLine />
-          </MidContainer>
-          <BottomContainer>
-            <EndLine />
-            <StationIcon busRoute="red" absolute />
-          </BottomContainer>
+          <StartLine />
+          <BusIcon busRoute="red" size="small" absolute />
         </Container>
       );
     }
 
     return (
       <Container>
-        <TopContainer>
-          <StartLine />
-          <BusIcon busRoute="sine" size="small" absolute />
-        </TopContainer>
-        <MidContainer>
-          <MidLine />
-          <MidLine />
-        </MidContainer>
-        <BottomContainer>
-          <EndLine />
-          <StationIcon busRoute="sine" absolute />
-        </BottomContainer>
+        <StartLine />
+        <BusIcon busRoute="sine" size="small" absolute />
       </Container>
     );
   }
-
-  if (num === -1) {
+  if (location === "end") {
     if (type === "red") {
       return (
         <Container>
-          <TopContainer>
-            <StartLine />
-            <BusIcon busRoute="red" size="small" absolute />
-          </TopContainer>
-          <MidContainer>
-            <MidLine />
-          </MidContainer>
-          <BottomContainer>
-            <EndLine />
-            <StationIcon busRoute="red" absolute />
-          </BottomContainer>
+          <EndLine />
+          <StationIcon busRoute="red" absolute />
         </Container>
       );
     }
 
     return (
       <Container>
-        <TopContainer>
-          <StartLine />
-          <BusIcon busRoute="sine" size="small" absolute />
-        </TopContainer>
-        <MidContainer>
-          <MidLine />
-        </MidContainer>
-        <BottomContainer>
-          <EndLine />
-          <StationIcon busRoute="sine" absolute />
-        </BottomContainer>
+        <EndLine />
+        <StationIcon busRoute="sine" absolute />
       </Container>
     );
   }
+  return (
+    <MidContainer>
+      <MidLine />
+    </MidContainer>
+  );
 }
 
 export default BusRoute;
