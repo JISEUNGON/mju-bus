@@ -1,9 +1,38 @@
 /* eslint-disable global-require */
-import React, { useEffect, useState } from "react";
-import { BackHandler, Text, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import { Animated, BackHandler } from "react-native";
 import * as Font from "expo-font";
 import { useQuery } from "@tanstack/react-query";
+import { Ionicons } from "@expo/vector-icons";
 import { busApi, calendarApi } from "../api";
+
+const Circle = styled.View`
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  background-color: #dad8fb;
+`;
+
+const Board = styled.View`
+  background-color: white;
+  width: 35px;
+  height: 36px;
+  position: absolute;
+`;
+
+const Container = styled.View`
+  background-color: white;
+  flex: 1;
+`;
+
+const IconContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  flex: 4;
+`;
 
 const customFonts = {
   "SpoqaHanSansNeo-Bold": require("../assets/fonts/SpoqaHanSansNeo-Bold.ttf"),
@@ -13,6 +42,8 @@ const customFonts = {
 
 // eslint-disable-next-line react/prop-types
 function Splash({ navigation: { navigate } }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
   const [appIsReady, setAppIsReady] = useState(false);
 
   const { isLoading: buslistLoading, data: busListData } = useQuery(
@@ -26,12 +57,21 @@ function Splash({ navigation: { navigate } }) {
   const loading = buslistLoading || calendarLoading;
 
   useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
+  useEffect(() => {
     async function prepare() {
       try {
         // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync(customFonts);
-        // Splash Screen 2초 보여주기
-        // await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Splash Screen 1초 보여주기
+        // eslint-disable-next-line no-promise-executor-return
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -46,10 +86,7 @@ function Splash({ navigation: { navigate } }) {
   useEffect(() => {
     const backAction = () => false;
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction,
-    );
+    BackHandler.addEventListener("hardwareBackPress", backAction);
 
     if (appIsReady && !loading) {
       // This tells the splash screen to hide immediately! If we call this after
@@ -68,9 +105,16 @@ function Splash({ navigation: { navigate } }) {
   }, [appIsReady, busListData, calendarData, loading, navigate]);
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>MBA SPLASH SCREEN!!🚌🚌</Text>
-    </View>
+    <Container>
+      <IconContainer>
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <Circle>
+            <Board />
+            <Ionicons name="ios-bus" size={50} color="#7974E7" />
+          </Circle>
+        </Animated.View>
+      </IconContainer>
+    </Container>
   );
 }
 
