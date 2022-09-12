@@ -84,7 +84,7 @@ function Splash({ navigation: { navigate } }) {
   }, []);
 
   useEffect(() => {
-    const backAction = () => false;
+    const backAction = () => true;
 
     BackHandler.addEventListener("hardwareBackPress", backAction);
 
