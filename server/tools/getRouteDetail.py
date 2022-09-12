@@ -25,7 +25,8 @@ def main():
         "동부경찰서": [37.234764, 127.198835],
         "용인시장": [37.23542, 127.206684],
         "중앙공영주차장": [37.233916, 127.208927],
-        "제1공학관": [37.222711, 127.186784]
+        "제1공학관": [37.222711, 127.186784],
+        "시외버스 정류장" : [37.224183,127.188367]
     }
 
     NAVER_endPoint = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
@@ -33,13 +34,15 @@ def main():
     NAVER_DEST = "&goal="
     NAVER_OPTION = "&option=trafast"
 
-    stations = ["명지대", "상공회의소", "진입로", "명지대역", "진입로(명지대방향)", "이마트", "명지대"]
+    # stations = ["명지대", "상공회의소", "진입로", "명지대역", "진입로(명지대방향)", "이마트", "명지대"]
+    stations = ["진입로(명지대방향)", "시외버스 정류장"]
 
     for i in range(0, len(stations) - 1):
         url = NAVER_endPoint + NAVER_SRC + str(stationInfo[stations[i]][1]) + "," + str(
             stationInfo[stations[i]][0]) + NAVER_DEST + str(stationInfo[stations[i + 1]][1]) + "," + str(
             stationInfo[stations[i + 1]][0]) + NAVER_OPTION
-        getPath(url)
-
+        pathlist = getPath(url)
+        for i, path in enumerate(pathlist):
+            print(f"INSERT INTO path_detail (id, path_info_id, latitude, longitude, path_order) VALUES (null, 19, {path[1]}, {path[0]}, {i + 1});")
 
 main()
