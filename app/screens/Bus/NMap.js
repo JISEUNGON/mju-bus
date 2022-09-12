@@ -25,7 +25,7 @@ function NMap({ routeData, setStation, station }) {
     mapRef.current = {
       ..._ref,
     };
-    _ref.setLayerGroupEnabled('transit', true); // Transit Layer
+    _ref.setLayerGroupEnabled("transit", true); // Transit Layer
   }, []);
 
   useEffect(() => {
@@ -40,8 +40,8 @@ function NMap({ routeData, setStation, station }) {
       <Marker
         key={item.id}
         coordinate={item}
-        caption = {{text: item.name}}
-        pinColor = {item.id === selectedMarker ? 'blue' : 0}
+        caption={{ text: item.name }}
+        pinColor={item.id === station.id ? "blue" : 0}
         onClick={() => {
           mapRef.current.animateToCoordinate(item);
           selectMarker(item.id);
