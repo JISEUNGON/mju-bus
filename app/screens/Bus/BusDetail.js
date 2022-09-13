@@ -6,11 +6,13 @@ import {
 } from "react-native";
 import styled from "styled-components";
 import { Entypo } from "@expo/vector-icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+
 import BusInfoList from "../../components/BusResult/BusInfo";
 import { busApi } from "../../api";
-import NMap from "./NMap";
+
+import ResoultNMap from "../../components/BusResult/ResultNMap";
 import { DeleteSecond } from "../../utils";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -54,10 +56,6 @@ const BusContainer = styled.View`
   flex: 1;
 `;
 
-const ListContainer = styled.View`
-  background-color: blue;
-`;
-
 function CustomNavButton(navigation) {
   return (
     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -93,7 +91,11 @@ function BusDetail({ navigation, route: { params } }) {
     </Loader>
   ) : (
     <Conatiner>
-      <MapContainer />
+      <MapContainer>
+        {console.log("====2222222222222====")}
+        {console.log(busRouteData.stations)}
+        <ResoultNMap busRouteData={busRouteData} />
+      </MapContainer>
       <BusContainer>
         <ScrollView>
           <BusInfoList

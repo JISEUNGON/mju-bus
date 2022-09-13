@@ -86,6 +86,8 @@ function BusList({ navigation, route: { params } }) {
     </Loader>
   ) : (
     <Container>
+      {console.log("====1111111111111====")}
+      {console.log(busRemainData)}
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
           <StatusBar backgroundColor="#f2f4f6" />

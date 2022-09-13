@@ -156,10 +156,14 @@ function BusDetail({ busRoute, busNumber, time }) {
 }
 
 function RouteList(props) {
-  const { stationlist } = props;
+  const { stationlist, moveNum } = props;
+
+  if (moveNum <= 0) {
+    return null;
+  }
 
   const nameList = stationlist.map(name => (
-    <MidContainer>
+    <MidContainer key={name}>
       <BusRoute location="mid" />
       <Station>{name.name}</Station>
     </MidContainer>
@@ -184,10 +188,12 @@ function ReduceList(props) {
 
   const [visible, setVisible] = useState(false);
 
+  const moveNum = Stationnum - 2 <= 0 ? 0 : Stationnum;
+
   function WaitTime(total, remain) {
     const temp = remain % 60 > 30 ? remain / 60 + 1 : remain / 60;
 
-    const result = Math.floor(temp - total);
+    const result = Math.floor(total - temp);
     return result;
   }
 
@@ -212,7 +218,7 @@ function ReduceList(props) {
           <MidContainer>
             <BusRoute type={type} location="mid" />
             <Station>
-              {WaitTime(totaltime, time)}분, {Stationnum}개 정류장 이동
+              {WaitTime(totaltime, time)}분, {moveNum}개 정류장 이동
             </Station>
             <TouchableOpacity
               onPress={() => {
@@ -226,7 +232,9 @@ function ReduceList(props) {
               )}
             </TouchableOpacity>
           </MidContainer>
-          {visible === true && <RouteList stationlist={stationlist} />}
+          {visible === true && (
+            <RouteList stationlist={stationlist} moveNum={moveNum} />
+          )}
           <EndContainer>
             <BusRoute type={type} visible={visible} location="end" />
             <Station>{end}</Station>
@@ -260,6 +268,8 @@ function BusInfoList(props) {
 
     // 마지막 정류장 제거 작업
     stationlist.pop();
+    // 첫번째 정류장 제거 작업
+    stationlist.shift();
 
     return (
       <ReduceList

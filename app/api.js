@@ -41,3 +41,13 @@ export const stationApi = {
     ).then(res => res.json());
   },
 };
+
+export const pathApi = {
+  path: ({ queryKey }) => {
+    const [, dest, src] = queryKey;
+
+    return fetch(`${URL}/path/?dest=${dest}&src=${src}`).then(res =>
+      res.json(),
+    );
+  },
+};
