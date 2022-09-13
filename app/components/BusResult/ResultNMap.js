@@ -26,10 +26,12 @@ function setCenter(station) {
 }
 
 function ResoultNMap({ busRouteData }) {
+  console.log("////////////////");
   const { stations } = busRouteData;
-
-  console.log("-------------");
   console.log(stations);
+  console.log(stations.length);
+  console.log(stations[0]);
+  console.log(stations[0].id);
 
   // Path 데이터 불러오기
   const { isLoading: busPathLoading, data: busPathData } = useQuery(
@@ -59,6 +61,7 @@ function ResoultNMap({ busRouteData }) {
     const result = data.map((name, index) =>
       index !== data.length - 1 ? (
         <Polyline
+          strokeColor="#ff0000"
           key={name.path_order}
           coordinates={[data[index], data[index + 1]]}
         />
@@ -74,7 +77,6 @@ function ResoultNMap({ busRouteData }) {
     </Loader>
   ) : (
     <Container>
-      {console.log("------4-------")}
       {console.log(busPathData)}
       <NaverMapView
         ref={handleSetMapRef}
@@ -89,4 +91,5 @@ function ResoultNMap({ busRouteData }) {
     </Container>
   );
 }
+
 export default ResoultNMap;

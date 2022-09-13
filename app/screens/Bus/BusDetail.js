@@ -93,7 +93,7 @@ function BusDetail({ navigation, route: { params } }) {
     <Conatiner>
       <MapContainer>
         {console.log("====2222222222222====")}
-        {console.log(busRouteData.stations)}
+        {console.log(busRouteData)}
         <ResoultNMap busRouteData={busRouteData} />
       </MapContainer>
       <BusContainer>

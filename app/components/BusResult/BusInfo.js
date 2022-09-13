@@ -163,7 +163,7 @@ function RouteList(props) {
   }
 
   const nameList = stationlist.map(name => (
-    <MidContainer key={name}>
+    <MidContainer>
       <BusRoute location="mid" />
       <Station>{name.name}</Station>
     </MidContainer>
