@@ -75,10 +75,6 @@ function BusList({ navigation, route: { params } }) {
     ["remain", parseInt(stationId.id, 10), destId(), redBus, toSchool],
     stationApi.remain,
   );
-  console.log("===================");
-  console.log(busRemainData);
-
-  const { startid } = busRemainData.id;
 
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow
@@ -112,8 +108,6 @@ function BusList({ navigation, route: { params } }) {
                       start,
                       end,
                       toSchool,
-                      startid,
-                      dest,
                     },
                   })
                 }
