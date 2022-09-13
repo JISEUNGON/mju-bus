@@ -263,7 +263,6 @@ function BusInfoList(props) {
 
   if (canexpand) {
     // 마지막 정류장 재거 작업
-    const lastname = stationlist[stationlist.length - 1].name;
     const StationNum = stationlist.length;
 
     // 마지막 정류장 제거 작업
@@ -278,7 +277,7 @@ function BusInfoList(props) {
         departtime={departtime}
         type={type}
         start={start}
-        end={lastname}
+        end={end}
         num={num}
         time={time}
         stationlist={stationlist}

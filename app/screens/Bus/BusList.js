@@ -75,9 +75,17 @@ function BusList({ navigation, route: { params } }) {
     ["remain", parseInt(stationId.id, 10), destId(), redBus, toSchool],
     stationApi.remain,
   );
+  console.log("===================");
+  console.log(busRemainData);
+
+  const { startid } = busRemainData.id;
 
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow
+
+  // 현재시간
+  const date = new Date();
+  const cur_time = `${date.getHours()}:${date.getMinutes()}`;
 
   return busRemainLoading ? (
     // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
@@ -103,14 +111,17 @@ function BusList({ navigation, route: { params } }) {
                       totaltime: CalculatorTime(item.depart_at, item.arrive_at),
                       start,
                       end,
+                      toSchool,
+                      startid,
+                      dest,
                     },
                   })
                 }
               >
                 <BusInfoList
-                  totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
+                  totaltime={CalculatorTime(cur_time, item.arrive_at)}
                   arrivlatime={DeleteSecond(item.arrive_at)}
-                  departtime={DeleteSecond(item.depart_at)}
+                  departtime={DeleteSecond(cur_time)}
                   start={start}
                   end={end}
                   type={item.id >= 200 ? "red" : "sine"}
