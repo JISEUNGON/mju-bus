@@ -14,4 +14,6 @@ export const stationId = {
   MyongHyunGwan: { id: 26, name: "생활관(명현관)" },
   JinIpRo: { id: 4, name: "진입로(상행)" },
   YongInTerminal: { id: 200, name: "용인터미널" },
+  SamGongHakGwan: { id: 6, name: "3공학관" },
+  SiweBusStation: { id: 201, name: "명지대 시외버스 정류장" },
 };

@@ -150,7 +150,7 @@ function FromSchool({ navigation: { navigate } }) {
               params: {
                 toSchool: false,
                 redBus: false,
-                stationId: stationId.ChapleGwan,
+                src: stationId.ChapleGwan,
                 dest: station,
               },
             })

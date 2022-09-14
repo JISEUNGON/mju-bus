@@ -148,7 +148,8 @@ function ToSchool({ navigation: { navigate } }) {
               params: {
                 toSchool: true,
                 redBus: false,
-                stationId: station,
+                dest: undefined,
+                src: station,
               },
             })
           }
