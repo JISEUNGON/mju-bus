@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import styled from "styled-components";
 import { Entypo } from "@expo/vector-icons";
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import BusInfoList from "../../components/BusResult/BusInfo";
@@ -47,7 +47,7 @@ const MapContainer = styled.View`
 const BusContainer = styled.View`
   background-color: white;
   width: ${SCREEN_WIDTH}px;
-  height: 220px;
+  height: 230px;
   align-items: flex-end;
   padding-bottom: 10px;
 `;
@@ -63,8 +63,7 @@ function CustomNavButton(navigation) {
 
 function BusDetail({ navigation, route: { params } }) {
   // PARAMS DATA
-  const { item, totaltime, toSchool, src, dest, start, end, redBus } =
-    params.params;
+  const { item, totaltime, toSchool, src, dest, redBus } = params.params;
 
   function getPathTarget() {
     if (toSchool) {
@@ -122,8 +121,15 @@ function BusDetail({ navigation, route: { params } }) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function TitleName() {
-    return `${start}  →  ${end}`;
+    return `${src.name}    →   ${getLastPoint().name}`;
   }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: TitleName(),
+      headerLeft: () => CustomNavButton(navigation),
+    });
+  }, [TitleName, navigation]);
 
   function getItem() {
     const busItem = busRemainData.busList.filter(bus => bus.id === item.id);
@@ -132,13 +138,6 @@ function BusDetail({ navigation, route: { params } }) {
     }
     return busItem[0];
   }
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: TitleName(),
-      headerLeft: () => CustomNavButton(navigation),
-    });
-  }, [TitleName, navigation]);
 
   const lodaing =
     busRouteLoading ||

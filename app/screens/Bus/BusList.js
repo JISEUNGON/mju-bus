@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
 import {
@@ -100,7 +100,7 @@ function BusList({ navigation, route: { params } }) {
     return `${src.name}   →  ${dest.name}`;
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       title: SetStartAndDest(),
       headerLeft: () => CustomNavButton(navigation),
@@ -136,8 +136,6 @@ function BusList({ navigation, route: { params } }) {
                       redBus,
                       src,
                       dest,
-                      start,
-                      end,
                       busRemainData,
                     },
                   });
