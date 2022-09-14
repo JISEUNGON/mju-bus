@@ -8,7 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
 import { stationApi } from "../../api";
-import { CalculatorTime, DeleteSecond, GetRouteTableData } from "../../utils";
+import { CalculatorTime, DeleteSecond } from "../../utils";
 
 const Loader = styled.View`
   flex: 1;
@@ -38,7 +38,7 @@ function CustomNavButton(navigation) {
 // eslint-disable-next-line react/prop-types
 function BusList({ navigation, route: { params } }) {
   // PARMAS
-  const { stationId, dest, redBus, toSchool } = params;
+  const { src, dest, redBus, toSchool } = params;
 
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -46,13 +46,13 @@ function BusList({ navigation, route: { params } }) {
   // 목적지,출발지 설정
   function SetStartAndDest() {
     if (toSchool) {
-      setStart(stationId.name);
+      setStart(src.name);
       setEnd("명지대학교");
-      return `${stationId.name}   →   명지대학교`;
+      return `${src.name}   →   명지대학교`;
     }
-    setStart(stationId.name);
+    setStart(src.name);
     setEnd(dest.name);
-    return `${stationId.name}   →  ${dest.name}`;
+    return `${src.name}   →  ${dest.name}`;
   }
 
   useEffect(() => {
@@ -72,16 +72,12 @@ function BusList({ navigation, route: { params } }) {
 
   // Remain 데이터 불러오기
   const { isLoading: busRemainLoading, data: busRemainData } = useQuery(
-    ["remain", parseInt(stationId.id, 10), destId(), redBus, toSchool],
+    ["remain", parseInt(src.id, 10), destId(), redBus, toSchool],
     stationApi.remain,
   );
 
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow
-
-  // 현재시간
-  const date = new Date();
-  const cur_time = `${date.getHours()}:${date.getMinutes()}`;
 
   return busRemainLoading ? (
     // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
@@ -90,8 +86,6 @@ function BusList({ navigation, route: { params } }) {
     </Loader>
   ) : (
     <Container>
-      {console.log("====1111111111111====")}
-      {console.log(busRemainData)}
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
           <StatusBar backgroundColor="#f2f4f6" />
@@ -105,19 +99,20 @@ function BusList({ navigation, route: { params } }) {
                     params: {
                       item,
                       totaltime: CalculatorTime(item.depart_at, item.arrive_at),
+                      toSchool,
+                      src,
+                      dest,
                       start,
                       end,
-                      toSchool,
-                      dest,
                       busRemainData,
                     },
                   })
                 }
               >
                 <BusInfoList
-                  totaltime={CalculatorTime(cur_time, item.arrive_at)}
+                  totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
                   arrivlatime={DeleteSecond(item.arrive_at)}
-                  departtime={DeleteSecond(cur_time)}
+                  departtime={DeleteSecond(item.depart_at)}
                   start={start}
                   end={end}
                   type={item.id >= 200 ? "red" : "sine"}

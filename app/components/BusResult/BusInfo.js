@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState, useRef } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import { createIconSetFromFontello, Entypo } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import BusRoute from "./BusRoute";
 import Label from "../Label";
 import Timer from "../Timer";
@@ -78,18 +78,6 @@ const MidContainer = styled.View`
 
   flex-direction: row;
   align-items: center;
-
-  height: 30px;
-`;
-
-const RouteContainer = styled.View`
-  flex: 1;
-  background-color: white;
-
-  flex-direction: column;
-  align-items: flex-start;
-
-  margin-left: 10px;
 
   height: 30px;
 `;
@@ -190,13 +178,6 @@ function ReduceList(props) {
 
   const moveNum = Stationnum - 2 <= 0 ? 0 : Stationnum;
 
-  function WaitTime(total, remain) {
-    const temp = remain % 60 > 30 ? remain / 60 + 1 : remain / 60;
-
-    const result = Math.floor(total - temp);
-    return result;
-  }
-
   return (
     <Container>
       <Topcontainer>
@@ -218,7 +199,7 @@ function ReduceList(props) {
           <MidContainer>
             <BusRoute type={type} location="mid" />
             <Station>
-              {WaitTime(totaltime, time)}분, {moveNum}개 정류장 이동
+              {totaltime}분, {moveNum}개 정류장 이동
             </Station>
             <TouchableOpacity
               onPress={() => {

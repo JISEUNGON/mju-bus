@@ -44,10 +44,10 @@ export const stationApi = {
 
 export const pathApi = {
   path: ({ queryKey }) => {
-    const [, dest, src] = queryKey;
+    const [, busId, pathTarget, toSchool] = queryKey;
 
-    return fetch(`${URL}/path/?dest=${dest}&src=${src}`).then(res =>
-      res.json(),
-    );
+    return fetch(
+      `${URL}/bus/${busId}/path?station=${pathTarget}&toSchool=${toSchool}`,
+    ).then(res => res.json());
   },
 };

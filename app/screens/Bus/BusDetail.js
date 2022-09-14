@@ -1,20 +1,21 @@
+/* eslint-disable react/prop-types */
 import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
   ScrollView,
-  TextComponent,
 } from "react-native";
 import styled from "styled-components";
 import { Entypo } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import BusInfoList from "../../components/BusResult/BusInfo";
-import { busApi, pathApi } from "../../api";
+import { busApi, pathApi, stationApi } from "../../api";
 
 import ResoultNMap from "../../components/BusResult/ResultNMap";
 import { DeleteSecond } from "../../utils";
+import { stationId } from "../../id";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -48,9 +49,7 @@ const BusContainer = styled.View`
   background-color: white;
   width: ${SCREEN_WIDTH}px;
   height: auto;
-
   align-items: flex-end;
-
   border-color: gray;
   border-top-width: 1px;
 
@@ -67,25 +66,27 @@ function CustomNavButton(navigation) {
 
 function BusDetail({ navigation, route: { params } }) {
   // PARAMS DATA
-  const { item, start, end, totaltime, toSchool, dest, busRemainData } =
-    params.params;
+  const { item, totaltime, toSchool, src, dest, start, end } = params.params;
 
-  function getId() {
+  function getPathTarget() {
     if (toSchool) {
-      // 목적지 id분류 작업
-      if (item.id === 10 || item.id === 20) {
-        return 6;
-      }
-      if (item.id === 30) {
-        return 1;
-      }
-      return 201;
+      return src.id;
     }
     return dest.id;
   }
-  console.log("출발지 목적지 id");
-  console.log(getId());
-  console.log(item.id);
+
+  function getLastPoint() {
+    if (toSchool) {
+      if (item.id === 10 || item.id === 20) {
+        return stationId.SamGongHakGwan;
+      }
+      if (item.id === 30) {
+        return stationId.ChapleGwan;
+      }
+      return stationId.SiweBusStation;
+    }
+    return dest;
+  }
 
   // Route 데이터 불러오기
   const { isLoading: busRouteLoading, data: busRouteData } = useQuery(
@@ -95,18 +96,14 @@ function BusDetail({ navigation, route: { params } }) {
 
   // Path 데이터 불러오기
   const { isLoading: busPathLoading, data: busPathData } = useQuery(
-    ["path", getId(), busRemainData.id],
+    ["path", item.id, getPathTarget(), toSchool],
     pathApi.path,
   );
-
-  /*
-  console.log(busRouteData.stations.length - 1);
-    console.log(busRouteData.stations[busRouteData.stations.length - 1].id);
-  const [endname, setEndName] = useState(dest.name);
-  if (toSchool) {
-    setEndName(busRouteData[busRouteData.length - 1].name);
-  }
-  */
+  // 시작 정류장 데이터 불러오기
+  const { isLoading: startStationLoading, data: startStationData } = useQuery(
+    ["station", src.id],
+    stationApi.station,
+  );
 
   function TitleName() {
     return `${start}  →  ${end}`;
@@ -119,28 +116,8 @@ function BusDetail({ navigation, route: { params } }) {
     });
   }, []);
 
-  /*
-  const [isStart, setIsStart] = useState(false);
+  const lodaing = busRouteLoading || busPathLoading || startStationLoading;
 
-  // route 시작점 정하기
-  if (item.id < 200) {
-    if (!toSchool) {
-      busRouteLoading.stations.reverse();
-    }
-
-    busRouteLoading.stations.map(s, index =>
-      (busRouteLoading.stations[index].id === item.id
-        ? setIsStart(true)
-        : null)(
-        isStart === true ? null : busRouteLoading.stations.sclice(index, index),
-      ),
-    );
-  }
-  */
-
-  const lodaing = busPathLoading || busRouteLoading;
-
-  /*        <ResoultNMap busRouteData={busRouteData} /> */
   return lodaing ? (
     <Loader>
       <ActivityIndicator />
@@ -148,11 +125,7 @@ function BusDetail({ navigation, route: { params } }) {
   ) : (
     <Conatiner>
       <MapContainer>
-        {console.log("====2222222222222====routeData")}
-        {console.log(busRouteData)}
-        {console.log("====2222222222222====pathData")}
-        {console.log(busPathData)}
-        <ResoultNMap busRouteData={busRouteData} />
+        <ResoultNMap startPoint={startStationData} busPathData={busPathData} />
       </MapContainer>
       <BusContainer>
         <ScrollView>
@@ -161,12 +134,12 @@ function BusDetail({ navigation, route: { params } }) {
             arrivlatime={DeleteSecond(item.arrive_at)}
             departtime={DeleteSecond(item.depart_at)}
             start={start}
-            end={busRouteData.stations[busRouteData.stations.length - 1].name}
+            end={getLastPoint().name}
             type={item.id >= 200 ? "red" : "sine"}
             num={item.name}
             time={item.remains}
             canexpand
-            stationlist={busRouteData.stations}
+            stationlist={busRouteData?.stations}
           />
         </ScrollView>
       </BusContainer>

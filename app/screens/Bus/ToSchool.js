@@ -149,7 +149,7 @@ function ToSchool({ navigation: { navigate } }) {
                 toSchool: true,
                 redBus: false,
                 dest: undefined,
-                stationId: station,
+                src: station,
               },
             })
           }

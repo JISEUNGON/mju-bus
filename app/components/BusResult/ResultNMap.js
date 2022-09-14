@@ -1,13 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useRef } from "react";
 import styled from "styled-components";
-import NaverMapView, { Marker, Polyline } from "react-native-nmap";
-
-const Loader = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
+import NaverMapView, { Polyline } from "react-native-nmap";
 
 const Container = styled.View`
   width: 100%;
@@ -22,22 +16,13 @@ function setCenter(station) {
   };
 }
 
-function ResoultNMap({ busRouteData }) {
+function ResoultNMap({ startPoint, busPathData }) {
   const mapRef = useRef(null);
   const handleSetMapRef = useCallback(_ref => {
     mapRef.current = {
       ..._ref,
     };
   }, []);
-
-  function renderMarker(rm) {
-    console.log("------data-----");
-    console.log(rm);
-    const Markers = rm.map(s => (
-      <Marker key={s.id} coordinate={s} width={25} height={32} />
-    ));
-    return Markers;
-  }
 
   function renderLine(data) {
     const result = data.map((name, index) =>
@@ -51,22 +36,17 @@ function ResoultNMap({ busRouteData }) {
     );
     return result;
   }
-
-  /*    
-      center={setCenter(busRouteData.stations[0])}
-              {renderLine(busPathData)}
-        {renderMarker(busRouteData)}
-      */
   return (
     <Container>
       <NaverMapView
         ref={handleSetMapRef}
         style={{ width: "100%", height: "100%" }}
         showsMyLocationButton={false}
-        center={setCenter(busRouteData.stations[1])}
+        center={setCenter(startPoint)}
         useTextureView
-      />
-      {renderMarker(busRouteData.stations)}
+      >
+        {renderLine(busPathData)}
+      </NaverMapView>
     </Container>
   );
 }
