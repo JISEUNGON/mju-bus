@@ -8,7 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
 import { stationApi } from "../../api";
-import { CalculatorTime, DeleteSecond } from "../../utils";
+import { CalculatorTime, DeleteSecond, GetRouteTableData } from "../../utils";
 
 const Loader = styled.View`
   flex: 1;
@@ -108,6 +108,8 @@ function BusList({ navigation, route: { params } }) {
                       start,
                       end,
                       toSchool,
+                      dest,
+                      busRemainData,
                     },
                   })
                 }

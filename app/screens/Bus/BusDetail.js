@@ -3,6 +3,7 @@ import {
   Dimensions,
   ActivityIndicator,
   ScrollView,
+  TextComponent,
 } from "react-native";
 import styled from "styled-components";
 import { Entypo } from "@expo/vector-icons";
@@ -10,10 +11,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import BusInfoList from "../../components/BusResult/BusInfo";
-import { busApi } from "../../api";
+import { busApi, pathApi } from "../../api";
 
 import ResoultNMap from "../../components/BusResult/ResultNMap";
-import { DeleteSecond, PathData } from "../../utils";
+import { DeleteSecond } from "../../utils";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -66,7 +67,25 @@ function CustomNavButton(navigation) {
 
 function BusDetail({ navigation, route: { params } }) {
   // PARAMS DATA
-  const { item, start, end, totaltime, toSchool } = params.params;
+  const { item, start, end, totaltime, toSchool, dest, busRemainData } =
+    params.params;
+
+  function getId() {
+    if (toSchool) {
+      // 목적지 id분류 작업
+      if (item.id === 10 || item.id === 20) {
+        return 6;
+      }
+      if (item.id === 30) {
+        return 1;
+      }
+      return 201;
+    }
+    return dest.id;
+  }
+  console.log("출발지 목적지 id");
+  console.log(getId());
+  console.log(item.id);
 
   // Route 데이터 불러오기
   const { isLoading: busRouteLoading, data: busRouteData } = useQuery(
@@ -74,19 +93,12 @@ function BusDetail({ navigation, route: { params } }) {
     busApi.route,
   );
 
-  /*
-
-
   // Path 데이터 불러오기
   const { isLoading: busPathLoading, data: busPathData } = useQuery(
-    [
-      "path",
-      busRouteData.stations[busRouteData.stations.length - 1].id,
-      item.id,
-    ],
-    busApi.route,
+    ["path", getId(), busRemainData.id],
+    pathApi.path,
   );
-*/
+
   /*
   console.log(busRouteData.stations.length - 1);
     console.log(busRouteData.stations[busRouteData.stations.length - 1].id);
@@ -126,16 +138,21 @@ function BusDetail({ navigation, route: { params } }) {
   }
   */
 
-  return busRouteLoading ? (
+  const lodaing = busPathLoading || busRouteLoading;
+
+  /*        <ResoultNMap busRouteData={busRouteData} /> */
+  return lodaing ? (
     <Loader>
       <ActivityIndicator />
     </Loader>
   ) : (
     <Conatiner>
       <MapContainer>
-        <ResoultNMap busRouteData={busRouteData} />
         {console.log("====2222222222222====routeData")}
         {console.log(busRouteData)}
+        {console.log("====2222222222222====pathData")}
+        {console.log(busPathData)}
+        <ResoultNMap busRouteData={busRouteData} />
       </MapContainer>
       <BusContainer>
         <ScrollView>
