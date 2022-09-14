@@ -133,8 +133,8 @@ function BusDetail({ navigation, route: { params } }) {
             totaltime={totaltime}
             arrivlatime={DeleteSecond(item.arrive_at)}
             departtime={DeleteSecond(item.depart_at)}
-            start={start}
-            end={getLastPoint().name}
+            start={src}
+            end={getLastPoint()}
             type={item.id >= 200 ? "red" : "sine"}
             num={item.name}
             time={item.remains}

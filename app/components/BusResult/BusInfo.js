@@ -120,6 +120,10 @@ const TimerText = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
 `;
 
+const ButtonContainer = styled.TouchableOpacity`
+  flex-direction: row;
+`;
+
 // eslint-disable-next-line react/prop-types
 function BusDetail({ busRoute, busNumber, time }) {
   if (busRoute === "sine") {
@@ -150,10 +154,10 @@ function RouteList(props) {
     return null;
   }
 
-  const nameList = stationlist.map(name => (
-    <MidContainer>
+  const nameList = stationlist.map(station => (
+    <MidContainer key={station.id}>
       <BusRoute location="mid" />
-      <Station>{name.name}</Station>
+      <Station>{station.name}</Station>
     </MidContainer>
   ));
 
@@ -171,12 +175,10 @@ function ReduceList(props) {
     num,
     time,
     stationlist,
-    Stationnum,
+    StationNum,
   } = props;
 
   const [visible, setVisible] = useState(false);
-
-  const moveNum = Stationnum - 2 <= 0 ? 0 : Stationnum;
 
   return (
     <Container>
@@ -198,23 +200,23 @@ function ReduceList(props) {
           </MidContainer>
           <MidContainer>
             <BusRoute type={type} location="mid" />
-            <Station>
-              {totaltime}분, {moveNum}개 정류장 이동
-            </Station>
-            <TouchableOpacity
+            <ButtonContainer
               onPress={() => {
                 setVisible(!visible);
               }}
             >
+              <Station>
+                {totaltime}분, {StationNum}개 정류장 이동
+              </Station>
               {visible === true ? (
-                <Entypo name="chevron-small-up" size={24} color="gray" />
+                <Entypo name="chevron-small-up" size={20} color="gray" />
               ) : (
-                <Entypo name="chevron-small-down" size={24} color="gray" />
+                <Entypo name="chevron-small-down" size={20} color="gray" />
               )}
-            </TouchableOpacity>
+            </ButtonContainer>
           </MidContainer>
           {visible === true && (
-            <RouteList stationlist={stationlist} moveNum={moveNum} />
+            <RouteList stationlist={stationlist} moveNum={StationNum} />
           )}
           <EndContainer>
             <BusRoute type={type} visible={visible} location="end" />
@@ -224,6 +226,12 @@ function ReduceList(props) {
       </Bottomontainer>
     </Container>
   );
+}
+
+function getMidStations(stationlist, start, end) {
+  const startIndex = stationlist.map(station => station.id).indexOf(start.id);
+  const endIndex = stationlist.map(station => station.id).lastIndexOf(end.id);
+  return stationlist.slice(startIndex + 1, endIndex);
 }
 
 function BusInfoList(props) {
@@ -243,13 +251,10 @@ function BusInfoList(props) {
   const { canexpand } = props;
 
   if (canexpand) {
+    // 정류장
+    const MidStations = getMidStations(stationlist, start, end);
     // 마지막 정류장 재거 작업
-    const StationNum = stationlist.length;
-
-    // 마지막 정류장 제거 작업
-    stationlist.pop();
-    // 첫번째 정류장 제거 작업
-    stationlist.shift();
+    const StationNum = MidStations.length + 1;
 
     return (
       <ReduceList
@@ -257,12 +262,12 @@ function BusInfoList(props) {
         arrivlatime={arrivlatime}
         departtime={departtime}
         type={type}
-        start={start}
-        end={end}
+        start={start.name}
+        end={end.name}
         num={num}
         time={time}
-        stationlist={stationlist}
-        Stationnum={StationNum}
+        stationlist={MidStations}
+        StationNum={StationNum}
       />
     );
   }
