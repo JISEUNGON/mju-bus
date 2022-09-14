@@ -88,6 +88,7 @@ function BusList({ navigation, route: { params } }) {
   };
 
   // 목적지,출발지 설정
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function SetStartAndDest() {
     if (toSchool) {
       setStart(src.name);
@@ -104,7 +105,7 @@ function BusList({ navigation, route: { params } }) {
       title: SetStartAndDest(),
       headerLeft: () => CustomNavButton(navigation),
     });
-  }, []);
+  }, [SetStartAndDest, navigation]);
 
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow

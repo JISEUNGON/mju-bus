@@ -120,13 +120,14 @@ function BusDetail({ navigation, route: { params } }) {
     stationApi.remain,
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   function TitleName() {
     return `${start}  →  ${end}`;
   }
 
   function getItem() {
     const busItem = busRemainData.busList.filter(bus => bus.id === item.id);
-    if (busItem.length === 0) {
+    if (busItem.length === 0 || busItem[0] === undefined) {
       navigation.goBack();
     }
     return busItem[0];
@@ -137,7 +138,7 @@ function BusDetail({ navigation, route: { params } }) {
       title: TitleName(),
       headerLeft: () => CustomNavButton(navigation),
     });
-  }, []);
+  }, [TitleName, navigation]);
 
   const lodaing =
     busRouteLoading ||
