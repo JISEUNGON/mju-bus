@@ -17,7 +17,7 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
     @Query(value = "SELECT bus_id as busId, station_id as stationId, MIN(expected_at) as expectedAt" +
             "       FROM bus_arrival" +
             "       WHERE station_id = :station_id" +
-            "       AND expected_at > NOW()" +
+            "       AND expected_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE )" +
             "       GROUP BY bus_id;", nativeQuery = true)
     List<BusArrivalDto> findBusArrivalFromSchool(@Param("station_id")Long stationId);
 
@@ -30,7 +30,7 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
             "           GROUP BY bus_id " +
             "       ) temp ON temp.bus_id = ba.bus_id AND temp.station_id = ba.station_id AND temp.lastest_created_at = ba.created_at " +
             "       GROUP BY ba.station_id, ba.bus_id, ba.created_at " +
-            "       HAVING expectedAt > NOW();", nativeQuery = true)
+            "       HAVING expectedAt > DATE_SUB(NOW(), INTERVAL 2 MINUTE );", nativeQuery = true)
     List<BusArrivalDto> findBusArrivalByStationId(@Param("station_id")Long stationId);
 
     @Query(value = "SELECT ba.station_id as stationId, ba.bus_id as busId, MIN(ba.expected_at) as expectedAt, ba.created_at as createdAt" +
@@ -43,7 +43,7 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
             "       ) temp ON temp.bus_id = ba.bus_id AND temp.station_id = ba.station_id AND temp.lastest_created_at = ba.created_at" +
             "       WHERE ba.sid = ba.pre_bus_arrival_sid" +
             "       GROUP BY ba.station_id, ba.bus_id, ba.created_at " +
-            "       HAVING expectedAt > NOW()" +
+            "       HAVING expectedAt > DATE_SUB(NOW(), INTERVAL 2 MINUTE )" +
             "       AND ba.bus_id >= 200", nativeQuery = true)
     List<BusArrivalDto> findRedBusArrivalByStationId(@Param("station_id")Long stationId);
 
@@ -53,7 +53,7 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
     @Query(value = "SELECT station_id as stationId, bus_id as busId, MIN(expected_at) as expectedAt" +
             "       FROM bus_arrival" +
             "       WHERE station_id = 1" +
-            "       AND expected_at >= NOW()" +
+            "       AND expected_at >= DATE_SUB(NOW(), INTERVAL 2 MINUTE )" +
             "       GROUP BY bus_id", nativeQuery = true)
     List<BusArrivalDto> findShuttleBusFromStart();
 }
