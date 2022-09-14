@@ -41,15 +41,15 @@ const MapContainer = styled.View`
   background-color: white;
   width: 100%;
   height: auto;
-
   flex: 1.5;
 `;
 
 const BusContainer = styled.View`
   background-color: white;
   width: ${SCREEN_WIDTH}px;
-  height: 250px;
+  height: 220px;
   align-items: flex-end;
+  padding-bottom: 10px;
 `;
 
 function CustomNavButton(navigation) {
@@ -124,7 +124,7 @@ function BusDetail({ navigation, route: { params } }) {
         <ResoultNMap startPoint={startStationData} busPathData={busPathData} />
       </MapContainer>
       <BusContainer>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <BusInfoList
             totaltime={totaltime}
             arrivlatime={DeleteSecond(item.arrive_at)}
