@@ -48,12 +48,8 @@ const MapContainer = styled.View`
 const BusContainer = styled.View`
   background-color: white;
   width: ${SCREEN_WIDTH}px;
-  height: auto;
+  height: 250px;
   align-items: flex-end;
-  border-color: gray;
-  border-top-width: 1px;
-
-  flex: 1;
 `;
 
 function CustomNavButton(navigation) {

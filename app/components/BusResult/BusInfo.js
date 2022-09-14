@@ -22,6 +22,18 @@ const Container = styled.View`
   padding-bottom: 10px;
 `;
 
+const ExpandContainer = styled.View`
+  background-color: white;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+
 const InfoContainer = styled.View`
   background-color: white;
   height: auto;
@@ -45,7 +57,7 @@ const Bottomontainer = styled.View`
   background-color: white;
   height: auto;
   flex-direction: row;
-
+  margin-top: 5px;
   padding-right: 32px;
 `;
 
@@ -115,7 +127,7 @@ const BusNumber = styled.Text`
 
 const TimerText = styled.Text`
   margin-left: 10px;
-  color: gray;
+  color: #ff4545;
   font-size: 12px;
   font-family: "SpoqaHanSansNeo-Medium";
 `;
@@ -181,7 +193,7 @@ function ReduceList(props) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <Container>
+    <ExpandContainer>
       <Topcontainer>
         <TotalTime>{totaltime}분</TotalTime>
         <ArrivalTime>{departtime}</ArrivalTime>
@@ -224,7 +236,7 @@ function ReduceList(props) {
           </EndContainer>
         </InfoContainer>
       </Bottomontainer>
-    </Container>
+    </ExpandContainer>
   );
 }
 
