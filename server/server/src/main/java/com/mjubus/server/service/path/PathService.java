@@ -67,8 +67,10 @@ public class PathService {
         offset = 1;
         for (int j = 0; j < pathStations.size(); j++) {
             StationDTO stationDTO = pathStations.get(j);
-            if (Objects.equals(stationDTO.getId(), station.getId()))
+            if (Objects.equals(stationDTO.getId(), station.getId())) {
                 i = j;
+                break;
+            }
         }
 
         if (i == -1) throw new StationNotFoundException(station.getId());
@@ -82,7 +84,7 @@ public class PathService {
             }
         }
         else {
-            for(int j = 0; j < i - 1; j++) {
+            for(int j = 0; j <= i - 1; j++) {
                 StationDTO src = pathStations.get(j);
                 StationDTO dest = pathStations.get(j + 1);
                 pathDtoList.addAll(findPathListBetween(src, dest));
