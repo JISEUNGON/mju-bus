@@ -2,12 +2,16 @@ package com.mjubus.server.controller;
 
 
 import com.mjubus.server.domain.Bus;
+import com.mjubus.server.domain.Station;
 import com.mjubus.server.dto.BusStatusDto;
 import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.busListDto.BusList;
 import com.mjubus.server.dto.busRoute.BusRouteDto;
+import com.mjubus.server.dto.stationPath.PathDto;
 import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
+import com.mjubus.server.service.path.PathService;
+import com.mjubus.server.service.station.StationService;
 import com.mjubus.server.util.DateHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,10 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +32,12 @@ public class BusController {
 
     @Autowired
     private BusTimeTableService busTimeTableService;
+
+    @Autowired
+    private PathService pathService;
+
+    @Autowired
+    private StationService stationService;
 
     @GetMapping("/list")
     @ApiOperation(value = "운행중인 버스 리스트를 받는다.")
@@ -85,5 +92,19 @@ public class BusController {
     @ResponseBody
     public BusRouteDto stationList(@PathVariable(value = "busID") Long busId) {
         return busService.getRouteByBusId(busId);
+    }
+
+    @GetMapping("/{busId}/path")
+    @ApiOperation(value = "출발지와 정류장 사이의 경로를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "Station Id가 정확하지 않은 경우"),
+            @ApiResponse(responseCode = "500", description = "RequestParam 개수가 일치하지 않는 경우")
+    })
+    @ResponseBody
+    public List<PathDto> getPathBetweenStation(@PathVariable(value = "busId")Long busId, @RequestParam(value = "station")Long stationId, @RequestParam(value = "toSchool")Boolean toSchool) {
+        Bus bus = busService.findBusByBusId(busId);
+        Station station = stationService.findStationById(stationId);
+        return pathService.findPathList(bus, station, toSchool);
     }
 }
