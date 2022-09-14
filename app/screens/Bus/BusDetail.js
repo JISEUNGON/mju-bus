@@ -54,6 +54,7 @@ const BusContainer = styled.View`
 
 function CustomNavButton(navigation) {
   return (
+    // eslint-disable-next-line react/destructuring-assignment
     <TouchableOpacity onPress={() => navigation.goBack()}>
       <Entypo name="chevron-left" size={24} color="gray" />
     </TouchableOpacity>
@@ -62,7 +63,8 @@ function CustomNavButton(navigation) {
 
 function BusDetail({ navigation, route: { params } }) {
   // PARAMS DATA
-  const { item, totaltime, toSchool, src, dest, start, end } = params.params;
+  const { item, totaltime, toSchool, src, dest, start, end, redBus } =
+    params.params;
 
   function getPathTarget() {
     if (toSchool) {
@@ -70,6 +72,13 @@ function BusDetail({ navigation, route: { params } }) {
     }
     return dest.id;
   }
+
+  const destId = () => {
+    if (dest === undefined) {
+      return undefined;
+    }
+    return dest.id;
+  };
 
   function getLastPoint() {
     if (toSchool) {
@@ -101,8 +110,26 @@ function BusDetail({ navigation, route: { params } }) {
     stationApi.station,
   );
 
+  // Remain 데이터 불러오기
+  const {
+    isLoading: busRemainLoading,
+    isRefetching,
+    data: busRemainData,
+  } = useQuery(
+    ["remain", parseInt(src.id, 10), destId(), redBus, toSchool],
+    stationApi.remain,
+  );
+
   function TitleName() {
     return `${start}  →  ${end}`;
+  }
+
+  function getItem() {
+    const busItem = busRemainData.busList.filter(bus => bus.id === item.id);
+    if (busItem.length === 0) {
+      navigation.goBack();
+    }
+    return busItem[0];
   }
 
   useEffect(() => {
@@ -112,7 +139,12 @@ function BusDetail({ navigation, route: { params } }) {
     });
   }, []);
 
-  const lodaing = busRouteLoading || busPathLoading || startStationLoading;
+  const lodaing =
+    busRouteLoading ||
+    busPathLoading ||
+    startStationLoading ||
+    busRemainLoading ||
+    isRefetching;
 
   return lodaing ? (
     <Loader>
@@ -131,9 +163,9 @@ function BusDetail({ navigation, route: { params } }) {
             departtime={DeleteSecond(item.depart_at)}
             start={src}
             end={getLastPoint()}
-            type={item.id >= 200 ? "red" : "sine"}
-            num={item.name}
-            time={item.remains}
+            type={getItem().id >= 200 ? "red" : "sine"}
+            num={getItem().name}
+            time={getItem().remains}
             canexpand
             stationlist={busRouteData?.stations}
           />
