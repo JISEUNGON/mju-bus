@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { Dimensions, FlatList, TouchableOpacity } from "react-native";
@@ -48,16 +49,17 @@ const BannerTitle = styled.Text`
 
 const BannerDate = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
-  font-size: 13px;
+  font-size: 12px;
+  margin-bottom: 5px;
   color: gray;
 `;
 
 const DetailTitleContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
-  height: 50px;
+  height: 70px;
   justify-content: center;
   padding-left: 10px;
-  background-color: #f5f5f5;
+  background-color: #fbfbfb;
 `;
 
 const DetailTitle = styled.Text`
@@ -73,17 +75,17 @@ const DetailImageContainer = styled.View`
 `;
 const DetailDescriptionContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
-  height: 50px;
-  background-color: #f5f5f5;
-  padding-top: 10px;
+  height: 100px;
+  background-color: #fbfbfb;
+  padding-top: 20px;
   padding-left: 20px;
+  padding-right: 20px;
 `;
 
 const DetailDescription = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 13px;
   color: gray;
-  padding-top: 10px;
 `;
 const data = [
   {
@@ -99,24 +101,17 @@ const data = [
     date: "2022/09/15",
     title: "ICT 멘토링 프로젝트 관련 공지사항",
     img: "",
-    subTitle: "#해당 에플리케이션은 ICT ~~~",
-    description: "블라블라블라",
+    subTitle: "#ICT 멘토링 프로젝트",
+    description:
+      "본 프로그램 과학기술정보통신부 정보통신창의인재양성사업의 지원을 통해 수행한 ICT멘토링 프로젝트 결과물입니다.",
   },
 ];
 
 function Notice() {
   const [selectedId, setSelectedId] = useState(false);
 
-  function NoticeItem({
-    id,
-    date,
-    title,
-    img,
-    subTitle,
-    description,
-    selectedId,
-    setSelectedId,
-  }) {
+  // eslint-disable-next-line react/no-unstable-nested-components
+  function NoticeItem({ id, date, title, img, subTitle, description }) {
     return (
       <TouchableOpacity
         onPress={() => {
