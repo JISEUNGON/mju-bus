@@ -38,7 +38,7 @@ function NMap({ routeData, setStation, station, toSchool }) {
 
   function renderMarker(data, callback) {
     const hiddenMarkers = toSchool ? [3, 2, 1, 6] : [4, 5, 1, 6, 11, 24];
-    const stations = data.filter(marker => hiddenMarkers.indexOf(marker.id) !== -1);
+    const stations = data.filter(marker => hiddenMarkers.indexOf(marker.id) === -1);
 
     const Markers = stations.map(item => (
       <Marker
