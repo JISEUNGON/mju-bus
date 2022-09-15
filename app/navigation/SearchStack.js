@@ -9,9 +9,9 @@ const Search = createNativeStackNavigator();
 const MyHeader = styled.View`
   justify-content: center;
   align-items: center;
-  border-radius: 20px;
+  border-radius: 10px;
   width: 300px;
-  height: 40px;
+  height: 30px;
   background-color: #fafbfb;
 `;
 
@@ -30,7 +30,10 @@ function renderHeader(children) {
 function SearchStack() {
   return (
     <Search.Navigator
-      screenOptions={{ headerShown: true, headerBackVisible: false }}
+      screenOptions={{
+        headerShown: true,
+        headerBackVisible: false,
+      }}
     >
       <Search.Screen
         name="BusList"
@@ -46,6 +49,7 @@ function SearchStack() {
         component={BusDetail}
         options={{
           headerTitle: ({ children }) => renderHeader(children),
+
           headerTitleAlign: "center",
           headerTitleStyle: {},
         }}

@@ -10,7 +10,7 @@ import Timer from "../Timer";
 const Container = styled.View`
   background-color: white;
   flex-direction: column;
-  border-bottom-width: 0.9px;
+  border-bottom-width: 0.3px;
   border-top-color: #d3d7dc;
   border-bottom-color: #d3d7dc;
   height: auto;
@@ -19,7 +19,7 @@ const Container = styled.View`
   padding-left: 32px;
   padding-right: 32px;
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 `;
 
 const ExpandContainer = styled.View`
@@ -42,14 +42,11 @@ const InfoContainer = styled.View`
 
 const Topcontainer = styled.View`
   background-color: white;
-
   height: 50px;
   border-bottom-width: 1.5px;
   border-bottom-color: #d3d7dc;
-
   flex-direction: row;
   align-items: flex-end;
-
   padding-bottom: 9px;
 `;
 

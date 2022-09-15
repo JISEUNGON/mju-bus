@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
 import {
@@ -100,7 +100,7 @@ function BusList({ navigation, route: { params } }) {
     return `${src.name}   →  ${dest.name}`;
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       title: SetStartAndDest(),
       headerLeft: () => CustomNavButton(navigation),
@@ -110,7 +110,7 @@ function BusList({ navigation, route: { params } }) {
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow
 
-  return busRemainLoading || isRefetching ? (
+  return busRemainLoading ? (
     // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
     <Loader>
       <ActivityIndicator />
@@ -120,42 +120,50 @@ function BusList({ navigation, route: { params } }) {
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
           <StatusBar backgroundColor="#f2f4f6" />
-          <FlatList
-            onRefresh={onRefresh}
-            refreshing={refreshing}
-            data={busRemainData.busList}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("BusDetail", {
-                    screen: "BusDetail",
-                    params: {
-                      item,
-                      totaltime: CalculatorTime(item.depart_at, item.arrive_at),
-                      toSchool,
-                      redBus,
-                      src,
-                      dest,
-                      start,
-                      end,
-                      busRemainData,
-                    },
-                  });
-                }}
-              >
-                <BusInfoList
-                  totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
-                  arrivlatime={DeleteSecond(item.arrive_at)}
-                  departtime={DeleteSecond(item.depart_at)}
-                  start={start}
-                  end={end}
-                  type={item.id >= 200 ? "red" : "sine"}
-                  num={item.name}
-                  time={item.remains}
-                />
-              </TouchableOpacity>
-            )}
-          />
+
+          {isRefetching ? (
+            <Loader>
+              <ActivityIndicator />
+            </Loader>
+          ) : (
+            <FlatList
+              onRefresh={onRefresh}
+              refreshing={refreshing}
+              data={busRemainData.busList}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("BusDetail", {
+                      screen: "BusDetail",
+                      params: {
+                        item,
+                        totaltime: CalculatorTime(
+                          item.depart_at,
+                          item.arrive_at,
+                        ),
+                        toSchool,
+                        redBus,
+                        src,
+                        dest,
+                        busRemainData,
+                      },
+                    });
+                  }}
+                >
+                  <BusInfoList
+                    totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
+                    arrivlatime={DeleteSecond(item.arrive_at)}
+                    departtime={DeleteSecond(item.depart_at)}
+                    start={start}
+                    end={end}
+                    type={item.id >= 200 ? "red" : "sine"}
+                    num={item.name}
+                    time={item.remains}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </SafeAreaView>
       </SafeAreaProvider>
     </Container>
