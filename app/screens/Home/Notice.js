@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
-import { Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Dimensions, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components";
 import { Entypo } from "@expo/vector-icons";
@@ -87,6 +87,7 @@ const DetailDescription = styled.Text`
 `;
 const data = [
   {
+    id: 1,
     date: "2022/09/15",
     title: "MBA VERSION 1.0.0",
     img: "",
@@ -94,6 +95,7 @@ const data = [
     description: "블라블라블라",
   },
   {
+    id: 2,
     date: "2022/09/15",
     title: "ICT 멘토링 프로젝트 관련 공지사항",
     img: "",
@@ -102,56 +104,79 @@ const data = [
   },
 ];
 
-function NoticeItem({ date, title, img, subTitle, description }) {
-  const [expand, setExpand] = useState(false);
-
-  return (
-    <TouchableOpacity onPress={() => setExpand(!expand)}>
-      <NoticeBannerContainer>
-        <NoticeBannerText>
-          <BannerDate>{date}</BannerDate>
-          <BannerTitle>{title}</BannerTitle>
-        </NoticeBannerText>
-        <NoticeBannerButton>
-          {expand === true ? (
-            <Entypo name="chevron-small-up" size={30} color="gray" />
-          ) : (
-            <Entypo name="chevron-small-down" size={30} color="gray" />
-          )}
-        </NoticeBannerButton>
-      </NoticeBannerContainer>
-      {expand === true ? (
-        <NoticeDetailContainer>
-          <DetailTitleContainer>
-            <DetailTitle>{subTitle}</DetailTitle>
-          </DetailTitleContainer>
-          <DetailImageContainer />
-          <DetailDescriptionContainer>
-            <DetailDescription>{description}</DetailDescription>
-          </DetailDescriptionContainer>
-        </NoticeDetailContainer>
-      ) : null}
-    </TouchableOpacity>
-  );
-}
-
 function Notice() {
+  const [selectedId, setSelectedId] = useState(false);
+
+  function NoticeItem({
+    id,
+    date,
+    title,
+    img,
+    subTitle,
+    description,
+    selectedId,
+    setSelectedId,
+  }) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          if (id === selectedId) {
+            setSelectedId(null);
+          } else {
+            setSelectedId(id);
+          }
+        }}
+      >
+        <NoticeBannerContainer>
+          <NoticeBannerText>
+            <BannerDate>{date}</BannerDate>
+            <BannerTitle>{title}</BannerTitle>
+          </NoticeBannerText>
+          <NoticeBannerButton>
+            {id === selectedId ? (
+              <Entypo name="chevron-small-up" size={30} color="gray" />
+            ) : (
+              <Entypo name="chevron-small-down" size={30} color="gray" />
+            )}
+          </NoticeBannerButton>
+        </NoticeBannerContainer>
+        {id === selectedId ? (
+          <NoticeDetailContainer>
+            <DetailTitleContainer>
+              <DetailTitle>{subTitle}</DetailTitle>
+            </DetailTitleContainer>
+            <DetailImageContainer />
+            <DetailDescriptionContainer>
+              <DetailDescription>{description}</DetailDescription>
+            </DetailDescriptionContainer>
+          </NoticeDetailContainer>
+        ) : null}
+      </TouchableOpacity>
+    );
+  }
+
+  const renderNoticeItem = ({ item }) => (
+    <NoticeItem
+      id={item.id}
+      date={item.date}
+      title={item.title}
+      img={item.img}
+      subTitle={item.subTitle}
+      description={item.description}
+      selectedId={selectedId}
+      setSelectedId={setSelectedId}
+    />
+  );
+
   return (
     <SafeAreaProvider>
       <SafeAreaView edges={["bottom", "top"]} style={{ flex: 1 }}>
         <StatusBar backgroundColor="white" />
         <Container>
           <FlatList
+            extraData={selectedId}
             data={data}
-            renderItem={({ item }) => (
-              <NoticeItem
-                date={item.date}
-                title={item.title}
-                img={item.img}
-                subTitle={item.subTitle}
-                description={item.description}
-              />
-            )}
+            renderItem={renderNoticeItem}
           />
         </Container>
       </SafeAreaView>
