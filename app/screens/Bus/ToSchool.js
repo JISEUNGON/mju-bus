@@ -68,7 +68,9 @@ const SubmitText = styled.Text`
   font-size: 15px;
 `;
 
-const SubmitButton = styled.TouchableOpacity``;
+const SubmitButton = styled.TouchableOpacity`
+  zIndex: 1;
+`;
 
 // eslint-disable-next-line react/prop-types
 function ToSchool({ navigation: { navigate } }) {
