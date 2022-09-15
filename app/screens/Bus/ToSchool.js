@@ -68,9 +68,7 @@ const SubmitText = styled.Text`
   font-size: 15px;
 `;
 
-const SubmitButton = styled.TouchableOpacity`
-  zIndex: 1;
-`;
+const SubmitButton = styled.TouchableOpacity``;
 
 // eslint-disable-next-line react/prop-types
 function ToSchool({ navigation: { navigate } }) {
@@ -127,7 +125,7 @@ function ToSchool({ navigation: { navigate } }) {
         </Loader>
       )}
       <SelectContainer>
-        <TouchableOpacity onPress={onStart}>
+        <TouchableOpacity onPressOut={onStart}>
           <TextContainer>
             {highlights(station.name)}
             <SelectTextFrom> 에서 </SelectTextFrom>
@@ -135,7 +133,7 @@ function ToSchool({ navigation: { navigate } }) {
               name="chevron-down"
               size={15}
               color="gray"
-              style={{ marginTop: 5, zIndex: 1 }}
+              style={{ marginTop: 5 }}
             />
           </TextContainer>
         </TouchableOpacity>
@@ -144,7 +142,7 @@ function ToSchool({ navigation: { navigate } }) {
 
       {station.name !== "정류장을 선택하세요" ? (
         <SubmitButton
-          onPress={() =>
+            onPressOut={() =>
             navigate("SearchStack", {
               screen: "BusList",
               params: {
