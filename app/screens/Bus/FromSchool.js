@@ -137,7 +137,7 @@ function FromSchool({ navigation: { navigate } }) {
               name="chevron-down"
               size={15}
               color="gray"
-              style={{ marginTop: 5 }}
+              style={{ marginTop: 5, zIndex: 1 }}
             />
           </TextContainer>
         </TouchableOpacity>
