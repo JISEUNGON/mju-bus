@@ -119,7 +119,7 @@ function FromSchool({ navigation: { navigate } }) {
   ) : (
     <Conatiner>
       {routeData.every(item => item.data !== undefined) ? (
-        <NMap routeData={routeData} setStation={setStation} station={station} />
+        <NMap routeData={routeData} setStation={setStation} station={station} toSchool={false} />
       ) : (
         <Loader>
           <ActivityIndicator />

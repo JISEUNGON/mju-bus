@@ -17,7 +17,8 @@ function setCenter(station) {
   };
 }
 
-function NMap({ routeData, setStation, station }) {
+function NMap({ routeData, setStation, station, toSchool }) {
+   
   const stationData = RemoveDuplicateStation(routeData);
   const [selectedMarker, selectMarker] = useState(-1);
   const mapRef = useRef(null);
@@ -36,7 +37,10 @@ function NMap({ routeData, setStation, station }) {
   }, [station, stationData]);
 
   function renderMarker(data, callback) {
-    const Markers = data.map(item => (
+    const hiddenMarkers = toSchool ? [3, 2, 1, 6] : [4, 5, 1, 6, 11, 24];
+    const stations = data.filter(marker => !(marker.id in hiddenMarkers));
+
+    const Markers = stations.map(item => (
       <Marker
         key={item.id}
         coordinate={item}
