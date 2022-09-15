@@ -118,7 +118,7 @@ function ToSchool({ navigation: { navigate } }) {
   ) : (
     <Conatiner>
       {routeData.every(item => item.data !== undefined) ? (
-        <NMap routeData={routeData} setStation={setStation} station={station} toSchool={true} />
+        <NMap routeData={routeData} setStation={setStation} station={station} toSchool />
       ) : (
         <Loader>
           <ActivityIndicator />
@@ -167,6 +167,7 @@ function ToSchool({ navigation: { navigate } }) {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           setStation={setStation}
+          toSchool
         />
       ) : null}
     </Conatiner>

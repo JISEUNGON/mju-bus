@@ -69,6 +69,15 @@ export function RemoveDuplicateStation(data) {
   return stationList;
 }
 
+export function getHiddenStation(toSchool) {
+    return toSchool ? [3, 2, 1, 6] : [4, 5, 1, 6, 11, 24];
+}
+
+export function RemoveHiddenStation(stationList, toSchool) {
+    const hiddenStations = getHiddenStation(toSchool);
+    return stationList.filter(station => !hiddenStations.includes(station.id));
+}
+
 export function CalculatorTime(start, end) {
   const startSec = start.split(":");
   const endSec = end.split(":");

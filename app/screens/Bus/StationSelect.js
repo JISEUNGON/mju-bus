@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RemoveDuplicateStation } from "../../utils";
+import { RemoveDuplicateStation, RemoveHiddenStation } from "../../utils";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -87,6 +87,7 @@ function StationSelect(props) {
     modalVisible,
     setModalVisible,
     setStation,
+    toSchool,
   } = props;
 
   const [checkedStation, setCheckedStation] = useState(staredStation);
@@ -113,8 +114,8 @@ function StationSelect(props) {
     setCheckedStation(newCheckItems.filter(checked => checked.id !== item.id));
   };
 
-  const stationList = RemoveDuplicateStation(data);
-
+  const preStationList = RemoveDuplicateStation(data);
+  const stationList = RemoveHiddenStation(preStationList, toSchool);
   return (
     <Modal animationType="slide" transparent visible={modalVisible}>
       <ScreenContainer>
