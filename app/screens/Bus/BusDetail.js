@@ -47,7 +47,7 @@ const MapContainer = styled.View`
 const BusContainer = styled.View`
   background-color: white;
   width: ${SCREEN_WIDTH}px;
-  height: 230px;
+  height: 220px;
   align-items: flex-end;
   padding-bottom: 10px;
 `;

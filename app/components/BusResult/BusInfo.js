@@ -19,7 +19,7 @@ const Container = styled.View`
   padding-left: 32px;
   padding-right: 32px;
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 `;
 
 const ExpandContainer = styled.View`
