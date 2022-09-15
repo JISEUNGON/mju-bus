@@ -114,6 +114,7 @@ function StationSelect(props) {
   };
 
   const stationList = RemoveDuplicateStation(data);
+
   return (
     <Modal animationType="slide" transparent visible={modalVisible}>
       <ScreenContainer>

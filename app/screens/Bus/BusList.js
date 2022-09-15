@@ -6,14 +6,19 @@ import { Entypo } from "@expo/vector-icons";
 import {
   ActivityIndicator,
   AppState,
+  Dimensions,
   FlatList,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import BusInfoList from "../../components/BusResult/BusInfo";
 import { stationApi } from "../../api";
 import { CalculatorTime, DeleteSecond } from "../../utils";
+import XIcon from "../../components/XIcon";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Loader = styled.View`
   flex: 1;
@@ -25,6 +30,21 @@ const Container = styled.View`
   flex: 1;
   background-color: white;
   flex-direction: column;
+`;
+
+const NoContents = styled.Text`
+  font-family: "SpoqaHanSansNeo-Bold";
+  color: #ec6969;
+  font-size: 20px;
+  margin-bottom: 30px;
+`;
+
+const Board = styled.View`
+  width: ${SCREEN_WIDTH}px;
+  height: ${SCREEN_HEIGHT}px;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 120px;
 `;
 
 function CustomNavButton(navigation) {
@@ -110,6 +130,53 @@ function BusList({ navigation, route: { params } }) {
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow
 
+  function renderBusList() {
+    if (busRemainData.busList.length === 0) {
+      return (
+        <Board>
+          <NoContents>운행 중인 버스가 없습니다</NoContents>
+          <XIcon />
+        </Board>
+      );
+    }
+    return (
+      <FlatList
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        data={busRemainData.busList}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("BusDetail", {
+                screen: "BusDetail",
+                params: {
+                  item,
+                  totaltime: CalculatorTime(item.depart_at, item.arrive_at),
+                  toSchool,
+                  redBus,
+                  src,
+                  dest,
+                  busRemainData,
+                },
+              });
+            }}
+          >
+            <BusInfoList
+              totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
+              arrivlatime={DeleteSecond(item.arrive_at)}
+              departtime={DeleteSecond(item.depart_at)}
+              start={start}
+              end={end}
+              type={item.id >= 200 ? "red" : "sine"}
+              num={item.name}
+              time={item.remains}
+            />
+          </TouchableOpacity>
+        )}
+      />
+    );
+  }
+
   return busRemainLoading ? (
     // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
     <Loader>
@@ -126,43 +193,7 @@ function BusList({ navigation, route: { params } }) {
               <ActivityIndicator />
             </Loader>
           ) : (
-            <FlatList
-              onRefresh={onRefresh}
-              refreshing={refreshing}
-              data={busRemainData.busList}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("BusDetail", {
-                      screen: "BusDetail",
-                      params: {
-                        item,
-                        totaltime: CalculatorTime(
-                          item.depart_at,
-                          item.arrive_at,
-                        ),
-                        toSchool,
-                        redBus,
-                        src,
-                        dest,
-                        busRemainData,
-                      },
-                    });
-                  }}
-                >
-                  <BusInfoList
-                    totaltime={CalculatorTime(item.depart_at, item.arrive_at)}
-                    arrivlatime={DeleteSecond(item.arrive_at)}
-                    departtime={DeleteSecond(item.depart_at)}
-                    start={start}
-                    end={end}
-                    type={item.id >= 200 ? "red" : "sine"}
-                    num={item.name}
-                    time={item.remains}
-                  />
-                </TouchableOpacity>
-              )}
-            />
+            renderBusList()
           )}
         </SafeAreaView>
       </SafeAreaProvider>
