@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import NaverMapView, { Marker } from "react-native-nmap";
-import { RemoveDuplicateStation } from "../../utils";
+import { RemoveDuplicateStation, getHiddenStation } from "../../utils";
 
 const Container = styled.View`
   width: 100%;
@@ -17,7 +17,8 @@ function setCenter(station) {
   };
 }
 
-function NMap({ routeData, setStation, station }) {
+function NMap({ routeData, setStation, station, toSchool }) {
+   
   const stationData = RemoveDuplicateStation(routeData);
   const [selectedMarker, selectMarker] = useState(-1);
   const mapRef = useRef(null);
@@ -36,7 +37,10 @@ function NMap({ routeData, setStation, station }) {
   }, [station, stationData]);
 
   function renderMarker(data, callback) {
-    const Markers = data.map(item => (
+    const hiddenMarkers = getHiddenStation(toSchool);
+    const stations = data.filter(marker => !hiddenMarkers.includes(marker.id));
+
+    const Markers = stations.map(item => (
       <Marker
         key={item.id}
         coordinate={item}
