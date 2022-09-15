@@ -127,7 +127,7 @@ function FromSchool({ navigation: { navigate } }) {
       )}
 
       <SelectContainer>
-        <TouchableOpacity onPress={onStart}>
+        <TouchableOpacity onPressOut={onStart}>
           <TextContainer>
             {highlights(station.name)}
             <SelectTextFrom> 으로 </SelectTextFrom>
@@ -144,7 +144,7 @@ function FromSchool({ navigation: { navigate } }) {
 
       {station.name !== "정류장을 선택하세요" ? (
         <SubmitButton
-          onPress={() =>
+          onPressOut={() =>
             navigate("SearchStack", {
               screen: "BusList",
               params: {

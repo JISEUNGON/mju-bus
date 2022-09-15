@@ -125,7 +125,7 @@ function ToSchool({ navigation: { navigate } }) {
         </Loader>
       )}
       <SelectContainer>
-        <TouchableOpacity onPress={onStart}>
+        <TouchableOpacity onPressOut={onStart}>
           <TextContainer>
             {highlights(station.name)}
             <SelectTextFrom> 에서 </SelectTextFrom>
@@ -142,7 +142,7 @@ function ToSchool({ navigation: { navigate } }) {
 
       {station.name !== "정류장을 선택하세요" ? (
         <SubmitButton
-          onPress={() =>
+            onPressOut={() =>
             navigate("SearchStack", {
               screen: "BusList",
               params: {
