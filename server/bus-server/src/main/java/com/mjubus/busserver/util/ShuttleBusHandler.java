@@ -46,8 +46,11 @@ public class ShuttleBusHandler {
         return routeDetailRepository.findRouteDetailByRouteInfo_IdOrderByOrder(route.getRouteInfo().getId());
     }
 
-    public void predict(Bus bus, Station start, String pre_busArrival_sid) throws IOException, ParseException {
-        LocalDateTime expected = DateHandler.getToday();
+    public void predict(BusArrival busArrival) throws IOException, ParseException {
+        Bus bus = busArrival.getBus();
+        Station start = busArrival.getStation();
+        String pre_busArrival_sid = busArrival.getPreSid();
+        LocalDateTime expected = busArrival.getExpected();
 
         // 현재 노선 정보 가져오기
         List<RouteDetail> detailList = getCurrentRoute(bus);

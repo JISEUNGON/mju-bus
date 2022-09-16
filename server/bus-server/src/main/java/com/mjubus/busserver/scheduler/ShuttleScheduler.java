@@ -113,7 +113,7 @@ public class ShuttleScheduler {
 
         for(BusArrival busArrival: arrivalList) {
             System.out.println(busArrival.getExpected());
-            shuttleBusHandler.predict(busArrival.getBus(), busArrival.getStation(), busArrival.getPreSid());
+            shuttleBusHandler.predict(busArrival);
         }
     }
 }

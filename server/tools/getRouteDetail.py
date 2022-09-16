@@ -12,6 +12,17 @@ def getPath(url):
     json_object = json.loads(response.data.decode('utf-8'))
     return json_object["route"]["trafast"][0]["path"]
 
+def getData(url):
+    NAVER_SECRETKEY = "MgLSNKb2EsLXMPYq0Ailk5iFa3gWbKxIBl20DIm4"
+    NAVER_CLIENT_ID = "p4xiv96tkc"
+    http = urllib3.PoolManager()
+    response = http.request('GET', url,
+                            headers={"X-NCP-APIGW-API-KEY-ID": NAVER_CLIENT_ID, "X-NCP-APIGW-API-KEY": NAVER_SECRETKEY})
+
+    json_object = json.loads(response.data.decode('utf-8'))
+    duration = json_object["route"]["trafast"][0]["summary"]["duration"]
+    pathlist = json_object["route"]["trafast"][0]["path"]
+    return duration, pathlist
 def main():
     stationInfo = {
         "명지대": [37.224284, 127.187286],
@@ -35,15 +46,19 @@ def main():
     NAVER_DEST = "&goal="
     NAVER_OPTION = "&option=trafast"
 
-    stations = ["중앙공영주차장", "진입로(명지대방향)"]
+    stations = ["진입로(명지대방향)", "이마트"]
     for i in range(0, len(stations) - 1):
         url = NAVER_endPoint + NAVER_SRC + str(stationInfo[stations[i]][1]) + "," + str(
             stationInfo[stations[i]][0]) + NAVER_DEST + str(stationInfo[stations[i + 1]][1]) + "," + str(
             stationInfo[stations[i + 1]][0]) + NAVER_OPTION
-        pathlist = getPath(url)
-        for i, path in enumerate(pathlist):
-            print(f"INSERT INTO path_detail (id, path_info_id, latitude, longitude, path_order) VALUES (null, 18, {path[1]}, {path[0]}, {i + 1});")
-            # print(path[1], path[0])
+
+        duration, pathlist = getData(url)
+        print(duration // 1000)
+
+        # pathlist = getPath(url)
+        # for i, path in enumerate(pathlist):
+        #     # print(f"INSERT INTO path_detail (id, path_info_id, latitude, longitude, path_order) VALUES (null, 18, {path[1]}, {path[0]}, {i + 1});")
+        #     # print(path[1], path[0])
 
 
 main()
