@@ -81,7 +81,11 @@ public class ShuttleBusHandler {
             if (startStation.getId().equals(dest.getId())) continue;
 
             Long duration = NaverHandler.getDuration(src, dest); // 예상 시간
+
+            // to minute
+//            double minute = Math.ceil((duration / 60.0));
             expected = expected.plusSeconds(duration);
+            System.out.println(expected);
             if (offset_station == 0) { // 처음인 경우 INSERT
                 busArrivalRepository.save(BusArrival.builder()
                                 .sid(UUID.randomUUID().toString())
