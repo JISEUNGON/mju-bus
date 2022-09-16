@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   AppState,
   Dimensions,
+  Image,
   TouchableOpacity,
 } from "react-native";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
@@ -36,10 +37,26 @@ const Container = styled.FlatList`
 const NoticeContainer = styled.View`
   width: 100%;
   height: 70px;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  padding-left: 20px;
   padding-right: 20px;
   padding-top: 20px;
+`;
+
+const LogoContainer = styled.View`
+  width: 150px;
+  height: 100%;
+  flex-direction: row;
+  margin-top: 20px;
+`;
+
+const LogoText = styled.Text`
+  font-family: "SpoqaHanSansNeo-Bold";
+  font-size: 22px;
+  margin-left: 10px;
+  color: #b1b8c0;
 `;
 
 const LinkContainer = styled.View`
@@ -183,6 +200,10 @@ function Home({ route: { params }, navigation: { navigate } }) {
           ListHeaderComponent={
             <>
               <NoticeContainer>
+                <LogoContainer>
+                  <Image source={require("../../assets/image/Logo.png")} />
+                  <LogoText>Bus Alarm</LogoText>
+                </LogoContainer>
                 <TouchableOpacity
                   onPress={() => {
                     navigate("NoticeStack", {
