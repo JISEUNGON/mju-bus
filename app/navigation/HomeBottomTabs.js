@@ -37,11 +37,7 @@ function HomeBottomTabs() {
         name="홈"
         component={Home}
         options={{
-          header: () => (
-            <View>
-              <Text>aaaa</Text>
-            </View>
-          ),
+          headerShown: false,
           // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
