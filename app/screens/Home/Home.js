@@ -201,7 +201,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
             <>
               <NoticeContainer>
                 <LogoContainer>
-                  <Image source={require("../../assets/image/Logo.png")} />
+                  <Image source={require("../../assets/image/MJU.gif")} />
                   <LogoText>Bus Alarm</LogoText>
                 </LogoContainer>
                 <TouchableOpacity
