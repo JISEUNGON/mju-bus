@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import {
   ActivityIndicator,
@@ -30,6 +31,15 @@ const Loader = styled.View`
 const Container = styled.FlatList`
   background-color: #f2f4f6;
   padding: 0 20px;
+`;
+
+const NoticeContainer = styled.View`
+  width: 100%;
+  height: 70px;
+  align-items: flex-end;
+  justify-content: center;
+  padding-right: 20px;
+  padding-top: 20px;
 `;
 
 const LinkContainer = styled.View`
@@ -67,7 +77,7 @@ const SubTitle = styled.Text`
 `;
 
 // eslint-disable-next-line react/prop-types
-function Home({ route: { params } }) {
+function Home({ route: { params }, navigation: { navigate } }) {
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -172,6 +182,17 @@ function Home({ route: { params } }) {
           refreshing={refreshing}
           ListHeaderComponent={
             <>
+              <NoticeContainer>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigate("NoticeStack", {
+                      screen: "Notice",
+                    });
+                  }}
+                >
+                  <Ionicons name="notifications" size={28} color="#B1B8C0" />
+                </TouchableOpacity>
+              </NoticeContainer>
               <LinkContainer>
                 <LinkScreen screenName="시간표" />
               </LinkContainer>
