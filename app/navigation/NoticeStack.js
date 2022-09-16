@@ -10,6 +10,7 @@ function NoticeStack() {
       screenOptions={{
         headerShown: true,
         headerTitle: "공지사항",
+        gestureEnabled: true,
       }}
     >
       <Search.Screen name="Notice" component={Notice} />

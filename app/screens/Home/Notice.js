@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Dimensions, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components";
@@ -107,8 +107,23 @@ const data = [
   },
 ];
 
-function Notice() {
+function CustomNavButton(navigation) {
+  return (
+    // eslint-disable-next-line react/destructuring-assignment
+    <TouchableOpacity onPress={() => navigation.goBack()}>
+      <Entypo name="chevron-left" size={24} color="gray" />
+    </TouchableOpacity>
+  );
+}
+
+function Notice({ navigation }) {
   const [selectedId, setSelectedId] = useState(false);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => CustomNavButton(navigation),
+    });
+  }, [navigation]);
 
   // eslint-disable-next-line react/no-unstable-nested-components
   function NoticeItem({ id, date, title, img, subTitle, description }) {

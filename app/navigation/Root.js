@@ -27,11 +27,7 @@ function Root() {
         options={{ headerShown: false }}
       />
 
-      <Nav.Screen
-        name="NoticeStack"
-        component={NoticeStack}
-        options={{ headerShown: false }}
-      />
+      <Nav.Screen name="NoticeStack" component={NoticeStack} />
     </Nav.Navigator>
   );
 }
