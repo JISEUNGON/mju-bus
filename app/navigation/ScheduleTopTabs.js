@@ -1,23 +1,31 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React from "react";
+import { useColorScheme } from "react-native";
+import { BLACK_COLOR, LIGHT_GREY, WHITE_COLOR } from "../colors";
 import SineShuttle from "../screens/Schedule/SineShuttle";
 import SiweShuttle from "../screens/Schedule/SiweShuttle";
 
 const Tab = createMaterialTopTabNavigator();
 
 function ScheduleTopTabs() {
+  const isDark = useColorScheme() === "dark";
+
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarStyle: {
+          backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+        },
         tabBarIndicatorStyle: {
-          backgroundColor: "black",
+          backgroundColor: isDark ? WHITE_COLOR : BLACK_COLOR,
         },
         tabBarLabelStyle: {
           fontSize: 13,
           fontFamily: "SpoqaHanSansNeo-Bold",
         },
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "#6D7582",
+
+        tabBarActiveTintColor: isDark ? WHITE_COLOR : BLACK_COLOR,
+        tabBarInactiveTintColor: LIGHT_GREY,
       }}
       sceneContainerStyle={{}}
     >

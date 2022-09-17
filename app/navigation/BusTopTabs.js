@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { useColorScheme } from "react-native";
 import FromSchool from "../screens/Bus/FromSchool";
 import ToSchool from "../screens/Bus/ToSchool";
-import { BLACK_COLOR, DARK_GRAY, LIGHT_GREY, WHITE_COLOR } from "../colors";
+import { BLACK_COLOR, LIGHT_GREY, WHITE_COLOR } from "../colors";
 
 const Tab = createMaterialTopTabNavigator();
 
