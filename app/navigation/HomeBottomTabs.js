@@ -27,7 +27,6 @@ function HomeBottomTabs() {
       screenOptions={{
         tabBarStyle: {
           backgroundColor: isDark ? BLACK_COLOR : "#F2F4F6",
-          height: 85,
           borderTopColor: isDark ? "gray" : "white",
           borderTopWidth: 0.2,
         },
