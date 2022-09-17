@@ -18,7 +18,6 @@ function setCenter(station) {
 }
 
 function NMap({ routeData, setStation, station, toSchool }) {
-   
   const stationData = RemoveDuplicateStation(routeData);
   const [selectedMarker, selectMarker] = useState(-1);
   const mapRef = useRef(null);
@@ -61,6 +60,7 @@ function NMap({ routeData, setStation, station, toSchool }) {
   return (
     <Container>
       <NaverMapView
+        nightMode
         ref={handleSetMapRef}
         style={{ width: "100%", height: "100%" }}
         showsMyLocationButton={false}

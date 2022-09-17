@@ -61,9 +61,12 @@ function HomeBottomTabs() {
         name="시내 셔틀"
         component={BusTopTabs}
         options={{
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          },
           headerStatusBarHeight: 0,
-          headerShadowVisible: false,
           headerTitle: EmptyText,
+          headerShadowVisible: false,
           // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
@@ -78,9 +81,12 @@ function HomeBottomTabs() {
         name="시간표"
         component={ScheduleTopTabs}
         options={{
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          },
           headerStatusBarHeight: 0,
-          headerShadowVisible: false,
           headerTitle: EmptyText,
+          headerShadowVisible: false,
           // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons

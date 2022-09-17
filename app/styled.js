@@ -25,12 +25,16 @@ export const lightTheme = {
   homeCompColor: "white",
   mainTextColor: "black",
   subTextColor: "gray",
+  busBgColor: "#f2f4f6",
+  busCompColor: "white",
 };
 
 export const darkTheme = {
   homeBgColor: "#2c2c2c",
   homeCompColor: "#383838",
   mainTextColor: "white",
-  subTextColor: "#e6e6e6",
+  subTextColor: "#d2dae2",
   textColor: "#d2dae2",
+  busBgColor: "#2c2c2c",
+  busCompColor: "#383838",
 };
