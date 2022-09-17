@@ -16,20 +16,21 @@ export const HListSeporator = styled.View`
 const Board = styled.View`
   height: 150px;
   width: 150px;
-  background-color: white;
+  background-color: ${props => props.theme.homeCompColor};
   border-radius: 20px;
   padding: 20px;
 `;
 
 const Station = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   font-size: 15px;
 `;
 
 const BusNumber = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   margin-top: 5px;
+  color: ${props => props.theme.mainTextColor};
 
   font-size: 16px;
 `;

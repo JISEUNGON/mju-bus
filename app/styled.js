@@ -19,3 +19,18 @@ export const SiweRunning = {
   defaultBgColor: "#F6E3E3",
   defaultTextColor: "#EC6969",
 };
+
+export const lightTheme = {
+  homeBgColor: "#f2f4f6",
+  homeCompColor: "white",
+  mainTextColor: "black",
+  subTextColor: "gray",
+};
+
+export const darkTheme = {
+  homeBgColor: "#2c2c2c",
+  homeCompColor: "#383838",
+  mainTextColor: "white",
+  subTextColor: "#e6e6e6",
+  textColor: "#d2dae2",
+};

@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React, { useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
@@ -30,7 +31,7 @@ const Loader = styled.View`
 `;
 
 const Container = styled.FlatList`
-  background-color: #f2f4f6;
+  background-color: ${props => props.theme.homeBgColor};
   padding: 0 20px;
 `;
 
@@ -83,13 +84,13 @@ const TitleContainer = styled.View`
 const Title = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SubTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   margin-top: 10px;
 `;
 
@@ -99,7 +100,6 @@ function Home({ route: { params }, navigation: { navigate } }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedRoutes, setSelectedRoutes] = useState([]);
-
   // 앱이 백그라운드에서 돌아왔을 때 강제 refetch 진행
   const appState = useRef(AppState.currentState);
   useEffect(() => {
@@ -192,7 +192,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
   ) : (
     <SafeAreaProvider>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <StatusBar backgroundColor="#f2f4f6" />
+        <StatusBar />
         <Container
           width={SCREEN_WIDTH}
           onRefresh={onRefresh}
