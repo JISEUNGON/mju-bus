@@ -20,6 +20,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Loader = styled.View`
   flex: 1;
+  background-color: ${props => props.theme.busCompColor};
   justify-content: center;
   align-items: center;
 `;
