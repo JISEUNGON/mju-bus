@@ -42,6 +42,7 @@ export const lightTheme = {
   busNumberText: "black",
   busStationText: "#747c88",
   busBorderColor: "#d3d7dc",
+  noticeHader: "white",
 };
 
 export const darkTheme = {
@@ -66,4 +67,5 @@ export const darkTheme = {
   busNumberText: "white",
   busStationText: "#E2E2E2",
   busBorderColor: "#757575",
+  noticeHader: "#2c2c2c",
 };
