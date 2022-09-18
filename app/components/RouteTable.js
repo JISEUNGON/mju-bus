@@ -66,9 +66,9 @@ const StaionNameContainer = styled.View`
 `;
 
 const StationName = styled.Text`
-  font-size: 6px;
+  font-size: 7px;
   font-family: "SpoqaHanSansNeo-Medium";
-  color: ${props => props.theme.routeName};
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const NoDataTable = styled.View`

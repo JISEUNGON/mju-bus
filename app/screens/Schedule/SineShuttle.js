@@ -7,13 +7,7 @@ import { busApi, calendarApi } from "../../api";
 import TimeTable from "../../components/TimeTable";
 import RouteTable from "../../components/RouteTable";
 import { GetRouteTableData, GetTimeTableData, highlights } from "../../utils";
-import {
-  BLACK_BUTTON_COLOR,
-  BLACK_COLOR,
-  DARK_GRAY,
-  LIGHT_GRAY,
-  WHITE_COLOR,
-} from "../../colors";
+import { BLACK_BUTTON_COLOR, DARK_GRAY, WHITE_COLOR } from "../../colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
