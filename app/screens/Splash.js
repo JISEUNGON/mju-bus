@@ -24,7 +24,7 @@ const Board = styled.View`
 `;
 
 const Container = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.homeBgColor};
   flex: 1;
 `;
 
@@ -110,6 +110,7 @@ function Splash({ navigation: { navigate } }) {
         <Animated.View style={{ opacity: fadeAnim }}>
           <Circle>
             <Board />
+
             <Ionicons name="ios-bus" size={50} color="#7974E7" />
           </Circle>
         </Animated.View>
