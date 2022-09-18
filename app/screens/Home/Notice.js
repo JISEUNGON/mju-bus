@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { StatusBar } from "expo-status-bar";
 import React, { useLayoutEffect, useState } from "react";
 import { Dimensions, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -87,6 +86,10 @@ const DetailDescription = styled.Text`
   font-size: 13px;
   color: gray;
 `;
+const StatusBar = styled.StatusBar`
+  background-color: ${props => props.theme.noticeHeader};
+`;
+
 const data = [
   {
     id: 1,
@@ -181,7 +184,7 @@ function Notice({ navigation }) {
   return (
     <SafeAreaProvider>
       <SafeAreaView edges={["bottom", "top"]} style={{ flex: 1 }}>
-        <StatusBar backgroundColor="white" />
+        <StatusBar />
         <Container>
           <FlatList
             extraData={selectedId}
