@@ -7,7 +7,13 @@ import { busApi, calendarApi } from "../../api";
 import TimeTable from "../../components/TimeTable";
 import RouteTable from "../../components/RouteTable";
 import { GetRouteTableData, GetTimeTableData, highlights } from "../../utils";
-import { BLACK_BUTTON_COLOR, DARK_GRAY, WHITE_COLOR } from "../../colors";
+import {
+  BLACK_BUTTON_COLOR,
+  BLACK_COLOR,
+  DARK_GRAY,
+  LIGHT_GRAY,
+  WHITE_COLOR,
+} from "../../colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -21,7 +27,7 @@ const Hr = styled.View`
   width: 100%;
   margin-top: 40px;
   border-bottom-color: #d3d7dc;
-  opacity: 0.5;
+  opacity: 0.3;
 `;
 
 const HeaderContainer = styled.View`
@@ -106,7 +112,7 @@ function SineShuttle() {
       <HeaderContainer>
         <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
-        <Hr style={{ borderBottomWidth: 3 }} />
+        <Hr style={{ borderBottomWidth: 2 }} />
       </HeaderContainer>
       {/* 시내 셔틀 노선도 및 시간표 */}
       <ContentsContainer showsVerticalScrollIndicator={false}>

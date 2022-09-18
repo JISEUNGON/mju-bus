@@ -18,7 +18,7 @@ const Hr = styled.View`
   width: 100%;
   margin-top: 40px;
   border-bottom-color: #d3d7dc;
-  opacity: 0.5;
+  opacity: 0.3;
 `;
 
 const HeaderContainer = styled.View`
@@ -91,7 +91,7 @@ function SiweShuttle() {
       <HeaderContainer>
         <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
-        <Hr style={{ borderBottomWidth: 3 }} />
+        <Hr style={{ borderBottomWidth: 2 }} />
       </HeaderContainer>
       <ContentsContainer showsVerticalScrollIndicator={false}>
         <ContentsTitleContainer>
