@@ -35,6 +35,13 @@ export const lightTheme = {
   tableContentsText: "#6d7582",
   routeContents: "white",
   routeName: "#6d7582",
+  busListHeader: "#fafbfb",
+  busList: "white",
+  totalTimeText: "#353c49",
+  arrivalTimeText: "#747c88",
+  busNumberText: "black",
+  busStationText: "#747c88",
+  busBorderColor: "#d3d7dc",
 };
 
 export const darkTheme = {
@@ -52,4 +59,11 @@ export const darkTheme = {
   tableContentsText: "#d2dae2",
   routeContents: "#2c2c2c",
   routeName: "#d2dae2",
+  busListHeader: "#2F2F2F",
+  busList: "#383838",
+  totalTimeText: "#C5C5C5",
+  arrivalTimeText: "#d2dae2",
+  busNumberText: "white",
+  busStationText: "#E2E2E2",
+  busBorderColor: "#757575",
 };

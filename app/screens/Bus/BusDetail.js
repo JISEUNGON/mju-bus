@@ -29,8 +29,6 @@ const Conatiner = styled.View`
   height: ${SCREEN_HEIGHT}px;
   width: ${SCREEN_WIDTH}px;
 
-  background-color: white;
-
   flex-direction: column;
   align-items: flex-start;
 
@@ -38,14 +36,16 @@ const Conatiner = styled.View`
 `;
 
 const MapContainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
+
   width: 100%;
   height: auto;
   flex: 1.5;
 `;
 
 const BusContainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
+
   width: ${SCREEN_WIDTH}px;
   height: 220px;
   align-items: flex-end;

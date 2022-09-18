@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
@@ -9,7 +8,6 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
-  View,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -28,7 +26,7 @@ const Loader = styled.View`
 
 const Container = styled.View`
   flex: 1;
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
   flex-direction: column;
 `;
 
@@ -45,6 +43,10 @@ const Board = styled.View`
   align-items: center;
   justify-content: center;
   padding-bottom: 120px;
+  background-color: ${props => props.theme.busCompColor};
+`;
+const BusListStatus = styled.StatusBar`
+  background-color: ${props => props.theme.busListHeader};
 `;
 
 function CustomNavButton(navigation) {
@@ -186,7 +188,7 @@ function BusList({ navigation, route: { params } }) {
     <Container>
       <SafeAreaProvider>
         <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
-          <StatusBar backgroundColor="#f2f4f6" />
+          <BusListStatus />
 
           {isRefetching ? (
             <Loader>
