@@ -25,8 +25,16 @@ export const lightTheme = {
   homeCompColor: "white",
   mainTextColor: "black",
   subTextColor: "gray",
-  busBgColor: "#f2f4f6",
+  busBgColor: "white",
   busCompColor: "white",
+  scheduleBgColor: "white",
+  scheduleCompColor: "white",
+  tableHeader: "#f5f5f5",
+  tableContents: "white",
+  tableHeaderText: "#6d7582",
+  tableContentsText: "#6d7582",
+  routeContents: "white",
+  routeName: "#6d7582",
 };
 
 export const darkTheme = {
@@ -34,7 +42,14 @@ export const darkTheme = {
   homeCompColor: "#383838",
   mainTextColor: "white",
   subTextColor: "#d2dae2",
-  textColor: "#d2dae2",
   busBgColor: "#2c2c2c",
   busCompColor: "#383838",
+  scheduleBgColor: "#2c2c2c",
+  scheduleCompColor: "#383838",
+  tableHeader: "#383838",
+  tableContents: "#2c2c2c",
+  tableHeaderText: "white",
+  tableContentsText: "#d2dae2",
+  routeContents: "#2c2c2c",
+  routeName: "#d2dae2",
 };
