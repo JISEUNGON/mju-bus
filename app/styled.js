@@ -63,7 +63,7 @@ export const darkTheme = {
   busList: "#383838",
   totalTimeText: "#C5C5C5",
   arrivalTimeText: "#d2dae2",
-  busNumberText: "black",
+  busNumberText: "white",
   busStationText: "#E2E2E2",
   busBorderColor: "#757575",
 };
