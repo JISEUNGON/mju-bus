@@ -4,7 +4,7 @@ import StationIcon from "../StationIcon";
 import BusIcon from "../BusIcon";
 
 const Container = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busList};
 
   height: 100%;
   width: 30px;
@@ -14,7 +14,7 @@ const Container = styled.View`
 `;
 
 const MidContainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busList};
 
   height: 100%;
   width: 30px;

@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { useColorScheme } from "react-native";
 import FromSchool from "../screens/Bus/FromSchool";
 import ToSchool from "../screens/Bus/ToSchool";
-import { BLACK_COLOR, LIGHT_GREY, WHITE_COLOR } from "../colors";
+import { BLACK_COLOR, LIGHT_GRAY, WHITE_COLOR } from "../colors";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -25,7 +25,7 @@ function BusTopTabs() {
         },
 
         tabBarActiveTintColor: isDark ? WHITE_COLOR : BLACK_COLOR,
-        tabBarInactiveTintColor: LIGHT_GREY,
+        tabBarInactiveTintColor: LIGHT_GRAY,
       }}
     >
       <Tab.Screen name="학교로" component={ToSchool} />

@@ -8,11 +8,11 @@ import Label from "../Label";
 import Timer from "../Timer";
 
 const Container = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busList};
+
   flex-direction: column;
   border-bottom-width: 0.3px;
-  border-top-color: #d3d7dc;
-  border-bottom-color: #d3d7dc;
+  border-bottom-color: ${props => props.theme.busBorderColor};
   height: auto;
   width: 100%;
 
@@ -23,7 +23,8 @@ const Container = styled.View`
 `;
 
 const ExpandContainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
+
   flex-direction: column;
   height: auto;
   width: 100%;
@@ -35,23 +36,27 @@ const ExpandContainer = styled.View`
 `;
 
 const InfoContainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
+
   height: auto;
   width: 100%;
 `;
 
 const Topcontainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
+
   height: 50px;
   border-bottom-width: 1.5px;
-  border-bottom-color: #d3d7dc;
+  border-bottom-color: ${props => props.theme.busBorderColor};
+
   flex-direction: row;
   align-items: flex-end;
   padding-bottom: 9px;
 `;
 
 const Bottomontainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
+
   height: auto;
   flex-direction: row;
   margin-top: 5px;
@@ -62,7 +67,7 @@ const Bottomontainer = styled.View`
 const TotalTime = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   margin-left: 7px;
-  color: #353c49;
+  color: ${props => props.theme.totalTimeText};
   font-size: 19px;
 `;
 
@@ -70,12 +75,13 @@ const TotalTime = styled.Text`
 const ArrivalTime = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   margin-left: 10px;
-  color: #747c88;
+  color: ${props => props.theme.arrivalTimeText};
+
   font-size: 13px;
 `;
 
 const StartContainer = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
 
   flex-direction: row;
   align-items: center;
@@ -83,8 +89,6 @@ const StartContainer = styled.View`
 `;
 
 const MidContainer = styled.View`
-  background-color: white;
-
   flex-direction: row;
   align-items: center;
 
@@ -93,17 +97,12 @@ const MidContainer = styled.View`
 
 const MixText = styled.View`
   flex: 1;
-  background-color: white;
-
   flex-direction: row;
   align-items: center;
-
   margin-left: 8px;
 `;
 
 const EndContainer = styled.View`
-  background-color: white;
-
   flex-direction: row;
   align-items: center;
 
@@ -112,6 +111,8 @@ const EndContainer = styled.View`
 
 const Station = styled.Text`
   color: #747c88;
+  color: ${props => props.theme.busStationText};
+
   font-size: 12.5px;
   font-family: "SpoqaHanSansNeo-Medium";
   margin-left: 10px;
@@ -120,6 +121,7 @@ const Station = styled.Text`
 const BusNumber = styled.Text`
   margin-left: 10px;
   font-family: "SpoqaHanSansNeo-Bold";
+  color: ${props => props.theme.busNumberText};
 `;
 
 const TimerText = styled.Text`
