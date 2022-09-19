@@ -4,12 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { GetRouteTableData, highlights } from "../../utils";
 import { busApi, calendarApi } from "../../api";
 import StationSelect from "./StationSelect";
 import NMap from "./NMap";
-import SchoolStationSelect from "./SchoolStatonSelect";
 import { stationId } from "../../id";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -32,7 +30,7 @@ const SelectContainer = styled.View`
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 30px 30px;
-  background-color: white;
+  background-color: ${props => props.theme.busBgColor};
   top: 0;
   position: absolute;
 `;
@@ -44,14 +42,14 @@ const TextContainer = styled.View`
 const SelectTextFrom = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SelectTextSub = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-weight: 500;
   font-size: 15px;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   margin-top: 10px;
 `;
 
@@ -74,9 +72,8 @@ const SubmitText = styled.Text`
 const SubmitButton = styled.TouchableOpacity``;
 
 // eslint-disable-next-line react/prop-types
-function ToSchool({ navigation: { navigate } }) {
+function FromSchool({ navigation: { navigate } }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [schoolModalVisible, setSchoolModalVisible] = useState(false);
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
   const [staredStation, setStaredStation] = useState([]);
 
@@ -101,23 +98,6 @@ function ToSchool({ navigation: { navigate } }) {
     }
   };
 
-  const onPressSubmitButton = () => {
-    // 주말일 때:  Set Modal Comp for Selecting Station around School
-    if (calendarData.id === 5) {
-      setSchoolModalVisible(true);
-      // 평일 일 때
-    } else {
-      navigate("SearchStack", {
-        screen: "BusList",
-        params: {
-          toSchool: false,
-          src: stationId.ChapleGwan,
-          dest: station,
-        },
-      });
-    }
-  };
-
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
     loadSelectedRoutes(calendarData.description);
@@ -139,7 +119,12 @@ function ToSchool({ navigation: { navigate } }) {
   ) : (
     <Conatiner>
       {routeData.every(item => item.data !== undefined) ? (
-        <NMap routeData={routeData} setStation={setStation} station={station} />
+        <NMap
+          routeData={routeData}
+          setStation={setStation}
+          station={station}
+          toSchool={false}
+        />
       ) : (
         <Loader>
           <ActivityIndicator />
@@ -147,7 +132,7 @@ function ToSchool({ navigation: { navigate } }) {
       )}
 
       <SelectContainer>
-        <TouchableOpacity onPress={onStart}>
+        <TouchableOpacity onPressOut={onStart}>
           <TextContainer>
             {highlights(station.name)}
             <SelectTextFrom> 으로 </SelectTextFrom>
@@ -163,14 +148,25 @@ function ToSchool({ navigation: { navigate } }) {
       </SelectContainer>
 
       {station.name !== "정류장을 선택하세요" ? (
-        <SubmitButton onPress={onPressSubmitButton}>
+        <SubmitButton
+          onPressOut={() =>
+            navigate("SearchStack", {
+              screen: "BusList",
+              params: {
+                toSchool: false,
+                redBus: false,
+                src: stationId.ChapleGwan,
+                dest: station,
+              },
+            })
+          }
+        >
           <SubmitContainer>
             <SubmitText>버스 검색</SubmitText>
           </SubmitContainer>
         </SubmitButton>
       ) : null}
-      {modalVisible &&
-      routeData.every(item => item.data !== undefined) !== undefined ? (
+      {modalVisible && routeData.every(item => item.data !== undefined) ? (
         <StationSelect
           data={routeData}
           staredStation={staredStation}
@@ -180,17 +176,8 @@ function ToSchool({ navigation: { navigate } }) {
           setStation={setStation}
         />
       ) : null}
-      {schoolModalVisible ? (
-        <SchoolStationSelect
-          modalVisible={schoolModalVisible}
-          setModalVisible={setSchoolModalVisible}
-          setStation={setStation}
-          navigate={navigate}
-          station={station}
-        />
-      ) : null}
     </Conatiner>
   );
 }
 
-export default ToSchool;
+export default FromSchool;

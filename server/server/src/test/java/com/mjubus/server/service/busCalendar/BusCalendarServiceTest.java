@@ -29,18 +29,18 @@ class BusCalendarServiceTest {
     LocalDateTime weekend;
     BusCalendar busCalendar;
 
-    // 9월 10일 08:00 (토) 오전
-    weekend = DateHandler.getDateWith(9, 10, 8, 0);
+    // 9월 24일 08:00 (토) 오전
+    weekend = DateHandler.getDateWith(9, 24, 8, 0);
     busCalendar = busCalendarService.findByDate(weekend);
     Assertions.assertEquals(busCalendar.getId(), 5);
 
-    // 9월 10일 18:00 (토) 오후
-    weekend = DateHandler.getDateWith(9, 10, 15, 0);
+    // 9월 24일 18:00 (토) 오후
+    weekend = DateHandler.getDateWith(9, 24, 15, 0);
     busCalendar = busCalendarService.findByDate(weekend);
     Assertions.assertEquals(busCalendar.getId(), 5);
 
-    // 9월 10일 20:00 (토) 저녁
-    weekend = DateHandler.getDateWith(9, 10, 20, 0);
+    // 9월 24일 20:00 (토) 저녁
+    weekend = DateHandler.getDateWith(9, 24, 20, 0);
     busCalendar = busCalendarService.findByDate(weekend);
     Assertions.assertEquals(busCalendar.getId(), 5);
 

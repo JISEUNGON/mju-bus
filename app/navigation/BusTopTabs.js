@@ -1,23 +1,31 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { useColorScheme } from "react-native";
 import FromSchool from "../screens/Bus/FromSchool";
 import ToSchool from "../screens/Bus/ToSchool";
+import { BLACK_COLOR, LIGHT_GRAY, WHITE_COLOR } from "../colors";
 
 const Tab = createMaterialTopTabNavigator();
 
 function BusTopTabs() {
+  const isDark = useColorScheme() === "dark";
+
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarStyle: {
+          backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+        },
         tabBarIndicatorStyle: {
-          backgroundColor: "black",
+          backgroundColor: isDark ? WHITE_COLOR : BLACK_COLOR,
         },
         tabBarLabelStyle: {
           fontSize: 13,
           fontFamily: "SpoqaHanSansNeo-Bold",
         },
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "#6D7582",
+
+        tabBarActiveTintColor: isDark ? WHITE_COLOR : BLACK_COLOR,
+        tabBarInactiveTintColor: LIGHT_GRAY,
       }}
     >
       <Tab.Screen name="학교로" component={ToSchool} />

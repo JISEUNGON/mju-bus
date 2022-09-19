@@ -77,7 +77,7 @@ public class BusArrivalService implements BusArrivalInterface {
      * @return 노선 리스트
      */
     private List<BusArrivalDto> getBusArrivalListBetween(Station srcStation, Station destStation) {
-        List<BusArrivalDto> busArrivalList = busArrivalRepository.findBusArrivalByStationId(srcStation.getId()); // 출발지에 도착하는 버스
+        List<BusArrivalDto> busArrivalList = busArrivalRepository.findBusArrivalFromSchool(srcStation.getId()); // 출발지에 도착하는 버스
         List<BusArrivalDto> candidates = new LinkedList<>(); // 최종 후보군
 
         for(BusArrivalDto busArrivalDto : busArrivalList) {

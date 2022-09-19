@@ -29,6 +29,7 @@ const RouteImgage = styled.View`
   border-color: #c1c6cd;
   width: 90%;
   height: 150px;
+  background-color: ${props => props.theme.routeContents};
 `;
 
 const StaionNameContainer = styled.View`
@@ -65,9 +66,9 @@ const StaionNameContainer = styled.View`
 `;
 
 const StationName = styled.Text`
-  font-size: 6px;
+  font-size: 7px;
   font-family: "SpoqaHanSansNeo-Medium";
-  color: #6d7582;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const NoDataTable = styled.View`
@@ -87,7 +88,8 @@ const NoDataContents = styled.Text`
 
 const RouteName = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
-  color: #6d7582;
+  color: ${props => props.theme.routeName};
+
   font-size: 13px;
 `;
 

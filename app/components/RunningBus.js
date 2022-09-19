@@ -11,7 +11,8 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const FlexibleBoard = styled.View`
   width: ${SCREEN_WIDTH * 0.9}px;
   height: auto;
-  background-color: white;
+  background-color: ${props => props.theme.homeCompColor};
+
   padding: 20px 27px;
   border-radius: 20px;
   align-items: center;
@@ -20,7 +21,8 @@ const FlexibleBoard = styled.View`
 const Board = styled.View`
   width: ${SCREEN_WIDTH * 0.9}px;
   height: 200px;
-  background-color: white;
+  background-color: ${props => props.theme.homeCompColor};
+
   padding: 20px 27px;
   border-radius: 20px;
   align-items: center;
@@ -41,6 +43,7 @@ const Shuttle = styled.View`
 const Contents = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   margin-left: ${SCREEN_WIDTH * 0.06}px;
+  color: ${props => props.theme.mainTextColor};
   flex: 5;
 `;
 
@@ -53,13 +56,13 @@ const SubTitleContainer = styled.View`
 const SubTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-weight: 700;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   font-size: 15px;
 `;
 
 const EmptyContents = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   font-size: 17px;
   margin-top: 25px;
 `;

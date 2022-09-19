@@ -30,7 +30,24 @@ export const stationApi = {
     return fetch(`${URL}/station/${id}`).then(res => res.json());
   },
   remain: ({ queryKey }) => {
-    const [, id] = queryKey;
-    return fetch(`${URL}/station/${id}/bus-arrival`).then(res => res.json());
+    const [, id, dest, redBus, toSchool] = queryKey;
+    if (dest === undefined) {
+      return fetch(
+        `${URL}/station/${id}/bus-arrival?redBus=${redBus}&toSchool=${toSchool}`,
+      ).then(res => res.json());
+    }
+    return fetch(
+      `${URL}/station/${id}/bus-arrival?dest=${dest}&redBus=${redBus}&toSchool=${toSchool}`,
+    ).then(res => res.json());
+  },
+};
+
+export const pathApi = {
+  path: ({ queryKey }) => {
+    const [, busId, pathTarget, toSchool] = queryKey;
+
+    return fetch(
+      `${URL}/bus/${busId}/path?station=${pathTarget}&toSchool=${toSchool}`,
+    ).then(res => res.json());
   },
 };

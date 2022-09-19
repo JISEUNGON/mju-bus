@@ -46,8 +46,11 @@ public class ShuttleBusHandler {
         return routeDetailRepository.findRouteDetailByRouteInfo_IdOrderByOrder(route.getRouteInfo().getId());
     }
 
-    public void predict(Bus bus, Station start, String pre_busArrival_sid) throws IOException, ParseException {
-        LocalDateTime expected = DateHandler.getToday();
+    public void predict(BusArrival busArrival) throws IOException, ParseException {
+        Bus bus = busArrival.getBus();
+        Station start = busArrival.getStation();
+        String pre_busArrival_sid = busArrival.getPreSid();
+        LocalDateTime expected = busArrival.getExpected();
 
         // 현재 노선 정보 가져오기
         List<RouteDetail> detailList = getCurrentRoute(bus);
@@ -78,7 +81,11 @@ public class ShuttleBusHandler {
             if (startStation.getId().equals(dest.getId())) continue;
 
             Long duration = NaverHandler.getDuration(src, dest); // 예상 시간
+
+            // to minute
+//            double minute = Math.ceil((duration / 60.0));
             expected = expected.plusSeconds(duration);
+            System.out.println(expected);
             if (offset_station == 0) { // 처음인 경우 INSERT
                 busArrivalRepository.save(BusArrival.builder()
                                 .sid(UUID.randomUUID().toString())

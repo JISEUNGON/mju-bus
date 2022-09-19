@@ -29,7 +29,7 @@ const SelectContainer = styled.View`
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 30px 30px;
-  background-color: white;
+  background-color: ${props => props.theme.busBgColor};
   top: 0;
   position: absolute;
 `;
@@ -41,14 +41,14 @@ const TextContainer = styled.View`
 const SelectTextFrom = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SelectTextSub = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-weight: 500;
   font-size: 15px;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   margin-top: 10px;
 `;
 
@@ -118,14 +118,19 @@ function ToSchool({ navigation: { navigate } }) {
   ) : (
     <Conatiner>
       {routeData.every(item => item.data !== undefined) ? (
-        <NMap routeData={routeData} setStation={setStation} station={station} />
+        <NMap
+          routeData={routeData}
+          setStation={setStation}
+          station={station}
+          toSchool
+        />
       ) : (
         <Loader>
           <ActivityIndicator />
         </Loader>
       )}
       <SelectContainer>
-        <TouchableOpacity onPress={onStart}>
+        <TouchableOpacity onPressOut={onStart}>
           <TextContainer>
             {highlights(station.name)}
             <SelectTextFrom> 에서 </SelectTextFrom>
@@ -142,11 +147,13 @@ function ToSchool({ navigation: { navigate } }) {
 
       {station.name !== "정류장을 선택하세요" ? (
         <SubmitButton
-          onPress={() =>
+          onPressOut={() =>
             navigate("SearchStack", {
               screen: "BusList",
               params: {
                 toSchool: true,
+                redBus: false,
+                dest: undefined,
                 src: station,
               },
             })
@@ -165,6 +172,7 @@ function ToSchool({ navigation: { navigate } }) {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           setStation={setStation}
+          toSchool
         />
       ) : null}
     </Conatiner>

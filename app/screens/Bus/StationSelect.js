@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RemoveDuplicateStation } from "../../utils";
+import { RemoveDuplicateStation, RemoveHiddenStation } from "../../utils";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -16,7 +16,7 @@ const ScreenContainer = styled.View`
 `;
 
 const Container = styled.View`
-  background-color: white;
+  background-color: ${props => props.theme.busCompColor};
   border-radius: 20px;
   width: ${SCREEN_WIDTH}px;
   height: ${SCREEN_HEIGHT * 0.8}px;
@@ -32,12 +32,13 @@ const Title = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 27px;
   margin-top: 40px;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SubTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   margin-top: 20px;
   margin-bottom: 20px;
 `;
@@ -52,7 +53,8 @@ const ListContainer = styled.View`
 
 const ListTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
-  color: gray;
+  color: ${props => props.theme.subTextColor};
+
   font-weight: 900;
   font-size: 16px;
 `;
@@ -67,6 +69,7 @@ const ListItem = styled.View`
 const Contnets = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const ListContents = styled.TouchableOpacity`
@@ -87,6 +90,7 @@ function StationSelect(props) {
     modalVisible,
     setModalVisible,
     setStation,
+    toSchool,
   } = props;
 
   const [checkedStation, setCheckedStation] = useState(staredStation);
@@ -113,7 +117,8 @@ function StationSelect(props) {
     setCheckedStation(newCheckItems.filter(checked => checked.id !== item.id));
   };
 
-  const stationList = RemoveDuplicateStation(data);
+  const preStationList = RemoveDuplicateStation(data);
+  const stationList = RemoveHiddenStation(preStationList, toSchool);
   return (
     <Modal animationType="slide" transparent visible={modalVisible}>
       <ScreenContainer>

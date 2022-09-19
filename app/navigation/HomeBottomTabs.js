@@ -1,10 +1,11 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import Home from "../screens/Home/Home";
 import ScheduleTopTabs from "./ScheduleTopTabs";
 import BusTopTabs from "./BusTopTabs";
+import { BLACK_COLOR, DARK_GRAY, WHITE_COLOR } from "../colors";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,14 +18,21 @@ function EmptyText() {
 }
 
 function HomeBottomTabs() {
+  const isDark = useColorScheme() === "dark";
   return (
     <Tab.Navigator
       sceneContainerStyle={{
-        backgroundColor: "#F2F4F6",
+        backgroundColor: isDark ? BLACK_COLOR : "#F2F4F6",
       }}
       screenOptions={{
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          borderTopColor: isDark ? "gray" : "white",
+          borderTopWidth: 0.2,
+        },
+
+        tabBarActiveTintColor: isDark ? WHITE_COLOR : BLACK_COLOR,
+        tabBarInactiveTintColor: isDark ? WHITE_COLOR : DARK_GRAY,
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: "600",
@@ -53,9 +61,12 @@ function HomeBottomTabs() {
         name="시내 셔틀"
         component={BusTopTabs}
         options={{
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          },
           headerStatusBarHeight: 0,
-          headerShadowVisible: false,
           headerTitle: EmptyText,
+          headerShadowVisible: false,
           // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
@@ -70,9 +81,12 @@ function HomeBottomTabs() {
         name="시간표"
         component={ScheduleTopTabs}
         options={{
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          },
           headerStatusBarHeight: 0,
-          headerShadowVisible: false,
           headerTitle: EmptyText,
+          headerShadowVisible: false,
           // eslint-disable-next-line react/no-unstable-nested-components
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons

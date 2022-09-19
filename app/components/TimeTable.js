@@ -20,7 +20,7 @@ const Container = styled.ScrollView`
 
 const TableHeader = styled.View`
   flex-direction: row;
-  background-color: #f5f5f5;
+  background-color: ${props => props.theme.tableHeader};
   border-radius: 4px;
   width: 100%;
   height: 30px;
@@ -34,11 +34,11 @@ const Header = styled.Text`
   text-align: center;
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 12px;
-  color: #6d7582;
+  color: ${props => props.theme.tableHeaderText};
 `;
 
 const TableContents = styled(TableHeader)`
-  background-color: white;
+  background-color: ${props => props.theme.tableContents};
   margin-top: 0px;
   flex: 1;
 `;
@@ -57,7 +57,9 @@ const NoDataContents = styled.Text`
   font-size: 20px;
   margin-bottom: 30px;
 `;
-const Contents = styled(Header)``;
+const Contents = styled(Header)`
+  color: ${props => props.theme.tableContentsText};
+`;
 
 // 시내 (용인시내 + 명지대역) 시간표
 function SineTableList({ list }) {

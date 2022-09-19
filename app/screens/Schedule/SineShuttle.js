@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ActivityIndicator, Dimensions } from "react-native";
+import { ActivityIndicator, Dimensions, useColorScheme } from "react-native";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import SwitchSelector from "react-native-switch-selector";
@@ -7,6 +7,7 @@ import { busApi, calendarApi } from "../../api";
 import TimeTable from "../../components/TimeTable";
 import RouteTable from "../../components/RouteTable";
 import { GetRouteTableData, GetTimeTableData, highlights } from "../../utils";
+import { BLACK_BUTTON_COLOR, DARK_GRAY, WHITE_COLOR } from "../../colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -18,9 +19,9 @@ const Loader = styled.View`
 
 const Hr = styled.View`
   width: 100%;
-  height: 1px;
   margin-top: 40px;
   border-bottom-color: #d3d7dc;
+  opacity: 0.3;
 `;
 
 const HeaderContainer = styled.View`
@@ -29,12 +30,13 @@ const HeaderContainer = styled.View`
   background-color: white;
   height: 150px;
   justify-content: center;
+  background-color: ${props => props.theme.scheduleBgColor};
 `;
 
 const Title = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
   margin-top: 40px;
   margin-bottom: 20px;
 `;
@@ -42,13 +44,13 @@ const Title = styled.Text`
 const SubTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
-  color: #8d94a0;
+  color: ${props => props.theme.subTextColor};
 `;
 
 const ContentsContainer = styled.ScrollView`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
-  background-color: white;
+  background-color: ${props => props.theme.scheduleBgColor};
 `;
 
 const TimmTableTitleContainer = styled.View`
@@ -68,13 +70,15 @@ const RouteTableTitleContainer = styled(TimmTableTitleContainer)`
 const ContentsTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SwitchContatiner = styled.View`
   width: 180px;
 `;
 function SineShuttle() {
+  const isDark = useColorScheme() === "dark";
+
   const [selectedRoute, setSelectedRoute] = useState(0);
   const options = [
     { label: "시내", value: 0 },
@@ -102,7 +106,7 @@ function SineShuttle() {
       <HeaderContainer>
         <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
-        <Hr style={{ borderBottomWidth: 1 }} />
+        <Hr style={{ borderBottomWidth: 2 }} />
       </HeaderContainer>
       {/* 시내 셔틀 노선도 및 시간표 */}
       <ContentsContainer showsVerticalScrollIndicator={false}>
@@ -114,13 +118,13 @@ function SineShuttle() {
               onPress={value => setSelectedRoute(value)}
               options={options}
               initial={0}
-              backgroundColor="#F5F5F5"
+              backgroundColor={isDark ? BLACK_BUTTON_COLOR : "#F5F5F5"}
               borderRadius={6}
               hasPadding
-              borderColor="white"
+              borderColor={isDark ? BLACK_BUTTON_COLOR : "#F5F5F5"}
               textColor="#8D94A0"
-              selectedColor="black"
-              buttonColor="white"
+              selectedColor={isDark ? "white" : "black"}
+              buttonColor={isDark ? DARK_GRAY : WHITE_COLOR}
             />
           </SwitchContatiner>
         </TimmTableTitleContainer>

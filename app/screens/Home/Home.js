@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable global-require */
+import React, { useEffect, useRef, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
-import { ActivityIndicator, Dimensions, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  AppState,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -23,8 +31,33 @@ const Loader = styled.View`
 `;
 
 const Container = styled.FlatList`
-  background-color: #f2f4f6;
+  background-color: ${props => props.theme.homeBgColor};
   padding: 0 20px;
+`;
+
+const NoticeContainer = styled.View`
+  width: 100%;
+  height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+`;
+
+const LogoContainer = styled.View`
+  width: 150px;
+  height: 100%;
+  flex-direction: row;
+  margin-top: 20px;
+`;
+
+const LogoText = styled.Text`
+  font-family: "SpoqaHanSansNeo-Bold";
+  font-size: 22px;
+  margin-left: 10px;
+  color: #b1b8c0;
 `;
 
 const LinkContainer = styled.View`
@@ -51,22 +84,39 @@ const TitleContainer = styled.View`
 const Title = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SubTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   margin-top: 10px;
 `;
 
 // eslint-disable-next-line react/prop-types
-function Home({ route: { params } }) {
+function Home({ route: { params }, navigation: { navigate } }) {
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedRoutes, setSelectedRoutes] = useState([]);
+  // 앱이 백그라운드에서 돌아왔을 때 강제 refetch 진행
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        queryClient.invalidateQueries();
+        queryClient.refetchQueries(["remain", "status"]);
+      }
+      appState.current = nextAppState;
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, [queryClient]);
 
   const loadSelectedRoutes = async () => {
     try {
@@ -80,6 +130,7 @@ function Home({ route: { params } }) {
   };
   const onRefresh = async () => {
     setRefreshing(true);
+    await queryClient.invalidateQueries();
     await queryClient.refetchQueries(["remain", "status"]);
     setRefreshing(false);
   };
@@ -91,11 +142,17 @@ function Home({ route: { params } }) {
   const redBusRemain = useQueries({
     queries: [
       {
-        queryKey: ["remain", stationId.JinIpRo.id],
+        queryKey: ["remain", stationId.JinIpRo.id, undefined, true, true],
         queryFn: stationApi.remain,
       },
       {
-        queryKey: ["remain", stationId.YongInTerminal.id],
+        queryKey: [
+          "remain",
+          stationId.YongInTerminal.id,
+          undefined,
+          true,
+          true,
+        ],
         queryFn: stationApi.remain,
       },
     ],
@@ -135,14 +192,28 @@ function Home({ route: { params } }) {
   ) : (
     <SafeAreaProvider>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <StatusBar backgroundColor="#f2f4f6" />
-
+        <StatusBar />
         <Container
           width={SCREEN_WIDTH}
           onRefresh={onRefresh}
           refreshing={refreshing}
           ListHeaderComponent={
             <>
+              <NoticeContainer>
+                <LogoContainer>
+                  <Image source={require("../../assets/image/Logo.png")} />
+                  <LogoText>Bus Alarm</LogoText>
+                </LogoContainer>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigate("NoticeStack", {
+                      screen: "Notice",
+                    });
+                  }}
+                >
+                  <Ionicons name="notifications" size={28} color="#B1B8C0" />
+                </TouchableOpacity>
+              </NoticeContainer>
               <LinkContainer>
                 <LinkScreen screenName="시간표" />
               </LinkContainer>

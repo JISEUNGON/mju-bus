@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { TouchableOpacity, Dimensions, View } from "react-native";
+import {
+  TouchableOpacity,
+  Dimensions,
+  View,
+  useColorScheme,
+} from "react-native";
 import styled from "styled-components/native";
 import { Entypo } from "@expo/vector-icons";
 import BusIcon from "./BusIcon";
@@ -11,7 +16,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Board = styled.View`
   width: 100%;
   height: 100px;
-  background-color: white;
+  background-color: ${props => props.theme.homeCompColor};
   padding: 10px ${SCREEN_WIDTH * 0.06}px;
   border-radius: 20px;
   flex-direction: row;
@@ -27,18 +32,20 @@ const Column = styled.View`
 const Title = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: black;
+  color: ${props => props.theme.mainTextColor};
 `;
 
 const SubText = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: ${SCREEN_WIDTH > 500 ? 16 : 13}px;
-  color: gray;
+  color: ${props => props.theme.subTextColor};
   margin-bottom: 7px;
 `;
 
 function LinkScreen({ screenName }) {
   const navigation = useNavigation();
+  const isDark = useColorScheme() === "dark";
+
   const goToSchedule = () => {
     navigation.navigate("HomeBottomTabs", {
       screen: `${screenName}`,
@@ -48,15 +55,15 @@ function LinkScreen({ screenName }) {
 
   return (
     <TouchableOpacity onPress={goToSchedule} style={{}}>
-      <Board>
+      <Board isDark={isDark}>
         <BusIcon busRoute="sine" />
         <Column>
-          <SubText>
+          <SubText isDark={isDark}>
             {screenName === "시간표"
               ? "현재 운영 중인 시간표에요"
               : "가장 빠른 셔틀버스를 탐색해요"}
           </SubText>
-          <Title>
+          <Title isDark={isDark}>
             {screenName === "시간표" ? "버스 시간표 보기" : "버스 검색하기"}
           </Title>
         </Column>

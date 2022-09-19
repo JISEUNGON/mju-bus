@@ -1,18 +1,20 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import styled from "styled-components";
+import { useColorScheme } from "react-native";
 import BusList from "../screens/Bus/BusList";
 import BusDetail from "../screens/Bus/BusDetail";
+import { BLACK_COLOR } from "../colors";
 
 const Search = createNativeStackNavigator();
 
 const MyHeader = styled.View`
   justify-content: center;
   align-items: center;
-  border-radius: 20px;
+  border-radius: 10px;
   width: 300px;
-  height: 40px;
-  background-color: #fafbfb;
+  height: 30px;
+  background-color: ${props => props.theme.busListHeader};
 `;
 
 const TopTitle = styled.Text`
@@ -28,9 +30,14 @@ function renderHeader(children) {
 }
 
 function SearchStack() {
+  const isDark = useColorScheme() === "dark";
+
   return (
     <Search.Navigator
-      screenOptions={{ headerShown: true, headerBackVisible: false }}
+      screenOptions={{
+        headerShown: true,
+        headerBackVisible: false,
+      }}
     >
       <Search.Screen
         name="BusList"
@@ -38,10 +45,22 @@ function SearchStack() {
         options={{
           headerTitle: ({ children }) => renderHeader(children),
           headerTitleAlign: "center",
-          headerTitleStyle: {},
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : "white",
+          },
         }}
       />
-      <Search.Screen name="BusDetail" component={BusDetail} options={{}} />
+      <Search.Screen
+        name="BusDetail"
+        component={BusDetail}
+        options={{
+          headerTitle: ({ children }) => renderHeader(children),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : "white",
+          },
+        }}
+      />
     </Search.Navigator>
   );
 }
