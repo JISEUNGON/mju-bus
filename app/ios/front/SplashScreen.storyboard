@@ -39,32 +39,7 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-              <imageView
-                userInteractionEnabled="NO"
-                contentMode="scaleAspectFill"
-                horizontalHuggingPriority="251"
-                verticalHuggingPriority="251"
-                insetsLayoutMarginsFromSafeArea="NO"
-                image="SplashScreenBackground"
-                translatesAutoresizingMaskIntoConstraints="NO"
-                id="EXPO-SplashScreenBackground"
-                userLabel="SplashScreenBackground"
-              >
-                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-              </imageView>
-              <imageView
-                clipsSubviews="YES"
-                userInteractionEnabled="NO"
-                contentMode="scaleAspectFit"
-                horizontalHuggingPriority="251"
-                verticalHuggingPriority="251"
-                translatesAutoresizingMaskIntoConstraints="NO"
-                image="SplashScreen"
-                id="EXPO-SplashScreen"
-                userLabel="SplashScreen"
-              >
-                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-              </imageView>
+            
             </subviews>
             <constraints>
               <constraint firstItem="EXPO-SplashScreenBackground" firstAttribute="top" secondItem="EXPO-ContainerView" secondAttribute="top" id="1gX-mQ-vu6"/>
