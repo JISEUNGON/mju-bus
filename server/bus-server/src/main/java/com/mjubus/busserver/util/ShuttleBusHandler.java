@@ -30,6 +30,10 @@ public class ShuttleBusHandler {
     @Autowired
     BusArrivalRepository busArrivalRepository;
 
+    @Autowired
+    KaKaoHandler kaKaoHandler;
+
+
     private BusCalendar getBusCalendar() {
         LocalDateTime today = DateHandler.getToday();
         return busCalendarRepository.findBusCalendarByDate(today.toLocalDate(), today.toLocalTime(), DateHandler.getDayOfWeek(today)).get();
@@ -81,7 +85,7 @@ public class ShuttleBusHandler {
             if (startStation.getId().equals(dest.getId())) continue;
 
 //            Long duration = NaverHandler.getDuration(src, dest); // 예상 시간
-            Long duration = KaKaoHandler.getDuration(src, dest); // 예상 시간
+            Long duration = kaKaoHandler.getDuration(src, dest); // 예상 시간
 
             // to minute
 //            double minute = Math.ceil((duration / 60.0));
