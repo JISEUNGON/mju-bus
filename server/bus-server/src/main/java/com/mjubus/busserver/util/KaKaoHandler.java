@@ -28,8 +28,8 @@ public class KaKaoHandler {
 
     public static Long getDuration(Station src, Station dest) throws IOException, ParseException {
 
-        String origin_url = KAKAO_ORIGIN + src.getLongitude() + "," + src.getLatitude();
-        String dest_url = KAKAO_DEST + dest.getLongitude() + "," + dest.getLatitude();
+        String origin_url = KAKAO_ORIGIN + src.getKakaoLongitude() + "," + src.getKakaoLatitude();
+        String dest_url = KAKAO_DEST + dest.getKakaoLongitude() + "," + dest.getKakaoLatitude();
         String req_url = KAKAO_ENDPOINT + origin_url + dest_url + KAKAO_OPTION;
 
         java.net.URL url = new URL(req_url);

@@ -20,10 +20,16 @@ public class Station {
     @Column(name = "name", columnDefinition = "char(36)")
     private String name;
 
-    @Column(name = "latitude", columnDefinition = "decimal(9, 6)")
+    @Column(name = "latitude", columnDefinition = "double")
     private Double latitude;
 
-    @Column(name = "longitude", columnDefinition = "decimal(9, 6)")
+    @Column(name = "longitude", columnDefinition = "double")
     private Double longitude;
+
+    @Column(name = "kakao_latitude", columnDefinition = "double")
+    private Double kakaoLatitude;
+
+    @Column(name = "kakao_longitude", columnDefinition = "double")
+    private Double kakaoLongitude;
 
 }
