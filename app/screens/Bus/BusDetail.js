@@ -160,6 +160,7 @@ function BusDetail({ navigation, route: { params } }) {
       <BusContainer>
         <ScrollView showsVerticalScrollIndicator={false}>
           <BusInfoList
+            toSchool={toSchool}
             totaltime={totaltime}
             arrivlatime={DeleteSecond(item.arrive_at)}
             departtime={DeleteSecond(item.depart_at)}

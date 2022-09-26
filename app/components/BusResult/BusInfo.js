@@ -136,13 +136,13 @@ const ButtonContainer = styled.TouchableOpacity`
 `;
 
 // eslint-disable-next-line react/prop-types
-function BusDetail({ busRoute, busNumber, time }) {
+function BusDetail({ busRoute, busNumber, time, toSchool }) {
   if (busRoute === "sine") {
     return (
       <MixText>
         <Label busRoute={busRoute} size="small" />
         <TimerText>
-          <Timer value={time} />
+          <Timer value={time} toSchool={toSchool} />
         </TimerText>
       </MixText>
     );
@@ -152,7 +152,7 @@ function BusDetail({ busRoute, busNumber, time }) {
       <Label busRoute={busRoute} size="small" />
       <BusNumber>{busNumber}</BusNumber>
       <TimerText>
-        <Timer value={time} />
+        <Timer value={time} toSchool={toSchool}/>
       </TimerText>
     </MixText>
   );
@@ -187,6 +187,7 @@ function ReduceList(props) {
     time,
     stationlist,
     StationNum,
+    toSchool,
   } = props;
 
   const [visible, setVisible] = useState(false);
@@ -207,7 +208,7 @@ function ReduceList(props) {
           </StartContainer>
           <MidContainer>
             <BusRoute type={type} visible={visible} location="mid" />
-            <BusDetail busRoute={type} busNumber={num} time={time} />
+            <BusDetail busRoute={type} busNumber={num} time={time} toSchool={toSchool}/>
           </MidContainer>
           <MidContainer>
             <BusRoute type={type} location="mid" />
@@ -257,6 +258,7 @@ function BusInfoList(props) {
     num,
     time,
     stationlist,
+    toSchool,
   } = props;
 
   const { canexpand } = props;
@@ -279,6 +281,7 @@ function BusInfoList(props) {
         time={time}
         stationlist={MidStations}
         StationNum={StationNum}
+        toSchool={toSchool}
       />
     );
   }
@@ -299,7 +302,7 @@ function BusInfoList(props) {
           </StartContainer>
           <MidContainer>
             <BusRoute type={type} location="mid" />
-            <BusDetail busRoute={type} busNumber={num} time={time} />
+            <BusDetail busRoute={type} busNumber={num} time={time} toSchool={toSchool}/>
             <Entypo name="chevron-small-right" size={24} color="gray" />
           </MidContainer>
           <EndContainer>
