@@ -21,7 +21,7 @@ function Timer(props) {
 
     return () => clearInterval(timerId.current);
   }, []);
-  if (time.current < 30) {
+  if (time.current < 120) {
     return "곧 도착";
   }
   return `${min}분${sec}초`;
