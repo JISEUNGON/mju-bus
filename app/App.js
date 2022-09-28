@@ -6,30 +6,27 @@ import { useColorScheme } from "react-native";
 import CodePush from "react-native-code-push";
 import Root from "./navigation/Root";
 import { darkTheme, lightTheme } from "./styled";
+import useCodePush from "./hooks";
+import SyncProgressView from "./screens/SyncProgressView";
 
 const queryClient = new QueryClient();
 
 function App() {
   const isDark = useColorScheme() === "dark";
+  const [isUpdating, syncProgress] = useCodePush();
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        <NavigationContainer>
-          <Root />
-        </NavigationContainer>
+        {isUpdating ? (
+          <SyncProgressView syncProgress={syncProgress} />
+        ) : (
+          <NavigationContainer>
+            <Root />
+          </NavigationContainer>
+        )}
       </ThemeProvider>
     </QueryClientProvider>
   );
 }
 
-const codePushOptions = {
-  checkFrequency: CodePush.CheckFrequency.ON_APP_START,
-  updateDialog: {
-    title: "...",
-    optionalUpdateMessage: "...",
-    optionalInstallButtonLabel: "업데이트",
-    optionalIgnoreButtonLabel: "아니요.",
-  },
-  installMode: CodePush.InstallMode.IMMEDIATE,
-};
-export default CodePush(codePushOptions)(App);
+export default CodePush(App);

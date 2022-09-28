@@ -1,11 +1,13 @@
 /* eslint-disable global-require */
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Animated, BackHandler } from "react-native";
+import { Animated, BackHandler, Dimensions } from "react-native";
 import * as Font from "expo-font";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import { busApi, calendarApi } from "../api";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Circle = styled.View`
   width: 100px;
@@ -29,9 +31,16 @@ const Container = styled.View`
 `;
 
 const IconContainer = styled.View`
+  height: ${SCREEN_HEIGHT / 2 + 50}px;
   align-items: center;
-  justify-content: center;
-  flex: 4;
+  justify-content: flex-end;
+`;
+
+const TextContainer = styled.View`
+  height: ${SCREEN_HEIGHT / 2 - 50}px;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 50px;
 `;
 
 const customFonts = {
@@ -115,6 +124,7 @@ function Splash({ navigation: { navigate } }) {
           </Circle>
         </Animated.View>
       </IconContainer>
+      <TextContainer />
     </Container>
   );
 }
