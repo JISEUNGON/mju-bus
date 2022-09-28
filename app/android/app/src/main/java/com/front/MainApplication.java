@@ -16,6 +16,8 @@ import com.front.newarchitecture.MainApplicationReactNativeHost;
 
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
+import com.microsoft.codepush.react.CodePush;
+
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -42,6 +44,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected String getJSMainModuleName() {
       return "index";
     }
+
+      @Override
+      protected String getJSBundleFile() {
+        return CodePush.getJSBundleFile();
+      }
   });
 
   private final ReactNativeHost mNewArchitectureNativeHost =
