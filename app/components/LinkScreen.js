@@ -60,7 +60,7 @@ function LinkScreen({ screenName }) {
         <Column>
           <SubText isDark={isDark}>
             {screenName === "시간표"
-              ? "현재 운영 중인 시간표에요"
+              ? "현재 운영 중인 시간표예요"
               : "가장 빠른 셔틀버스를 탐색해요"}
           </SubText>
           <Title isDark={isDark}>
