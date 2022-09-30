@@ -1,7 +1,8 @@
 package com.mjubus.busserver.util;
 
 import com.mjubus.busserver.domain.*;
-import com.mjubus.busserver.repository.*;
+import com.mjubus.busserver.repository.prod.*;
+import com.mjubus.busserver.repository.staging.BusArrivalStagingRepository;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,9 @@ import java.util.UUID;
 public class ShuttleBusHandler {
     @Autowired
     BusCalendarRepository busCalendarRepository;
+
+    @Autowired
+    BusArrivalStagingRepository busArrivalStagingRepository;
 
     @Autowired
     BusRepository busRepository;
@@ -92,15 +96,18 @@ public class ShuttleBusHandler {
             expected = expected.plusSeconds(duration);
             System.out.println(expected);
             if (offset_station == 0) { // 처음인 경우 INSERT
-                busArrivalRepository.save(BusArrival.builder()
-                                .sid(UUID.randomUUID().toString())
-                                .preSid(pre_busArrival_sid)
-                                .bus(bus)
-                                .station(dest)
-                                .expected(expected)
-                                .build());
+                BusArrival result = BusArrival.builder()
+                        .sid(UUID.randomUUID().toString())
+                        .preSid(pre_busArrival_sid)
+                        .bus(bus)
+                        .station(dest)
+                        .expected(expected)
+                        .build();
+                busArrivalRepository.save(result);
+                busArrivalStagingRepository.save(result);
             } else {
                 busArrivalRepository.updateBusArrivalByPreSid(pre_busArrival_sid, expected, dest.getId());
+                busArrivalStagingRepository.updateBusArrivalByPreSid(pre_busArrival_sid, expected, dest.getId());
             }
         }
     }

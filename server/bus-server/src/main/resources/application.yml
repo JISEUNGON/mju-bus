@@ -1,0 +1,22 @@
+spring:
+    profiles:
+        active: local
+    datasource:
+        username: ${PROD_DB_USER_ID}
+        password: ${PROD_DB_USER_PW}
+        jdbc-url: jdbc:mysql://db.mju-bus.com:3306/mju-bus?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    staging-datasource:
+        username: ${STAGING_DB_USER_ID}
+        password: ${STAGING_DB_USER_PW}
+        jdbc-url: jdbc:mysql://staging-db.mju-bus.com:3306/mju-bus?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        database: mysql
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        show-sql: false
+        hibernate:
+            ddl-auto: validate
+        properties:
+          hibernate:
+              format_sql: true
