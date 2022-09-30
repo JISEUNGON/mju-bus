@@ -1,4 +1,4 @@
-package com.mjubus.busserver.repository;
+package com.mjubus.busserver.repository.staging;
 
 import com.mjubus.busserver.domain.BusCalendar;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,11 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-public interface BusCalendarRepository extends JpaRepository<BusCalendar, Long> {
+public interface BusCalendarStagingRepository extends JpaRepository<BusCalendar, Long> {
 
     @Query(value = "SELECT * " +
             "       FROM bus_calendar bc" +
