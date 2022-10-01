@@ -98,7 +98,7 @@ const data = [
   {
     id: 1,
     date: "2022/09/15",
-    title: "MBA VERSION 1.0.0",
+    title: "MBA VERSION 1.0.2",
     img: "",
     subTitle: "#셔틀버스? 언제 오는지 확인하자",
     description:
