@@ -173,6 +173,7 @@ function BusList({ navigation, route: { params } }) {
               type={item.id >= 200 ? "red" : "sine"}
               num={item.name}
               time={item.remains}
+              toSchool={toSchool}
             />
           </TouchableOpacity>
         )}

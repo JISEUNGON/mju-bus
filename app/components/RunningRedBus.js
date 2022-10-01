@@ -62,7 +62,7 @@ function RedBusList({ data }) {
               <Station>{station?.data?.name}</Station>
               <BusNumber>{item.name}</BusNumber>
               <RemainTime>
-                <Timer value={item.remains} />
+                <Timer value={item.remains} toSchool />
               </RemainTime>
             </Board>
           )}

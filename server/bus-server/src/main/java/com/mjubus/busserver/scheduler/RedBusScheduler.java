@@ -2,9 +2,10 @@ package com.mjubus.busserver.scheduler;
 
 import com.mjubus.busserver.domain.BusArrival;
 import com.mjubus.busserver.domain.Station;
-import com.mjubus.busserver.repository.BusArrivalRepository;
-import com.mjubus.busserver.repository.BusRepository;
-import com.mjubus.busserver.repository.StationRepository;
+import com.mjubus.busserver.repository.prod.BusArrivalRepository;
+import com.mjubus.busserver.repository.prod.BusRepository;
+import com.mjubus.busserver.repository.prod.StationRepository;
+import com.mjubus.busserver.repository.staging.BusArrivalStagingRepository;
 import com.mjubus.busserver.util.DateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,6 +57,9 @@ public class RedBusScheduler {
 
     @Autowired
     private BusArrivalRepository busArrivalRepository;
+
+    @Autowired
+    private BusArrivalStagingRepository busArrivalStagingRepository;
 
     @Autowired
     private BusRepository busRepository;
@@ -128,11 +132,6 @@ public class RedBusScheduler {
                         String routeId = getRouteId((Element) node);
                         List<String> predictTimes = getPredictTimes((Element) node);
 
-//                        System.out.println("URL" + URL);
-//                        System.out.println("RouteId : " + routeId);
-//                        System.out.println("PredictTimes : " + predictTimes);
-//                        System.out.println("Expected : " + DateHandler.getToday().plusSeconds(Long.parseLong(predictTimes.get(0)) * 60));
-
                         for(String predict: predictTimes) {
                             if (busId.get(routeId) != null) {
                                 UUID uuid = UUID.randomUUID();
@@ -144,6 +143,7 @@ public class RedBusScheduler {
                                         .expected(DateHandler.getToday().plusSeconds(Long.parseLong(predict) * 60))
                                         .build();
                                 busArrivalRepository.save(busArrival);
+                                busArrivalStagingRepository.save(busArrival);
                             }
                         }
 

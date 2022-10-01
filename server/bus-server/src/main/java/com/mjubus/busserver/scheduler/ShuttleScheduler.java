@@ -2,7 +2,7 @@ package com.mjubus.busserver.scheduler;
 
 
 import com.mjubus.busserver.domain.*;
-import com.mjubus.busserver.repository.*;
+import com.mjubus.busserver.repository.prod.*;
 import com.mjubus.busserver.util.DateHandler;
 import com.mjubus.busserver.util.ShuttleBusHandler;
 import org.json.simple.parser.ParseException;
@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
