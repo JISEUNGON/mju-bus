@@ -42,9 +42,9 @@ public class BusArrivalService implements BusArrivalInterface {
         LocalDateTime now = DateHandler.getToday();
         List<BusRemainAsSecond> busRemainAsSecondList = new LinkedList<>();
 
-        if (toSchool && redBus)  busArrivalList = busArrivalRepository.findRedBusArrivalByStationId(srcStation.getId()); // 학교로 + 빨간버스만
+        if (toSchool && redBus)  busArrivalList = busArrivalRepository.findRedBusArrivalsByStationId(srcStation.getId()); // 학교로 + 빨간버스만
         else if (destStation != null && !toSchool && !redBus)  busArrivalList = getBusArrivalListBetween(srcStation, destStation); // 출발지-목적지를 모두 경유하는 버스 리스트
-        else busArrivalList = busArrivalRepository.findBusArrivalByStationId(srcStation.getId()); // 현 정류장에 도착하는 모든 버스
+        else busArrivalList = findBusArrivalByStation(srcStation); // 현 정류장에 도착하는 모든 버스
 
         for (BusArrivalDto busArrivalDto: busArrivalList) {
             Bus bus = busService.findBusByBusId(busArrivalDto.getBusId());
@@ -169,5 +169,13 @@ public class BusArrivalService implements BusArrivalInterface {
         } catch (IOException | ParseException e) {
             throw  new RuntimeException(e);
         }
+    }
+
+    private List<BusArrivalDto> findBusArrivalByStation(Station station) {
+        List<BusArrivalDto> busList = busArrivalRepository.findRedBusArrivalsByStationId(station.getId());
+        List<BusArrivalDto> shuttleBusList = busArrivalRepository.findShuttleBusArrivalsByStationId(station.getId());
+
+        busList.addAll(shuttleBusList);
+        return busList;
     }
 }
