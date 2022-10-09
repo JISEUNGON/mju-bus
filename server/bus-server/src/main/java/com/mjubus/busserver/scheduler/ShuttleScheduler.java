@@ -3,6 +3,7 @@ package com.mjubus.busserver.scheduler;
 
 import com.mjubus.busserver.domain.*;
 import com.mjubus.busserver.repository.prod.*;
+import com.mjubus.busserver.repository.staging.BusArrivalStagingRepository;
 import com.mjubus.busserver.util.DateHandler;
 import com.mjubus.busserver.util.ShuttleBusHandler;
 import org.json.simple.parser.ParseException;
@@ -30,6 +31,10 @@ public class ShuttleScheduler {
 
     @Autowired
     private RouteRepository routeRepository;
+
+
+    @Autowired
+    private BusArrivalStagingRepository busArrivalStagingRepository;
 
     @Autowired
     private BusArrivalRepository busArrivalRepository;
@@ -88,15 +93,16 @@ public class ShuttleScheduler {
             List<BusTimeTableDetail> busTimeTableDetailList = findBusTimeTableDetailListByInfo(busTimeTable.getBusTimeTableInfo());
             for (BusTimeTableDetail busTimeTableDetail: busTimeTableDetailList) {
                 UUID uuid = UUID.randomUUID();
-                busArrivalRepository.save(
-                        BusArrival.builder()
-                                .bus(busTimeTable.getBus())
-                                .station(startStation)
-                                .expected(DateHandler.getTodayWith(busTimeTableDetail.getDepart()))
-                                .sid(uuid.toString())
-                                .preSid(uuid.toString())
-                                .build()
-                        );
+                BusArrival obj = BusArrival.builder()
+                        .bus(busTimeTable.getBus())
+                        .station(startStation)
+                        .expected(DateHandler.getTodayWith(busTimeTableDetail.getDepart()))
+                        .sid(uuid.toString())
+                        .preSid(uuid.toString())
+                        .build();
+
+                busArrivalRepository.save(obj);
+                busArrivalStagingRepository.save(obj);
             }
         }
     }
