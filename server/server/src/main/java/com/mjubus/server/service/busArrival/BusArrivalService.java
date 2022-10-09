@@ -108,7 +108,8 @@ public class BusArrivalService implements BusArrivalInterface {
         try {
             if (bus.getId() >= 200) { // 빨간버스 로직 별도로, DB에 값이 연결되어 있지 않음.
                 Station destStation = stationService.findStationById(201L);
-                return LocalTime.from(depart_at.plusSeconds(NaverHandler.getDuration(currentStation, destStation)));
+//                return LocalTime.from(depart_at.plusSeconds(NaverHandler.getDuration(currentStation, destStation)));
+                return LocalTime.from(depart_at.plusSeconds(180)); // API 호출량이 너무 많아 임시로 3분 측정, 캐시 서버 구현해야 됨 .
             }
 
             // 노선에 포함되어 있는 정류장 리스트
@@ -132,7 +133,8 @@ public class BusArrivalService implements BusArrivalInterface {
 
                 // 네이버 API를 통한 예상시간 계산
                 Long duration = NaverHandler.getDuration(srcStation, destStation);
-                depart_at = depart_at.plusSeconds(duration);
+//                depart_at = depart_at.plusSeconds(duration);
+                depart_at = depart_at.plusSeconds(80);
             }
             return LocalTime.from(depart_at);
         } catch (IOException | ParseException e) {
