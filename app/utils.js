@@ -70,12 +70,12 @@ export function RemoveDuplicateStation(data) {
 }
 
 export function getHiddenStation(toSchool) {
-    return toSchool ? [3, 2, 1, 6] : [4, 5, 1, 6, 11, 24];
+  return toSchool ? [3, 2, 1, 6] : [4, 5, 1, 6, 11, 24];
 }
 
 export function RemoveHiddenStation(stationList, toSchool) {
-    const hiddenStations = getHiddenStation(toSchool);
-    return stationList.filter(station => !hiddenStations.includes(station.id));
+  const hiddenStations = getHiddenStation(toSchool);
+  return stationList.filter(station => !hiddenStations.includes(station.id));
 }
 
 export function CalculatorTime(start, end) {
@@ -87,9 +87,18 @@ export function CalculatorTime(start, end) {
 
   const endResult = Math.floor(endSec[0]) * 3600 + Math.floor(endSec[1]) * 60;
 
-  const result = Math.floor((endResult - startResult) / 60);
+  // 만약 result가 음수라면? : endTime만 자정을 넘긴 경우 -> 이 경우 endResult에 24시간을 더해준다.
+  // 만약 result가 0이라면? : 1분으로 지정
 
-  return result;
+  const result = endResult - startResult;
+
+  if (result === 0) {
+    return 1;
+  }
+  if (result > 0) {
+    return Math.floor(result / 60);
+  }
+  return Math.floor((result + 24 * 3600) / 60);
 }
 
 export function DeleteSecond(str) {
