@@ -135,6 +135,10 @@ public class RedBusScheduler {
                         for(String predict: predictTimes) {
                             if (busId.get(routeId) != null) {
                                 UUID uuid = UUID.randomUUID();
+                                System.out.println(routeId);
+                                System.out.println("\t예상 : " + Long.parseLong(predict));
+                                System.out.println("\t도착 예상 : " + DateHandler.getToday().plusSeconds(Long.parseLong(predict) * 60));
+
                                 BusArrival busArrival = BusArrival.builder()
                                         .sid(uuid.toString())
                                         .preSid(uuid.toString())
@@ -142,8 +146,11 @@ public class RedBusScheduler {
                                         .station(station)
                                         .expected(DateHandler.getToday().plusSeconds(Long.parseLong(predict) * 60))
                                         .build();
-                                busArrivalRepository.save(busArrival);
-                                busArrivalStagingRepository.save(busArrival);
+                                try {
+                                    busArrivalRepository.save(busArrival);
+                                    busArrivalStagingRepository.save(busArrival);
+                                } catch (Exception ignored) {}
+
                             }
                         }
 
