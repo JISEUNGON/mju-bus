@@ -1,15 +1,19 @@
 package com.mjubus.server.domain;
 
+import com.mjubus.server.dto.PostDto.PostDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.swing.text.html.HTMLDocument;
+import java.time.LocalDateTime;
 
 @Entity
 @ApiModel(value = "게시물 저장 테이블")
 @Table(name="post")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class Post {
@@ -17,18 +21,23 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="id", columnDefinition = "int")
     @ApiModelProperty(example = "고유 식별 ID")
-    private Long id;
+    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "route_info_id", columnDefinition = "int")
-    @ApiModelProperty(example = "route_info_sid")
-    private RouteInfo routeInfo;
+    @Column(name="author", columnDefinition = "varchar(15)")
+    private String author;
 
-    @ManyToOne
-    @JoinColumn(name = "station_id", columnDefinition = "int")
-    @ApiModelProperty(example = "정류장 SID")
-    private Station station;
+    @Column(name="title", columnDefinition = "text")
+    private String title;
 
-    @Column(name = "route_order", columnDefinition = "int")
-    private int order;
+    @Column(name="content", columnDefinition = "longtext")
+    private String content;
+
+    @Column(name = "tag", columnDefinition = "text")
+    private String tag;
+
+    @Column(name="created_at", columnDefinition = "datetime")
+    private LocalDateTime createdAt;
+
+    @Column(name="updated_at", columnDefinition = "datetime")
+    private LocalDateTime updatedAt;
 }
