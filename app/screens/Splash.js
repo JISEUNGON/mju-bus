@@ -18,18 +18,11 @@ const Circle = styled.View`
   background-color: #dad8fb;
 `;
 
-const TitleContainer = styled.View`
-  width: 100%;
-  padding: 0 10px;
-  margin-bottom: 20px;
-`;
 const Title = styled.Text`
-  font-family: "SpoqaHanSansNeo-Medium";
   font-size: 20px;
   color: ${props => props.theme.mainTextColor};
 `;
 const SubTitle = styled.Text`
-  font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
   color: ${props => props.theme.subTextColor};
   margin-top: 10px;
@@ -100,11 +93,10 @@ function Splash({ navigation: { navigate } }) {
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn(e);
+      } finally {
+        //   // Tell the application to render
+        setAppIsReady(true);
       }
-      // finally {
-      //   // Tell the application to render
-      //   setAppIsReady(true);
-      // }
     }
 
     prepare();
