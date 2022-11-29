@@ -243,7 +243,9 @@ function Home({ route: { params }, navigation: { navigate } }) {
               <RedBusComingContainer>
                 <TitleContainer>
                   <Title>빨버 언제와?</Title>
-                  <SubTitle>진입로, 용인터미널 빨간 버스 도착 정보예요</SubTitle>
+                  <SubTitle>
+                    진입로, 용인터미널 빨간 버스 도착 정보예요
+                  </SubTitle>
                 </TitleContainer>
                 <RunningRedBus data={redBusRemain} />
               </RedBusComingContainer>
