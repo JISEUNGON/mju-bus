@@ -36,14 +36,14 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
 
     @Query(value = "SELECT station_id as stationId, bus_id as busId, expected_at as expectedAt" +
             "       FROM bus_arrival ba" +
-            "       WHERE station_id = :stationId" +
+            "       WHERE station_id = :station_id" +
             "       AND bus_id < 100 " +
             "       AND expected_at >= DATE_SUB(NOW(), INTERVAL 2 MINUTE);", nativeQuery = true)
     List<BusArrivalDto> findShuttleBusArrivalsByStationId(@Param("station_id")Long stationId);
 
     @Query(value = "SELECT ba.bus_id as busId, ba.station_id as stationId,  MIN(ba.expected_at) as expectedAt" +
             "       FROM bus_arrival ba" +
-            "       WHERE station_id = :stationId" +
+            "       WHERE station_id = :station_id" +
             "       AND bus_id >= 100" +
             "       AND expected_at >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)" +
             "       GROUP BY bus_id;", nativeQuery = true)
