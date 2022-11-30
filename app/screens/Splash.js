@@ -18,16 +18,6 @@ const Circle = styled.View`
   background-color: #dad8fb;
 `;
 
-const Title = styled.Text`
-  font-size: 20px;
-  color: ${props => props.theme.mainTextColor};
-`;
-const SubTitle = styled.Text`
-  font-size: 15px;
-  color: ${props => props.theme.subTextColor};
-  margin-top: 10px;
-`;
-
 const Board = styled.View`
   background-color: white;
   width: 35px;
@@ -65,15 +55,15 @@ function Splash({ navigation: { navigate } }) {
 
   const [appIsReady, setAppIsReady] = useState(false);
 
-  // const { isLoading: buslistLoading, data: busListData } = useQuery(
-  //   ["busList"],
-  //   busApi.list,
-  // );
-  // const { isLoading: calendarLoading, data: calendarData } = useQuery(
-  //   ["calendar"],
-  //   calendarApi.calendar,
-  // );
-  // const loading = buslistLoading || calendarLoading;
+  const { isLoading: buslistLoading, data: busListData } = useQuery(
+    ["busList"],
+    busApi.list,
+  );
+  const { isLoading: calendarLoading, data: calendarData } = useQuery(
+    ["calendar"],
+    calendarApi.calendar,
+  );
+  const loading = buslistLoading || calendarLoading;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -102,26 +92,26 @@ function Splash({ navigation: { navigate } }) {
     prepare();
   }, []);
 
-  // useEffect(() => {
-  //   const backAction = () => true;
+  useEffect(() => {
+    const backAction = () => true;
 
-  //   BackHandler.addEventListener("hardwareBackPress", backAction);
+    BackHandler.addEventListener("hardwareBackPress", backAction);
 
-  //   if (appIsReady && !loading) {
-  //     // This tells the splash screen to hide immediately! If we call this after
-  //     // `setAppIsReady`, then we may see a blank screen while the app is
-  //     // loading its initial state and rendering its first pixels. So instead,
-  //     // we hide the splash screen once we know the root view has already
-  //     // performed layout.
-  //     navigate("HomeBottomTabs", {
-  //       screen: "홈",
-  //       params: {
-  //         calendarData,
-  //         busListData,
-  //       },
-  //     });
-  //   }
-  // }, [appIsReady, busListData, calendarData, loading, navigate]);
+    if (appIsReady && !loading) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      navigate("HomeBottomTabs", {
+        screen: "홈",
+        params: {
+          calendarData,
+          busListData,
+        },
+      });
+    }
+  }, [appIsReady, busListData, calendarData, loading, navigate]);
 
   return (
     <Container>
@@ -134,10 +124,7 @@ function Splash({ navigation: { navigate } }) {
           </Circle>
         </Animated.View>
       </IconContainer>
-      <TextContainer>
-        <Title>서버 이전으로 서비스를 잠시 중단합니다</Title>
-        <SubTitle>11/29 19:00 ~ 11/30 19:00</SubTitle>
-      </TextContainer>
+      <TextContainer />
     </Container>
   );
 }
