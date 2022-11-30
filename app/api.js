@@ -1,4 +1,4 @@
-const URL = "http://direct-api.mju-bus.com";
+const URL = "http://api.mju-bus.com";
 
 export const busApi = {
   bus: ({ queryKey }) => {
