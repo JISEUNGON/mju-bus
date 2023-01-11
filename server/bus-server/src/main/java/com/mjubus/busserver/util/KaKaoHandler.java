@@ -5,11 +5,13 @@ import com.mjubus.busserver.domain.PathNaviDetail;
 import com.mjubus.busserver.domain.Station;
 import com.mjubus.busserver.repository.prod.PathInfoRepository;
 import com.mjubus.busserver.repository.prod.PathNaviDetailRepository;
+import lombok.Getter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -29,8 +31,7 @@ public class KaKaoHandler {
     @Autowired
     PathInfoRepository pathInfoRepository;
 
-
-    private static final String KAKAO_SECRETKEY = "KakaoAK e5faece78decd0580c5bb9f24bcb39f6";
+    public static String KAKAO_SECRETKEY;
 
     private static final String KAKAO_ENDPOINT = "https://apis-navi.kakaomobility.com/v1/directions?";
 
@@ -40,7 +41,10 @@ public class KaKaoHandler {
 
     private static final String KAKAO_OPTION = "&waypoints=&priority=RECOMMEND&car_fuel=GASOLINE&car_hipass=false&alternatives=false&road_details=false";
 
-
+    @Value("${external.kakao.key}")
+    public void setKey(String key) {
+        this.KAKAO_SECRETKEY = key;
+    }
     public Long getDuration(Station srcStation, Station destStation) throws IOException, ParseException {
 
         Long total_duration = 0L;

@@ -45,9 +45,9 @@ public interface BusArrivalRepository extends JpaRepository<BusArrival, String> 
             "       FROM bus_arrival ba" +
             "       WHERE station_id = :station_id" +
             "       AND bus_id >= 100" +
-            "       AND expected_at >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)" +
+            "       AND expected_at >= NOW()" +
             "       GROUP BY bus_id;", nativeQuery = true)
-    List<BusArrivalDto> findRedBusArrivalsByStationId(@Param(("station_id"))Long stationId);
+    List<BusArrivalDto> findRedBusArrivalsByStationId(@Param("station_id")Long stationId);
 
     @Query(value = "select * from bus_arrival where bus_id = ?1 and created_at >= ?2 order by created_at desc limit 1", nativeQuery = true)
     BusArrival findBusArrivalByBus_idAndCreated(Long bus_id, LocalDateTime created);

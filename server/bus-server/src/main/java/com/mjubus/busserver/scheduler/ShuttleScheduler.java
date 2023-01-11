@@ -5,6 +5,8 @@ import com.mjubus.busserver.domain.*;
 import com.mjubus.busserver.repository.prod.*;
 import com.mjubus.busserver.repository.staging.BusArrivalStagingRepository;
 import com.mjubus.busserver.util.DateHandler;
+import com.mjubus.busserver.util.KaKaoHandler;
+import com.mjubus.busserver.util.NaverHandler;
 import com.mjubus.busserver.util.ShuttleBusHandler;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,5 +121,21 @@ public class ShuttleScheduler {
             System.out.println(busArrival.getExpected());
             shuttleBusHandler.predict(busArrival);
         }
+    }
+
+    @Scheduled(fixedDelay = 1000)
+    public void test() {
+        // print Naver_ClientID
+        System.out.println("NAVER ID: " + NaverHandler.NAVER_CLIENTID);
+
+        // print naver secretKey
+        System.out.println("NAVER KEY: " + NaverHandler.NAVER_SECRETKEY);
+
+        // print kakao secretKey
+        System.out.println("Kakao Key: " + KaKaoHandler.KAKAO_SECRETKEY);
+
+        // print redbus secretKey
+        System.out.println("RedBus Key: " + RedBusScheduler.SERVICE_KEY);
+
     }
 }
