@@ -7,7 +7,9 @@ import com.mjubus.busserver.repository.prod.BusRepository;
 import com.mjubus.busserver.repository.prod.StationRepository;
 import com.mjubus.busserver.repository.staging.BusArrivalStagingRepository;
 import com.mjubus.busserver.util.DateHandler;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -28,9 +30,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 @Component
 public class RedBusScheduler {
-    private final String SERVICE_KEY = "ZJF99uIbDjNnsZBlrbDg%2BDL%2FCyHI2Vc%2BATgI41upeL1%2FGf2jjy8keoY%2FEb6E6CLtokViU7v8bN8tRY0vJ2x3EQ%3D%3D";
+
+    public static String SERVICE_KEY;
+
     private final String BASE_URL = "http://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList";
 
     // Route ID <-> Bus Id
@@ -66,6 +71,11 @@ public class RedBusScheduler {
 
     @Autowired
     private StationRepository stationRepository;
+
+    @Value("${external.bus.key}")
+    public void setKey(String key) {
+        this.SERVICE_KEY = key;
+    }
 
     private String buildURL(String stationId) throws UnsupportedEncodingException {
         return new StringBuilder(BASE_URL)

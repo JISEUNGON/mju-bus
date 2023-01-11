@@ -16,3 +16,8 @@ spring:
       hibernate:
         format_sql: true
   mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER # Swagger-ui
+
+external:
+    naver:
+        key: ${NAVER_KEY}
+        client-id: ${NAVER_CLIENT_ID}

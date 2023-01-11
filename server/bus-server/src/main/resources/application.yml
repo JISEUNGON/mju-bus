@@ -20,3 +20,11 @@ spring:
         properties:
           hibernate:
               format_sql: true
+external:
+    bus:
+        key: ${DATA_KEY}
+    naver:
+        key: ${NAVER_KEY}
+        client-id: ${NAVER_CLIENT_ID}
+    kakao:
+        key: ${KAKAO_KEY}
