@@ -2,7 +2,7 @@
 <configuration>
 
     <!-- 로그파일 저장 경로 -->
-    <property name="LOG_DIR" value="/Users/jaehan1346/logback" />
+    <property name="LOG_DIR" value="./log" />
 
     <!-- CONSOLE, 콘솔 출력 설정, console에 로그를 찍기 위한 appender 클래스를 사용 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
