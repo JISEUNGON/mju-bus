@@ -15,17 +15,17 @@ public class LoggerAspect {
 
     @Before("execution(* com.mjubus.server..*(..))")
     public void before(JoinPoint joinPoint) {
-        log.info("[START] | " + joinPoint.toString());
+        log.info("[START] | where: " + joinPoint.toString());
     }
 
     @AfterReturning("execution(* com.mjubus.server..*(..))")
     public void afterReturning(JoinPoint joinPoint) {
-        log.info("[END] | " + joinPoint.toString());
+        log.info("[END] | where: " + joinPoint.toString());
     }
 
     @AfterThrowing(value = "execution(* com.mjubus.server..*(..))", throwing = "exception")
     public void afterThrowing(JoinPoint joinPoint, Exception exception) {
-        log.info("[END_WITH_FAIL] | " + joinPoint.toString());
-        log.info("[END_WITH_FAIL] | exception: [" + exception + "]");
+        log.error("[END_WITH_FAIL] | where: " + joinPoint.toString());
+        log.error("[END_WITH_FAIL] | exception: [" + exception + "]", exception);
     }
 }
