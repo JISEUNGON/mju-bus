@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
   datasource:
-    username: ${DB_USER_ID}
-    password: ${DB_USER_PW}
-    url: jdbc:mysql://db.mju-bus.com:3306/mju-bus-${DB_ENV}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: mbaSince2021~
+    url: jdbc:mysql://db.mju-bus.com:3306/mju-bus-staging?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
@@ -19,5 +19,7 @@ spring:
 
 external:
     naver:
-        key: ${NAVER_KEY}
-        client-id: ${NAVER_CLIENT_ID}
+        key: MgLSNKb2EsLXMPYq0Ailk5iFa3gWbKxIBl20DIm4
+        client-id: p4xiv96tkc
+#logging:
+#  config: classpath:logback-spring.xml
