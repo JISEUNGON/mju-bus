@@ -1,7 +1,7 @@
 package com.mjubus.server.repository;
 
 import com.mjubus.server.domain.BusArrival;
-import com.mjubus.server.dto.BusArrivalDto;
+import com.mjubus.server.dto.busArrival.BusArrivalDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
