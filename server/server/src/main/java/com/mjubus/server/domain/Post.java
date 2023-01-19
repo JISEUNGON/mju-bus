@@ -1,12 +1,10 @@
 package com.mjubus.server.domain;
 
-import com.mjubus.server.dto.PostDto.PostDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.text.html.HTMLDocument;
 import java.time.LocalDateTime;
 
 @Entity
