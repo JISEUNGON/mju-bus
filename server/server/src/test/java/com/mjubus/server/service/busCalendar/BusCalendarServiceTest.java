@@ -1,54 +1,105 @@
 package com.mjubus.server.service.busCalendar;
 
 import com.mjubus.server.domain.BusCalendar;
+import com.mjubus.server.dto.request.BusCalendarSetDateRequest;
 import com.mjubus.server.util.DateHandler;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @SpringBootTest
 @Transactional
+@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 class BusCalendarServiceTest {
 
-  @Autowired
-  BusCalendarService busCalendarService;
+    @Autowired
+    private BusCalendarService busCalendarService;
 
-  @Before
-  public void reset() {
-    DateHandler.reset();
-  }
 
-  @Test
-  public void 테스트_주말() {
-    LocalDateTime weekend;
-    BusCalendar busCalendar;
+    @AfterAll
+    public static void resetAfter() {
+        DateHandler.reset();
+    }
 
-    // 9월 24일 08:00 (토) 오전
-    weekend = DateHandler.getDateWith(9, 24, 8, 0);
-    busCalendar = busCalendarService.findByDate(weekend);
-    Assertions.assertEquals(busCalendar.getId(), 5);
 
-    // 9월 24일 18:00 (토) 오후
-    weekend = DateHandler.getDateWith(9, 24, 15, 0);
-    busCalendar = busCalendarService.findByDate(weekend);
-    Assertions.assertEquals(busCalendar.getId(), 5);
+    @Test
+    @DisplayName("[Service][getDate] 서버의 날짜를 반환")
+    public void getDate() {
+        LocalDateTime today = DateHandler.getToday();
+        LocalDateTime time = busCalendarService.getDate().getTime();;
 
-    // 9월 24일 20:00 (토) 저녁
-    weekend = DateHandler.getDateWith(9, 24, 20, 0);
-    busCalendar = busCalendarService.findByDate(weekend);
-    Assertions.assertEquals(busCalendar.getId(), 5);
+        Assertions.assertEquals(today.getDayOfWeek(), time.getDayOfWeek());
+        Assertions.assertEquals(today.getHour(), time.getHour());
+        Assertions.assertEquals(today.getMinute(), time.getMinute());
+        Assertions.assertEquals(today.getMonth(), time.getMonth());
+        Assertions.assertEquals(today.getYear(), time.getYear());
+    }
 
-    Assertions.assertTrue((busCalendar.getDayOfWeek() & 96) > 0);
-  }
+    @Test
+    @DisplayName("[Service][resetDate] 서버의 날짜를 초기화")
+    public void resetDate() {
 
-  @Test
-  public void 테스트_평일() {
+        LocalDateTime today = DateHandler.getToday();
+        LocalDateTime time = busCalendarService.resetDate().getTime();
+
+        Assertions.assertEquals(today.getDayOfWeek(), time.getDayOfWeek());
+        Assertions.assertEquals(today.getHour(), time.getHour());
+        Assertions.assertEquals(today.getMinute(), time.getMinute());
+        Assertions.assertEquals(today.getMonth(), time.getMonth());
+        Assertions.assertEquals(today.getYear(), time.getYear());
+    }
+
+    @Test
+    @DisplayName("[Service][setDate] 서버의 날짜를 변경")
+    public void setDate() {
+        LocalDateTime time = LocalDateTime.of(2020, 1, 1, 1, 1);
+        busCalendarService.setDate(BusCalendarSetDateRequest.of(time));
+        LocalDateTime setTime = busCalendarService.getDate().getTime();
+
+        Assertions.assertEquals(time.getDayOfWeek(), setTime.getDayOfWeek());
+        Assertions.assertEquals(time.getHour(), setTime.getHour());
+        Assertions.assertEquals(time.getMinute(), setTime.getMinute());
+        Assertions.assertEquals(time.getMonth(), setTime.getMonth());
+        Assertions.assertEquals(time.getYear(), setTime.getYear());
+    }
+
+    @Test
+    @DisplayName("[Service][findByDate] 여름방학/겨울방학 Calendar를 찾는다.")
+    public void 테스트_주말() {
+        LocalDateTime weekend;
+        BusCalendar busCalendar;
+
+        // 2023년 1월 7일 08:00 (토) 오전
+        weekend = DateHandler.getDateWith(1, 7, 8, 0);
+        busCalendar = busCalendarService.findByDate(weekend);
+        Assertions.assertEquals(busCalendar.getId(), 2);
+
+        // 2023년 1월 7일 08:00 (토) 오전
+        weekend = DateHandler.getDateWith(1, 7, 15, 0);
+        busCalendar = busCalendarService.findByDate(weekend);
+        Assertions.assertEquals(busCalendar.getId(), 2);
+
+        // 2023년 1월 7일 08:00 (토) 오전
+        weekend = DateHandler.getDateWith(1, 7, 20, 0);
+        busCalendar = busCalendarService.findByDate(weekend);
+        Assertions.assertEquals(busCalendar.getId(), 2);
+
+        Assertions.assertTrue((busCalendar.getDayOfWeek() & 96) > 0);
+    }
+
+    @Test
+    @DisplayName("[Service][findByDate] 평일 Calendar를 찾는다.")
+    public void 테스트_평일() {
     LocalDateTime weekday;
     BusCalendar busCalendar;
 
@@ -68,10 +119,11 @@ class BusCalendarServiceTest {
     Assertions.assertEquals(busCalendar.getId(), 6);
 
     Assertions.assertTrue((busCalendar.getDayOfWeek() & 31) > 0);
-  }
+    }
 
-  @Test
-  public void 테스트_개천절() {
+    @Test
+    @DisplayName("[Service][findByDate] 개천절 Calendar를 찾는다.")
+    public void 테스트_개천절() {
     LocalDateTime holiday;
     BusCalendar busCalendar;
 
@@ -91,10 +143,11 @@ class BusCalendarServiceTest {
     Assertions.assertEquals(busCalendar.getId(), 3);
 
     Assertions.assertTrue((busCalendar.getDayOfWeek() & 1) > 0);
-  }
+    }
 
-  @Test
-  public void 테스트_한글날() {
+    @Test
+    @DisplayName("[Service][findByDate] 한글날 Calendar를 찾는다.")
+    public void 테스트_한글날() {
     LocalDateTime hangul;
     BusCalendar busCalendar;
 
@@ -114,10 +167,11 @@ class BusCalendarServiceTest {
     Assertions.assertEquals(busCalendar.getId(), 1);
 
     Assertions.assertTrue((busCalendar.getDayOfWeek() & 1) > 0);
-  }
+    }
 
-  @Test
-  public void 테스트_개교기념일() {
+    @Test
+    @DisplayName("[Service][findByDate] 개교기념일 Calendar를 찾는다.")
+    public void 테스트_개교기념일() {
     LocalDateTime schoolBirth;
     BusCalendar busCalendar;
 
@@ -137,10 +191,11 @@ class BusCalendarServiceTest {
     Assertions.assertEquals(busCalendar.getId(), 4);
 
     Assertions.assertTrue((busCalendar.getDayOfWeek() & 4) > 0);
-  }
+    }
 
-  @Test
-  public void 테스트_국군의날() {
+    @Test
+    @DisplayName("[Service][findByDate] 국군의날 Calendar를 찾는다.")
+    public void 테스트_국군의날() {
     LocalDateTime soldierDay;
     BusCalendar busCalendar;
 
@@ -160,10 +215,6 @@ class BusCalendarServiceTest {
     Assertions.assertEquals(busCalendar.getId(), 7);
 
     Assertions.assertTrue((busCalendar.getDayOfWeek() & 32) > 0);
-  }
+    }
 
-  @After
-  public void resetAfter() {
-    DateHandler.reset();
-  }
 }
