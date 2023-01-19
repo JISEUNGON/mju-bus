@@ -1,75 +1,80 @@
 package com.mjubus.server.controller;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Transactional
+@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc
 class BusControllerTest {
 
-  @Autowired
-  private BusController busController;
+    private final BusController busController;
+    private final BusCalendarController busCalendarController;
+    private final MockMvc mockMvc;
 
-  @Autowired
-  private BusCalendarController busCalendarController;
+    @Autowired
+    public BusControllerTest(BusController busController, BusCalendarController busCalendarController, MockMvc mockMvc) {
+        this.busController = busController;
+        this.busCalendarController = busCalendarController;
+        this.mockMvc = mockMvc;
+    }
 
-//  @Test
-//  void 해당_날짜에_운행하는지_확인() {
-//    busCalendarController.setDate("2023-01-01 23:00");
-//
-//    List<BusList> result = busController.busTimeTable();
-//
-//    for(int i = 0; i < result.size(); i++) {
-//      for(int j = 0; j < result.get(i).getBusList().size(); j++) {
-//        System.out.println(result.get(i).getBusList().get(j).getName());
-//      }
-//    }
-//    DateHandler.reset();
-//
-//  }
-//
-//  @Test
-//  void 버스리스트_확인() {
-//    BusTimeTableResponseDto result = busController.busList(20L);
-//
-//    System.out.println(result.getName() + " " + result.getId() + " " + result.getStations().get(0).getTimeList().size());
-//  }
-//
-//  @Test
-//  void 정보가_올바른지() {
-//    Bus result = busController.info(10L);
-//
-//    assertThat(result.getName()).isEqualTo("명지대역");
-//
-//    System.out.println(result.getName());
-//  }
-//
-//  @Test
-//  void 운행_확인() {
-//    busCalendarController.setDate("2022-09-02 10:00");
-//
-//    BusStatusDto result = busController.status(20L);
-//
-//    switch (result.getStatus()) {
-//      case 1:
-//        System.out.println("운행 전");
-//        break;
-//      case 2:
-//        System.out.println("운행 중");
-//        break;
-//      case 3:
-//        System.out.println("운행 종료");
-//        break;
-//    }
-//    DateHandler.reset();
-//
-//  }
-//
-//  @Test
-//  void stationList() {
-//    BusRouteDto result = busController.stationList(20L);
-//
-//    assertThat(result.getName()).isEqualTo("시내");
-//  }
+    @Test
+    @DisplayName("[API][/bus/{busId}] 버스 정보 조회")
+    public void findBusInfo() throws Exception {
+        // given
+        String busId = "20";
+
+        // when & then
+        mockMvc.perform(get("/bus/" + busId))
+            .andExpect(status().isOk())
+            .andReturn();
+    }
+
+    @Test
+    @DisplayName("[API][/bus/{busId}] 버스 정보 조회 - 실패")
+    public void findBusInfo2() throws Exception {
+        // given
+        String busId = "999";
+
+        // when & then
+        mockMvc.perform(get("/bus/" + busId))
+            .andExpect(status().is4xxClientError())
+            .andReturn();
+    }
+
+    @Test
+    @DisplayName("[API][/bus/{busId}/path] 버스 노선 경로 조회 - 성공")
+    public void findBusPath() throws Exception {
+        // given
+        String busId = "20";
+
+        // when & then
+        mockMvc.perform(get("/bus/" + busId + "path"))
+            .andExpect(status().isOk())
+            .andReturn();
+    }
+
+    @Test
+    @DisplayName("[API][/bus/{busId}/path] 버스 노선 경로 조회 - 실패")
+    public void findBusPath2() throws Exception {
+        // given
+        String busId = "200";
+
+        // when & then
+        mockMvc.perform(get("/bus/" + busId + "path"))
+            .andExpect(status().isOk())
+            .andReturn();
+    }
 }
