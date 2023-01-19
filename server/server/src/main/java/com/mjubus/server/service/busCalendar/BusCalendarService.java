@@ -1,26 +1,23 @@
 package com.mjubus.server.service.busCalendar;
 
 import com.mjubus.server.domain.BusCalendar;
-import com.mjubus.server.exception.BusCalenderNotFoundException;
-import com.mjubus.server.repository.BusCalendarRepository;
-import com.mjubus.server.util.DateHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.mjubus.server.dto.request.BusCalendarSetDateRequest;
+import com.mjubus.server.dto.response.BusCalendarGetDateResponse;
+import com.mjubus.server.dto.response.BusCalendarResponse;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-@Service
-public class BusCalendarService implements BusCalendarInterface {
+public interface BusCalendarService {
 
-    @Autowired
-    private BusCalendarRepository busCalendarRepository;
+    // Controller 에서 사용되는 메소드
+    BusCalendarResponse findBusCalendar();
+    void setDate(BusCalendarSetDateRequest busCalendarSetDateRequest);
+    BusCalendarGetDateResponse getDate();
+    BusCalendarGetDateResponse resetDate();
 
-    @Override
-    public BusCalendar findByDate(LocalDateTime date) {
-        Optional<BusCalendar> optionalBusCalendar = busCalendarRepository.findBusCalendarByDate(date.toLocalDate(), date.toLocalTime(), DateHandler.getDayOfWeek(date));
-        return optionalBusCalendar.orElseThrow(() -> new BusCalenderNotFoundException(date));
-    }
+
+    // Service 에서 사용되는 메소드
+    BusCalendar findByDate(LocalDateTime date);
+
 
 }
-

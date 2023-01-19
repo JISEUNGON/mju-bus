@@ -1,5 +1,7 @@
-package com.mjubus.server.dto.busArrival;
+package com.mjubus.server.dto.response;
 
+
+import com.mjubus.server.dto.busArrival.BusRemainInterface;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
