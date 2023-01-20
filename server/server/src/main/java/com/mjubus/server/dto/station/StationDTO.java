@@ -1,4 +1,4 @@
-package com.mjubus.server.dto;
+package com.mjubus.server.dto.station;
 
 import io.swagger.annotations.ApiModelProperty;
 

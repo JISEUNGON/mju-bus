@@ -1,7 +1,7 @@
 package com.mjubus.server.exception.Path;
 
 import com.mjubus.server.domain.Station;
-import com.mjubus.server.dto.StationDTO;
+import com.mjubus.server.dto.station.StationDTO;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

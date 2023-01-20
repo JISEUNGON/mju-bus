@@ -3,10 +3,9 @@ package com.mjubus.server.controller;
 
 import com.mjubus.server.domain.Bus;
 import com.mjubus.server.domain.Station;
-import com.mjubus.server.dto.BusStatusDto;
-import com.mjubus.server.dto.BusTimeTableResponseDto;
 import com.mjubus.server.dto.busListDto.BusList;
-import com.mjubus.server.dto.busRoute.BusRouteDto;
+import com.mjubus.server.dto.request.BusTimeTableRequest;
+import com.mjubus.server.dto.response.*;
 import com.mjubus.server.dto.stationPath.PathDto;
 import com.mjubus.server.service.bus.BusService;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
@@ -18,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,17 +27,18 @@ import java.util.List;
 @RequestMapping("/bus")
 @Api(tags = {"버스 정보 조회 API"})
 public class BusController {
-    @Autowired
-    private BusService busService;
+    private final BusService busService;
+    private final BusTimeTableService busTimeTableService;
+    private final PathService pathService;
+    private final StationService stationService;
 
     @Autowired
-    private BusTimeTableService busTimeTableService;
-
-    @Autowired
-    private PathService pathService;
-
-    @Autowired
-    private StationService stationService;
+    public BusController(BusService busService, BusTimeTableService busTimeTableService, PathService pathService, StationService stationService) {
+        this.busService = busService;
+        this.busTimeTableService = busTimeTableService;
+        this.pathService = pathService;
+        this.stationService = stationService;
+    }
 
     @GetMapping("/list")
     @ApiOperation(value = "운행중인 버스 리스트를 받는다.")
@@ -57,8 +58,8 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "버스 ID가 정상적이지 않은 경")
     })
     @ResponseBody
-    public BusTimeTableResponseDto busList(@PathVariable(value = "busID") Long id) {
-        return busTimeTableService.makeBusTimeTableByBusId(id);
+    public ResponseEntity<BusTimeTableResponse> busList(@PathVariable(value = "busID") BusTimeTableRequest req) {
+        return ResponseEntity.ok(busTimeTableService.makeBusTimeTableByBusId(req));
     }
 
     @GetMapping("/{busID}")
@@ -68,8 +69,8 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "버스 ID 찾지 못하는 경우")
     })
     @ResponseBody
-    public Bus info(@PathVariable(value = "busID") Long id) {
-        return busService.findBusByBusId(id);
+    public ResponseEntity<BusResponse> info(@PathVariable(value = "busID") BusTimeTableRequest req) {
+        return ResponseEntity.ok(busService.findBus(req));
     }
 
     @GetMapping("/{busID}/status")
@@ -79,8 +80,8 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "버스 ID를 찾지 못하는 경우")
     })
     @ResponseBody
-    public BusStatusDto status(@PathVariable(value = "busID") Long id) {
-        return busService.getBusStatusByBusId(id);
+    public ResponseEntity<BusStatusResponse> status(@PathVariable(value = "busID") BusTimeTableRequest req) {
+        return ResponseEntity.ok(busService.getBusStatus(req));
     }
 
 
@@ -90,8 +91,8 @@ public class BusController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public BusRouteDto stationList(@PathVariable(value = "busID") Long busId) {
-        return busService.getRouteByBusId(busId);
+    public ResponseEntity<BusRouteResponse> stationList(@PathVariable(value = "busID") BusTimeTableRequest req) {
+        return ResponseEntity.ok(busService.getBusRoute(req));
     }
 
     @GetMapping("/{busId}/path")

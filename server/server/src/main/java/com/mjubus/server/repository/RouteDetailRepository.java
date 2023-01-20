@@ -1,7 +1,7 @@
 package com.mjubus.server.repository;
 
 import com.mjubus.server.domain.RouteDetail;
-import com.mjubus.server.dto.StationDTO;
+import com.mjubus.server.dto.station.StationDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
