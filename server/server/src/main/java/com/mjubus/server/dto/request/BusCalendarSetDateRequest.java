@@ -1,15 +1,18 @@
 package com.mjubus.server.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Builder
+@ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BusCalendarSetDateRequest {
     @ApiModelProperty(example = "2022-08-01T22:00:00.000044", value = "2022-08-01T22:00:00.000044")
     private LocalDateTime time;

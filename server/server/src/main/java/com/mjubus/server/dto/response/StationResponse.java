@@ -4,10 +4,8 @@ import com.mjubus.server.domain.Station;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
-@Builder
 @Getter
+@Builder
 public class StationResponse {
     @ApiModelProperty(value = "정류장 식별번호", example = "1")
     private Long id;

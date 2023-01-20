@@ -6,11 +6,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
-@ToString
-@Builder
 @Getter
+@Builder
 public class PostResponse {
 
     @ApiModelProperty(example = "지승언", dataType = "varchar(15)")
