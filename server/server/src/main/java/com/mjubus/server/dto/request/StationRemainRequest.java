@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
+@Builder
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class StationRemainRequest {
 
     @ApiModelProperty(value = "도착 정류장 식별번호", example = "1", required = false)

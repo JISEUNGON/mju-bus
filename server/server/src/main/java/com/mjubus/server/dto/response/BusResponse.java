@@ -4,10 +4,8 @@ import com.mjubus.server.domain.Bus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Getter
+@Builder
 public class BusResponse {
     @ApiModelProperty(example = "1", value = "고유 식별 ID")
     private Long id;

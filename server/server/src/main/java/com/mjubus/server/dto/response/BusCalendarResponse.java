@@ -10,7 +10,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
 public class BusCalendarResponse {

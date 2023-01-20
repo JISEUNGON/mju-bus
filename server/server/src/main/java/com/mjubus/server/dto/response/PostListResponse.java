@@ -1,14 +1,11 @@
 package com.mjubus.server.dto.response;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
-@AllArgsConstructor
-@Builder
 @Getter
+@Builder
 public class PostListResponse {
 
     private List<PostResponse> posts;

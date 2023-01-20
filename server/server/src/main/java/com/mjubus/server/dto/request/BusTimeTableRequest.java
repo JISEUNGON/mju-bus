@@ -4,10 +4,10 @@ import com.mjubus.server.domain.Bus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
 @ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BusTimeTableRequest {
 
     @ApiModelProperty(example = "1", value = "고유 식별 ID")

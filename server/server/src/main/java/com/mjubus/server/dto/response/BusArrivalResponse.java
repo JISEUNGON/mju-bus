@@ -3,18 +3,13 @@ package com.mjubus.server.dto.response;
 
 import com.mjubus.server.dto.busArrival.BusRemainInterface;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
 
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class BusArrivalResponse {
 
     @ApiModelProperty(example = "4", dataType = "int")
