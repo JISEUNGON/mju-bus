@@ -8,7 +8,6 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class BusTimeTableResponse {
 

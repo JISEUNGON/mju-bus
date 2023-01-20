@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Builder
-@ToString
 public class BusStatusResponse {
     public static final int BEFORE_RUNNING = 1;
     public static final int RUNNING = 2;

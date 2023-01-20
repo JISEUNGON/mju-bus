@@ -67,12 +67,12 @@ public class BusArrivalServiceImpl implements BusArrivalService {
             busRemainAsSecondList.add(busRemainAsSecond);
         }
 
-        BusArrivalResponse response = new BusArrivalResponse();
-        response.setResponse_at(now);
-        response.setId(srcStation.getId());
-        response.setName(srcStation.getName());
-        response.setBusList(busRemainAsSecondList);
-        return response;
+        return BusArrivalResponse.builder()
+            .id(srcStation.getId())
+            .name(srcStation.getName())
+            .busList(busRemainAsSecondList)
+            .response_at(now)
+            .build();
     }
 
     @Override

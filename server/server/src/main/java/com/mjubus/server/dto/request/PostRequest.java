@@ -3,10 +3,10 @@ package com.mjubus.server.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
-@Builder
 @Getter
+@Builder
+@ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostRequest {
     @ApiModelProperty(example = "1", dataType = "int", value = "고유 식별 ID")
     private int id;

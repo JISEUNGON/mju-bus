@@ -2,10 +2,10 @@ package com.mjubus.server.dto.request;
 
 import lombok.*;
 
-@Builder
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @ToString
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StationRequest {
     private Long id;
 
