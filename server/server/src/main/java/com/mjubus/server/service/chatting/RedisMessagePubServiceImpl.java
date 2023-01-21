@@ -13,19 +13,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisMessagePubServiceImpl implements RedisMessagePubService {
 
-    private RedisTemplate<String, Object> redisTemplate;
-    private RedisMessageListenerContainer redisMessageListenerContainer;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisMessageListenerContainer redisMessageListenerContainer;
+    private final RedisMessageSubService redisMessageSubService;
+    private final ChattingRoomRepository chattingRoomRepository;
+
 
     @Autowired
-    private RedisMessageSubServiceImpl redisMessageSubService;
-
-    @Autowired
-    private ChattingRoomRepository chattingRoomRepository;
-
-    @Autowired
-    public RedisMessagePubServiceImpl(RedisTemplate<String, Object> redisTemplate, RedisMessageListenerContainer redisMessageListenerContainer) {
+    public RedisMessagePubServiceImpl(RedisTemplate<String, Object> redisTemplate, RedisMessageListenerContainer redisMessageListenerContainer, RedisMessageSubService redisMessageSubService, ChattingRoomRepository chattingRoomRepository) {
         this.redisTemplate = redisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
+        this.redisMessageSubService = redisMessageSubService;
+        this.chattingRoomRepository = chattingRoomRepository;
     }
 
     @Override
