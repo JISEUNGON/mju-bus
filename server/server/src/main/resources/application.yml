@@ -28,7 +28,6 @@ spring:
 
 external:
     naver:
-        key: ${NAVER_KEY}
         client-id: ${NAVER_CLIENT_ID}
         
 logging:

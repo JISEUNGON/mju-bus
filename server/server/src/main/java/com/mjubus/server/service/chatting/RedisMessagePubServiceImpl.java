@@ -3,7 +3,6 @@ package com.mjubus.server.service.chatting;
 import com.mjubus.server.repository.ChattingRoomRepository;
 import com.mjubus.server.vo.ChattingMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -30,8 +29,9 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
     }
 
     @Override
-    public void publish(ChannelTopic topic, ChattingMessage chattingMessage) {
-        chattingRoomRepository.put(chattingMessage.getRoomId(), topic);
+    public void publish(ChattingMessage chattingMessage) {
+        ChannelTopic topic = new ChannelTopic(chattingMessage.getRoomId());
+        chattingRoomRepository.newChattingRoom(chattingMessage.getRoomId(), topic);
         redisMessageListenerContainer.addMessageListener(redisMessageSubService, topic);
         redisTemplate.convertAndSend(topic.getTopic(), chattingMessage);
     }
