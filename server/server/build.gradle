@@ -31,7 +31,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // JSON (NAVER API)
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-
+    // OAuth 2.0 & Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // Http Client
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 }
 test {
     useJUnitPlatform()
