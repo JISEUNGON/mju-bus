@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
   datasource:
-    username: ${DB_USER_ID}
-    password: ${DB_USER_PW}
-    url: jdbc:mysql://db.mju-bus.com:3306/mju-bus-${DB_ENV}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: mbaSince2021~
+    url: jdbc:mysql://db.mju-bus.com:3306/mju-bus-staging?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
@@ -15,12 +15,32 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            client-name: kakao
+            client-authentication-method: POST
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-info-authentication-method: GET
+            user-name-attribute: id
+
   mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER # Swagger-ui
 
 external:
-    naver:
-        key: ${NAVER_KEY}
-        client-id: ${NAVER_CLIENT_ID}
+  naver:
+    key: ${NAVER_KEY}
+    client-id: ${NAVER_CLIENT_ID}
         
 logging:
   config: classpath:logback-spring.xml
+
