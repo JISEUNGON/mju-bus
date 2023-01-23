@@ -37,7 +37,7 @@ public class ChattingController {
         redisMessagePubService.publish(chattingMessage);
     }
 
-    @GetMapping("/hitory/{roomId}")
+    @GetMapping("/history/{roomId}")
     @ApiOperation(value = "채팅 기록을 얻는다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
