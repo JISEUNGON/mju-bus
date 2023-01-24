@@ -1,5 +1,7 @@
 package com.mjubus.server.service.chatting;
 
+import com.mjubus.server.dto.request.MessageLogRequest;
+import com.mjubus.server.dto.response.MessageLogResponse;
 import com.mjubus.server.exception.chatting.RoomIdNotFoundExcption;
 import com.mjubus.server.vo.MessageLog;
 import lombok.extern.slf4j.Slf4j;
@@ -19,16 +21,19 @@ public class RedisMessageLogServiceImpl implements RedisMessageLogService {
     }
 
     @Override
-    public List<MessageLog> findMessageLog(final String roomId) {
-        List<Object> list = redisTemplate.opsForList().range(roomId, 0, redisTemplate.opsForList().size(roomId));
-        List<MessageLog> messageLogList = new ArrayList<>();
+    public List<MessageLogResponse> findMessageLog(final MessageLogRequest messageLogRequest) {
+        List<Object> list = redisTemplate.opsForList().range(messageLogRequest.getRoomId(), 0, redisTemplate.opsForList().size(messageLogRequest.getRoomId()));
+        List<MessageLogResponse> messageLogList = new ArrayList<>();
 
         if(list.size() == 0) {
-            throw new RoomIdNotFoundExcption(roomId);
+            throw new RoomIdNotFoundExcption(messageLogRequest.getRoomId());
         }
 
-        list.forEach(c -> {
-            messageLogList.add((MessageLog) c);
+        list.forEach(objectTypeElement -> {
+            MessageLog messageLogVo = (MessageLog) objectTypeElement;
+            MessageLogResponse messageLogResponse = MessageLogResponse.builder().build();
+            messageLogResponse.setMessageLogVo(messageLogVo);
+            messageLogList.add(messageLogResponse);
         });
 
         return messageLogList;

@@ -1,17 +1,20 @@
 package com.mjubus.server.controller;
 
+import com.mjubus.server.dto.request.MessageLogRequest;
+import com.mjubus.server.dto.response.MessageLogResponse;
 import com.mjubus.server.service.chatting.RedisMessageLogService;
 import com.mjubus.server.service.chatting.RedisMessagePubService;
 import com.mjubus.server.vo.ChattingMessage;
-import com.mjubus.server.vo.MessageLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -44,7 +47,7 @@ public class ChattingController {
             @ApiResponse(responseCode = "404", description = "Room ID가 정상적이지 않은 경우")
     })
     @ResponseBody
-    public List<MessageLog> findMessageHistory(String roomId) {
-        return redisMessageLogService.findMessageLog(roomId);
+    public ResponseEntity<List<MessageLogResponse>> findMessageHistory(@PathVariable(value = "roomId") MessageLogRequest req) {
+        return ResponseEntity.ok(redisMessageLogService.findMessageLog(req));
     }
 }
