@@ -19,6 +19,7 @@ import { busApi, stationApi } from "../../api";
 import RunningRedBus from "../../components/RunningRedBus";
 import RouteSelect from "./RouteSelect";
 import { stationId } from "../../id";
+import KakaoLogin from "../../components/Login/KakaoLogin";
 
 const STORAGE_KEY = "@routes";
 
@@ -217,7 +218,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
               <LinkContainer>
                 <LinkScreen screenName="시간표" />
               </LinkContainer>
-
+                  
               <RunningBusContainer>
                 <TitleContainer>
                   <Title>운행중인 버스</Title>
@@ -249,6 +250,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
                 </TitleContainer>
                 <RunningRedBus data={redBusRemain} />
               </RedBusComingContainer>
+              <KakaoLogin/>
             </>
           }
         />
