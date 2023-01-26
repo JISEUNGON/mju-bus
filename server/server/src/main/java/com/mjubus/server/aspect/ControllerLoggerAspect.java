@@ -17,7 +17,11 @@ public class ControllerLoggerAspect {
 
     @Before("execution(* com.mjubus.server.controller..*(..))")
     public void beforeController(JoinPoint joinPoint) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        log.info("[CONTROLLER] | HttpMethod: /{} URI:{}", request.getMethod(), request.getRequestURI());
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            log.info("[CONTROLLER] | HttpMethod: /{} URI:{}", request.getMethod(), request.getRequestURI());
+        } catch (IllegalStateException illegalStateException) {
+            log.info("[CONTROLLER] | No thread-bound request found.");
+        }
     }
 }
