@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, useColorScheme, View } from "react-native";
 import Home from "../screens/Home/Home";
-import MateTopTabs from "./MateTopTabs";
+import ScheduleTopTabs from "./ScheduleTopTabs";
 import BusTopTabs from "./BusTopTabs";
 import TogetherTopTabs from "./TogetherTopTabs";
 import ViewMore from "../screens/ViewMore";
@@ -102,7 +102,7 @@ function HomeBottomTabs() {
       />
       <Tab.Screen
         name="시간표"
-        component={MateTopTabs}
+        component={ScheduleTopTabs}
         options={{
           headerStyle: {
             backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
