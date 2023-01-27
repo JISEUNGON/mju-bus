@@ -16,8 +16,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.List;
 
 @Configuration
-@Profile("local")
-public class RedisConfig {
+@Profile("server")
+public class ServerRedisConfig {
+
+    @Value("${spring.redis.cluster.nodes}")
+    private List<String> clusterNodes;
 
     //참고: https://github.com/codej99/websocket-chat-server/blob/feature/redis-pub-sub/src/main/java/com/websocket/chat/config/RedisConfig.java
     /**
@@ -28,6 +31,12 @@ public class RedisConfig {
         RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
         redisMessageListenerContainer.setConnectionFactory(connectionFactory);
         return redisMessageListenerContainer;
+    }
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(clusterNodes);
+        return new LettuceConnectionFactory(redisClusterConfiguration);
     }
 
     /**
