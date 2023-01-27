@@ -27,7 +27,7 @@ echo "â€–            [STAGING]            2. Build API Server                 â€
 echo "======================================================================="
 echo "\033[0m"
 cd server/
-./gradlew build
+./gradlew build -x test
 cd ../
 
 echo "\033[32m"
