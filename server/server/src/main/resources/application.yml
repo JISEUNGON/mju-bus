@@ -1,6 +1,47 @@
 spring:
   profiles:
-    active: local
+    active: ${PROFILE}
+---
+spring:
+  config:
+    activate:
+      on-profile: server
+  datasource:
+    username: ${DB_USER_ID}
+    password: ${DB_USER_PW}
+    url: jdbc:mysql://db.mju-bus.com:3306/mju-bus-${DB_ENV}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER # Swagger-ui
+  redis:
+    cluster:
+      nodes: ${REDIS_CLUSTER_NODES}
+      max-redirects: 3
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+external:
+    naver:
+        key: ${NAVER_KEY}
+        client-id: ${NAVER_CLIENT_ID}
+
+logging:
+  config: classpath:logback-spring.xml
+---
+spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
     username: ${DB_USER_ID}
     password: ${DB_USER_PW}
@@ -22,14 +63,12 @@ spring:
         max-active: 10
         max-idle: 10
         min-idle: 2
-    port: ${REDIS_PORT}
-    host: ${REDIS_HOST}
-    password: ${REDIS_PW}
-
+    host: localhost
+    port: 6379
 external:
-    naver:
-        key: ${NAVER_KEY}
-        client-id: ${NAVER_CLIENT_ID}
-        
+  naver:
+    key: ${NAVER_KEY}
+    client-id: ${NAVER_CLIENT_ID}
+
 logging:
   config: classpath:logback-spring.xml
