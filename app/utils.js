@@ -9,11 +9,6 @@ const HighlightTitle = styled.Text`
   color: #7974e7;
 `;
 
-const HighlightTaxi = styled.Text`
-  font-family: "SpoqaHanSansNeo-Bold";
-  font-size: 20px;
-  color: #4F8645;
-`;
 
 export function sortTimeTable(a, b) {
   return (
