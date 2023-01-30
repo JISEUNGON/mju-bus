@@ -91,21 +91,23 @@ const ModalContentContainer = styled.View`
 const ModalTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 18px;
-  margin-bottom: 13px;
+  margin-bottom: 10px;
+  margin-left: 10px;
 `;
 
 const Row = styled.View`
   width: 100%;
   flex-direction: row;
-  align-items: center;
   justify-content: flex-start;
-  margin-bottom: 10px;
+  margin-left: 10px;
+  
 `;
 
 const ModalText = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
-  margin-left: 13px;
+  margin-left: 40px;
+  margin-bottom: 10px;
 `;
 
 
@@ -138,7 +140,7 @@ export function highlightTaxi(contents, isOpen){
   return <HighlightTaxi style = {[isOpen ? Styles.title : null]}>{contents}</HighlightTaxi>;
 }
 
-function Taxi() {
+function Taxi({ route: { params }, navigation: { navigate } }) {
   const bottomSheetModalRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -196,20 +198,44 @@ function Taxi() {
               <ModalContentContainer>
                 <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
                 <Row>
-                  <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
-                  <ModalText>택시</ModalText>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigate("AddPartyStack", {
+                        screen: "AddTaxi",
+                      });
+                    }}
+                  >
+                    <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
+                    <ModalText>택시</ModalText>
+                  </TouchableOpacity>
                 </Row>
                 <Row>
-                  <MaterialIcons
-                    name="delivery-dining"
-                    size={24}
-                    color="rgb(76,150,180)"
-                  />
-                  <ModalText>배달</ModalText>
+                <TouchableOpacity
+                    onPress={() => {
+                      navigate("AddPartyStack", {
+                        screen: "AddDelivery",
+                      });
+                    }}
+                  >
+                    <MaterialIcons
+                      name="delivery-dining"
+                      size={24}
+                      color="rgb(76,150,180)"
+                    />
+                    <ModalText>배달</ModalText>
+                  </TouchableOpacity>
                 </Row>
                 <Row>
+                <TouchableOpacity
+                    onPress={() => {
+                      navigate("AddPartyStack", {
+                        screen: "AddCarPool",
+                      });
+                    }}
+                  >
                   <Ionicons name="thumbs-up" size={18} color="rgb(48,52,63)" />
                   <ModalText>카풀</ModalText>
+                  </TouchableOpacity>
                 </Row>
               </ModalContentContainer>
             </BottomSheetModal>
