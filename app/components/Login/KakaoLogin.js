@@ -1,15 +1,9 @@
 import React, { useEffect } from "react";
 import {TouchableOpacity, Image, StyleSheet } from 'react-native';
 import KakaoImage from "../../assets/image/kakao_login.png"
-import KakaoSDK from '@actbase/react-kakaosdk';
+import { login } from '@react-native-seoul/kakao-login';
 
 function KakaoLogin() {
-    useEffect(() => {
-        async function init() {
-            await KakaoSDK.init(process.env.REACT_APP_KAKAO_NATIVE_KEY);
-        }
-        init();
-    }, []);
 
     const styles = StyleSheet.create({
         btn: {
@@ -22,7 +16,7 @@ function KakaoLogin() {
 
     const kakao_login = async () => {
         try {
-            const token = await KakaoSDK.login();
+            const token = await login();
             console.log(token);
         } catch (err) {
             console.log("Error ! ");

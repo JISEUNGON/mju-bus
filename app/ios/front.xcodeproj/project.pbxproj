@@ -26,6 +26,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = front/main.m; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-front.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-front.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-front.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-front.debug.xcconfig"; path = "Target Support Files/Pods-front/Pods-front.debug.xcconfig"; sourceTree = "<group>"; };
+		6EBF79092987A7D200D29AB0 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-front.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-front.release.xcconfig"; path = "Target Support Files/Pods-front/Pods-front.release.xcconfig"; sourceTree = "<group>"; };
 		A8CFF79071AA4470505E8B20 /* Pods-front.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-front.staging.xcconfig"; path = "Target Support Files/Pods-front/Pods-front.staging.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = front/SplashScreen.storyboard; sourceTree = "<group>"; };
@@ -80,6 +81,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				6EBF79092987A7D200D29AB0 /* Bridging-Header.h */,
 				13B07FAE1A68108700A75B9A /* front */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -149,7 +151,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				4ED2750AE58C868D018C6660 /* [CP] Embed Pods Frameworks */,
+				2AFEE422E986BB615E088A0B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -242,14 +244,14 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4ED2750AE58C868D018C6660 /* [CP] Embed Pods Frameworks */ = {
+		2AFEE422E986BB615E088A0B /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-front/Pods-front-frameworks.sh",
-				"${PODS_ROOT}/NMapsMap/framework/NMapsMap.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/NMapsMap/NMapsMap.framework/NMapsMap",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
