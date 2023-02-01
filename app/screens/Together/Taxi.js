@@ -1,12 +1,10 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
-import { View, Dimensions, StyleSheet, TouchableOpacity, SafeAreaView} from "react-native";
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdropProps,} from "@gorhom/bottom-sheet";
+import { Dimensions, StyleSheet, TouchableOpacity} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModal, BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 import styled from "styled-components";
-import { Entypo, Fontisto, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { Fontisto, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/AntDesign";
-import BusIcon from "../../components/BusIcon";
-import Profile from "../../components/Profile";
-import colors, { DARK_GRAY, GRAY, LIGHT_GRAY, WHITE_COLOR } from "../../colors";
 import LinkJoin from "../../components/LinkJoin";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -17,7 +15,6 @@ const HeaderContainer = styled.View`
   height: 140px;
   justify-content: center;
   background-color: ${props => props.theme.scheduleBgColor};
-  flex: 0.75;
 `;
 
 const HighlightTaxi = styled.Text`
@@ -47,17 +44,21 @@ const Hr = styled.View`
   border-bottom-width: 2px;
 `;
 
-const BodyContainer = styled.ScrollView`
+const BodyContainer = styled.View`
+  flex:1;
   width: ${SCREEN_WIDTH}px;
+  height: 500px;
   padding: 0 20px;
-  flex: 2;
   padding-bottom: 20px;
+  //background-color: beige;
   background-color: ${props => props.theme.scheduleBgColor};
 `;
 
 
-const ParticipationContainer = styled.View`
+const ParticipationContainer = styled.ScrollView`
+  //background-color: aqua;
   width: 100%;
+  height:20%;
 `;
 
 const ContentsTitle = styled.Text`
@@ -68,45 +69,48 @@ const ContentsTitle = styled.Text`
 `;
 
 const RecruitmentContainer = styled(ParticipationContainer)`
-  margin-top: 33px;
+  //background-color: green;
+  height:50%;
+  margin-top: 20px;
+  
 `;
 
 const BottomContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
+  height:40px;
   padding: 0 20px;
-  flex: 1;
   background-color: ${props => props.theme.scheduleBgColor};
 `;
 
-const ModalContainer = styled.View`
-  width: ${SCREEN_WIDTH - 10}px;
-  justify-content: center;
-`;
 
-const ModalContentContainer = styled.View`
-  margin-top: 10px;
-  margin-left: 30px;
+const ModalContainer = styled.View`
+  flex: 1;
+  width: 350px;
+  padding: 0 20px;
+  margin-left:22px;
+  margin-bottom:5px;
+  background-color: beige;
 `;
 
 const ModalTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 18px;
-  margin-bottom: 10px;
-  margin-left: 10px;
+  margin-bottom: 5px;
 `;
 
 const Row = styled.View`
   width: 100%;
+  height: 30px;
   flex-direction: row;
   justify-content: flex-start;
-  margin-left: 10px;
-  
+  margin-bottom: 10px;
+  background-color: aqua;
 `;
 
 const ModalText = styled.Text`
   font-family: "SpoqaHanSansNeo-Medium";
   font-size: 15px;
-  margin-left: 40px;
+  margin-left: 10px;
   margin-bottom: 10px;
 `;
 
@@ -117,8 +121,8 @@ const Styles = StyleSheet.create({
     position: "absolute",
     width: 40,
     height: 40,
-    left: 320,
-    top: 120,
+    left: 340,
+    top: -10,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
@@ -132,7 +136,7 @@ const Styles = StyleSheet.create({
   text: {
     color:"#555555"
   },
-
+  
 });
 
 export function highlightTaxi(contents, isOpen){
@@ -153,6 +157,7 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
   }, []);
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <BottomSheetModalProvider>
         {/* Head Conatiner*/}
         <HeaderContainer style={[isOpen ? Styles.con : null]}>
@@ -175,7 +180,7 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
 
         {/*BottomContainer*/}
         <BottomContainer style={[isOpen ? Styles.con : null]}>
-          <ModalContainer>
+      
             <TouchableOpacity
               style={Styles.circle}
               onPress={handlePresentModal}
@@ -195,21 +200,21 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
               detached={true}
               onDismiss={() => setIsOpen(false)}
             >
-              <ModalContentContainer>
+              <ModalContainer>
                 <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
-                <Row>
-                  <TouchableOpacity
+                <TouchableOpacity
                     onPress={() => {
                       navigate("AddPartyStack", {
                         screen: "AddTaxi",
                       });
                     }}
                   >
-                    <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
-                    <ModalText>택시</ModalText>
-                  </TouchableOpacity>
-                </Row>
                 <Row>
+                    <Fontisto name="taxi" size={15} color="rgb(255,211,26)"/>
+                    <ModalText>택시</ModalText>
+                  
+                </Row>
+                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
                       navigate("AddPartyStack", {
@@ -217,15 +222,16 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
                       });
                     }}
                   >
+                <Row>
                     <MaterialIcons
                       name="delivery-dining"
                       size={24}
                       color="rgb(76,150,180)"
                     />
                     <ModalText>배달</ModalText>
-                  </TouchableOpacity>
+                  
                 </Row>
-                <Row>
+                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
                       navigate("AddPartyStack", {
@@ -233,16 +239,21 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
                       });
                     }}
                   >
-                  <Ionicons name="thumbs-up" size={18} color="rgb(48,52,63)" />
+                <Row>
+                
+                  <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)"/>
                   <ModalText>카풀</ModalText>
-                  </TouchableOpacity>
+                  
                 </Row>
-              </ModalContentContainer>
+                </TouchableOpacity>
+              </ModalContainer>
             </BottomSheetModal>
-          </ModalContainer>
+          
         </BottomContainer>
 
     </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
 export default Taxi;
+
