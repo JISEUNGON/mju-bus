@@ -10,6 +10,4 @@ public interface TaxiPartyService {
 
     TaxiPartyListResponse findTaxiPartyList();
 
-    long save(TaxiPartyRequest req);
-
 }

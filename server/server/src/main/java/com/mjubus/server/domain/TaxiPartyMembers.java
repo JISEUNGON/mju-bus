@@ -22,7 +22,7 @@ public class TaxiPartyMembers {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="id", columnDefinition = "int")
     @ApiModelProperty(example = "고유 식별 ID")
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

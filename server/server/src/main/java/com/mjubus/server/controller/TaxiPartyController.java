@@ -1,11 +1,8 @@
 package com.mjubus.server.controller;
 
-import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.dto.request.TaxiPartyRequest;
-import com.mjubus.server.dto.response.PostListResponse;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
-import com.mjubus.server.service.post.PostService;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -48,20 +44,10 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
             @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
     })
-    public ResponseEntity<TaxiPartyResponse> info(@PathVariable(name = "taxipartyId")TaxiPartyRequest id){
+    public ResponseEntity<TaxiPartyResponse> info(@PathVariable(name = "group-id")TaxiPartyRequest id){
         return ResponseEntity.ok(
                 taxiPartyService.findTaxiParty(id)
         );
     }
 
-//    @PostMapping("/list/{group-id}")
-//    @ApiOperation(value = "그룹 참여")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "정상 응답"),
-//            @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
-//    })
-//    public ResponseEntity<TaxiPartyResponse> join (@PathVariable(name = "taxipartyId")TaxiPartyRequest id){
-//        TaxiPartyResponse current = info(id).getBody();
-//
-//    }
 }

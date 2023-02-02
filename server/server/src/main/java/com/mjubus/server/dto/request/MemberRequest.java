@@ -7,16 +7,16 @@ import lombok.*;
 @Builder
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TaxiPartyRequest {
+public class MemberRequest {
 
     @ApiModelProperty(example = "1", dataType = "int", value = "고유 식별 ID")
     private Long id;
 
-    public static TaxiPartyRequest of(String id) {
-        return new TaxiPartyRequest(Long.parseLong(id));
+    public static MemberRequest of(String id) {
+        return new MemberRequest(Long.parseLong(id));
     }
 
-    public static TaxiPartyRequest of(Long id) {
-        return new TaxiPartyRequest(id);
+    public static MemberRequest of(Long id) {
+        return new MemberRequest(id);
     }
 }

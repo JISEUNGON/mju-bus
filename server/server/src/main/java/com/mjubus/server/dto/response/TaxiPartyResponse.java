@@ -5,15 +5,17 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class TaxiPartyResponse {
 
     @ApiModelProperty(example = "파티장", dataType = "int")
-    private long administer;
+    private Long administer;
 
     @ApiModelProperty(example = "택시 도착 정류장", dataType = "int")
-    private long taxi_destination_id;
+    private Long taxi_destination_id;
 
     @ApiModelProperty(example = "만남장소_위도", dataType = "double")
     private double meeting_latitude;
@@ -25,22 +27,22 @@ public class TaxiPartyResponse {
     private String memo;
 
     @ApiModelProperty(example = "파티 최소 인원", dataType = "int")
-    private long min;
+    private Long min;
 
     @ApiModelProperty(example = "파티 최대 인원", dataType = "int")
-    private long max;
+    private Long max;
 
     @ApiModelProperty(example = "모집 마감 시간", dataType = "datetime")
-    private long end_at;
+    private LocalDateTime end_at;
 
     @ApiModelProperty(example = "생성일", dataType = "datetime")
-    private long created_at;
+    private LocalDateTime created_at;
 
     @ApiModelProperty(example = "모집 상황", dataType = "int")
-    private long status;
+    private Long status;
 
-    public static TaxiPartyResponse of(long administer, long taxi_destination_id, double meeting_latitude,
-                                  double meeting_longitude, String memo, long min, long max, long end_at, long created_at, long status) {
+    public static TaxiPartyResponse of(Long administer, Long taxi_destination_id, double meeting_latitude,
+                                  double meeting_longitude, String memo, Long min,Long max, LocalDateTime end_at, LocalDateTime created_at, Long status) {
         return TaxiPartyResponse.builder()
                 .administer(administer)
                 .taxi_destination_id(taxi_destination_id)

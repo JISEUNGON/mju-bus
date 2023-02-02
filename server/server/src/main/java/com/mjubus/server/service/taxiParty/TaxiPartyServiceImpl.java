@@ -23,7 +23,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Override
     public TaxiPartyResponse findTaxiParty(TaxiPartyRequest req) {
-        TaxiParty result = taxiPartyRepository.findTaxiById(req.getId()).orElseThrow(() -> new TaxiPartyNotFoundException(req.getId()));
+        TaxiParty result = taxiPartyRepository.findById(req.getId()).orElseThrow(() -> new TaxiPartyNotFoundException(req.getId()));
         return TaxiPartyResponse.of(result);
     }
 
@@ -35,11 +35,6 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
             taxipartyList.add(TaxiPartyResponse.of(taxiParty));
         }
         return TaxiPartyListResponse.of(taxipartyList);
-    }
-
-    @Override
-    public long save(TaxiPartyRequest req) {
-        return 0;
     }
 
 }

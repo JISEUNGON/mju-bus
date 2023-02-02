@@ -22,7 +22,7 @@ public class TaxiDestination {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="id", columnDefinition = "int")
     @ApiModelProperty(example = "고유 식별 ID")
-    private long id;
+    private Long id;
 
     @Column(name ="name", columnDefinition = "char(36)")
     @ApiModelProperty(example = "택시 도착 정류장 이름")
