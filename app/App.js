@@ -37,14 +37,12 @@ function App() {
 
               const currentRoute = navigationRef.current.getCurrentRoute();
 
-              const currentScreenName = `${currentRoute?.name}_${Object.values(
-                currentRoute?.params || {},
-              ).join("/")}`;
+              const currentScreenName = `${currentRoute?.name}`;
 
               if (currentRoute && previousScreenName !== currentScreenName) {
                 analytics().logScreenView({
                   screen_name: currentScreenName,
-                  screen_class: currentRoute.name,
+                  screen_class: currentScreenName,
                 });
               }
               // Save the current route name for later comparision

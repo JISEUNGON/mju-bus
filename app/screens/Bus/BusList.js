@@ -150,8 +150,7 @@ function BusList({ navigation, route: { params } }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("BusDetail", {
-                screen: "BusDetail",
+              navigation.navigate("버스 검색 상세", {
                 params: {
                   item,
                   totaltime: CalculatorTime(item.depart_at, item.arrive_at),

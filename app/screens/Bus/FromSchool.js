@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import analytics from "@react-native-firebase/analytics";
+
 import styled from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -149,9 +151,17 @@ function FromSchool({ navigation: { navigate } }) {
 
       {station.name !== "정류장을 선택하세요" ? (
         <SubmitButton
+          onPress={async () => {
+            await analytics().logEvent("search_bus", {
+              toSchool: false,
+              redBus: false,
+              src: stationId.ChapleGwan,
+              dest: station,
+            });
+          }}
           onPressOut={() =>
             navigate("SearchStack", {
-              screen: "BusList",
+              screen: "버스 검색 리스트",
               params: {
                 toSchool: false,
                 redBus: false,

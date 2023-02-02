@@ -149,7 +149,7 @@ function ToSchool({ navigation: { navigate } }) {
         <SubmitButton
           onPressOut={() =>
             navigate("SearchStack", {
-              screen: "BusList",
+              screen: "버스 검색 리스트",
               params: {
                 toSchool: true,
                 redBus: false,

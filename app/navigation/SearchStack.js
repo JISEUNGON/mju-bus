@@ -40,7 +40,7 @@ function SearchStack() {
       }}
     >
       <Search.Screen
-        name="BusList"
+        name="버스 검색 리스트"
         component={BusList}
         options={{
           headerTitle: ({ children }) => renderHeader(children),
@@ -51,7 +51,7 @@ function SearchStack() {
         }}
       />
       <Search.Screen
-        name="BusDetail"
+        name="버스 검색 상세"
         component={BusDetail}
         options={{
           headerTitle: ({ children }) => renderHeader(children),

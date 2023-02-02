@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useNavigation } from "@react-navigation/native";
+import analytics from "@react-native-firebase/analytics";
 import React from "react";
 import {
   TouchableOpacity,
@@ -45,8 +46,15 @@ const SubText = styled.Text`
 function LinkScreen({ screenName }) {
   const navigation = useNavigation();
   const isDark = useColorScheme() === "dark";
+  const appAnalytics = async () => {
+    await analytics().logScreenView({
+      screen_name: screenName,
+      screen_class: "시내셔틀 (링크)",
+    });
+  };
 
   const goToSchedule = () => {
+    appAnalytics();
     navigation.navigate("HomeBottomTabs", {
       screen: `${screenName}`,
       params: {},
