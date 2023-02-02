@@ -33,7 +33,11 @@ public class MjuAuthServiceImpl implements MjuAuthService {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("nm", request.getName());
         map.add("birthday", request.getBirthday());
-        HttpEntity<MultiValueMap<String, String>> httpRequest = new HttpEntity<>(map, new HttpHeaders());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+        headers.add("Referer", "https://sso1.mju.ac.kr/login.do");
+        HttpEntity<MultiValueMap<String, String>> httpRequest = new HttpEntity<>(map, headers);
         ResponseEntity<String> response = restTemplate.postForEntity("https://sso1.mju.ac.kr/mju/findId.do", httpRequest, String.class);
 
         try {
