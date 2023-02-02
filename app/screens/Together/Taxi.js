@@ -1,13 +1,14 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
-import { Dimensions, StyleSheet, TouchableOpacity} from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModal, BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import { Dimensions, StyleSheet, TouchableOpacity, Platform} from "react-native";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { BottomSheetModal, BottomSheetModalProvider, SCREEN_HEIGHT} from "@gorhom/bottom-sheet";
 import styled from "styled-components";
 import { Fontisto, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/AntDesign";
 import LinkJoin from "../../components/LinkJoin";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
 
 const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
@@ -43,22 +44,26 @@ const Hr = styled.View`
   opacity: 0.3;
   border-bottom-width: 2px;
 `;
-
-const BodyContainer = styled.View`
-  flex:1;
+const ContentsTitleContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
-  height: 500px;
   padding: 0 20px;
+  //background-color: beige;
+  background-color: ${props => props.theme.scheduleBgColor};
+`
+const BodyContainer = styled.View`
+  width: ${SCREEN_WIDTH}px;
+  padding: 0 20px;
+  height:110%;
   padding-bottom: 20px;
   //background-color: beige;
   background-color: ${props => props.theme.scheduleBgColor};
 `;
 
 
-const ParticipationContainer = styled.ScrollView`
+const ParticipationContainer = styled.View`
   //background-color: aqua;
   width: 100%;
-  height:20%;
+  //height:20%;
 `;
 
 const ContentsTitle = styled.Text`
@@ -68,28 +73,20 @@ const ContentsTitle = styled.Text`
   margin-bottom: 20px;
 `;
 
+
 const RecruitmentContainer = styled(ParticipationContainer)`
   //background-color: green;
-  height:50%;
-  margin-top: 20px;
+  //height:50%;
+  margin-top: 15px;
   
 `;
-
-const BottomContainer = styled.View`
-  width: ${SCREEN_WIDTH}px;
-  height:40px;
-  padding: 0 20px;
-  background-color: ${props => props.theme.scheduleBgColor};
-`;
-
-
 const ModalContainer = styled.View`
   flex: 1;
   width: 350px;
   padding: 0 20px;
   margin-left:22px;
   margin-bottom:5px;
-  background-color: beige;
+  //background-color: beige;
 `;
 
 const ModalTitle = styled.Text`
@@ -104,7 +101,7 @@ const Row = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   margin-bottom: 10px;
-  background-color: aqua;
+  //background-color: aqua;
 `;
 
 const ModalText = styled.Text`
@@ -121,11 +118,20 @@ const Styles = StyleSheet.create({
     position: "absolute",
     width: 40,
     height: 40,
-    left: 340,
-    top: -10,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+    ...Platform.select({
+      ios:{
+        left: 335,
+        top: 630,
+      },
+      android:{
+        left: 350,
+        top: 480,
+      }
+
+    })
   },
   con: {
     backgroundColor: "#888888",
@@ -149,7 +155,10 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = useMemo(() => ["25%"], []);
+  const snapPoints = useMemo(()=>[
+     Platform.OS === 'ios' ? "25%" : "35%"
+  ], [])
+ 
 
   const handlePresentModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -158,7 +167,9 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+    
     <BottomSheetModalProvider>
+      <ScrollView stickyHeaderIndices={[1]} showsVerticalScrollIndicator={false} >
         {/* Head Conatiner*/}
         <HeaderContainer style={[isOpen ? Styles.con : null]}>
           <Title>같이 {highlightTaxi( "배달", isOpen)} 시킬 사람 구해요!</Title>
@@ -166,27 +177,39 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
           <Hr style={[isOpen ? Styles.hr : null]} />
         </HeaderContainer>
 
+        <ContentsTitleContainer style={[isOpen ? Styles.con : null]}>
+          <ContentsTitle>참여 중인 파티</ContentsTitle>
+        </ContentsTitleContainer>
+
         {/*BodyContainer*/}
         <BodyContainer style={[isOpen ? Styles.con : null]}>
+          
           <ParticipationContainer>
-            <ContentsTitle>참여 중인 파티</ContentsTitle>
-            <LinkJoin isOpen={isOpen} screenName ="참여"/>
+            <LinkJoin isOpen={isOpen} screenName ="참여"/> 
+            <LinkJoin isOpen={isOpen} screenName ="참여"/> 
+            <LinkJoin isOpen={isOpen} screenName ="참여"/> 
+            <LinkJoin isOpen={isOpen} screenName ="참여"/> 
+
+            
+            
           </ParticipationContainer>
           <RecruitmentContainer >
             <ContentsTitle>모집 중인 파티</ContentsTitle>
             <LinkJoin isOpen={isOpen} screenName = "모집"/>
+            <LinkJoin isOpen={isOpen} screenName = "모집"/>
+            <LinkJoin isOpen={isOpen} screenName = "모집"/>
+            <LinkJoin isOpen={isOpen} screenName = "모집"/>
+            
           </RecruitmentContainer>
         </BodyContainer>
+      </ScrollView>
 
-        {/*BottomContainer*/}
-        <BottomContainer style={[isOpen ? Styles.con : null]}>
-      
-            <TouchableOpacity
+        <TouchableOpacity
               style={Styles.circle}
               onPress={handlePresentModal}
-            >
-              <Icon name="plus" size={18} color="#788898" />
-            </TouchableOpacity>
+        >
+          <Icon name="plus" size={18} color="#788898" active/>
+        </TouchableOpacity>
             <BottomSheetModal
               ref={bottomSheetModalRef}
               index={0}
@@ -204,7 +227,9 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
                 <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
                 <TouchableOpacity
                     onPress={() => {
-                      navigate("Taxi_nmap");
+                      navigate("TaxiStack", {
+                        screen: "Taxi_nmap",
+                      });
                     }}
                   >
                 <Row>
@@ -246,12 +271,13 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
                 </TouchableOpacity>
               </ModalContainer>
             </BottomSheetModal>
-          
-        </BottomContainer>
 
     </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }
 export default Taxi;
+
+
+
 

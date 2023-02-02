@@ -5,6 +5,7 @@ import Splash from "../screens/Splash";
 import SearchStack from "./SearchStack";
 import NoticeStack from "./NoticeStack";
 import AddPartyStack from "./AddPartyStack";
+import TaxiStack from "./TaxiStack";
 import Taxi_nmap from './../screens/Taxi/Taxi_nmap';
 import Taxi_start from "../screens/Taxi/Taxi_start";
 import Taxi_destination from "../screens/Taxi/Taxi_destination";
@@ -33,9 +34,7 @@ function Root() {
 
       <Nav.Screen name="NoticeStack" component={NoticeStack} />
       <Nav.Screen name="AddPartyStack" component={AddPartyStack}/>
-      <Nav.Screen name="Taxi_nmap" component={Taxi_nmap}/>
-      <Nav.Screen name="Taxi_start" component={Taxi_start}/>
-      <Nav.Screen name="Taxi_destination" component={Taxi_destination}/>
+      <Nav.Screen name="TaxiStack" component={TaxiStack}/>
     </Nav.Navigator>
   );
 }
