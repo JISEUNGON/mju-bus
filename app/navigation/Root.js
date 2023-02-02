@@ -4,6 +4,7 @@ import HomeBottomTabs from "./HomeBottomTabs";
 import Splash from "../screens/Splash";
 import SearchStack from "./SearchStack";
 import NoticeStack from "./NoticeStack";
+import AddPartyStack from "./AddPartyStack";
 
 const Nav = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ function Root() {
       />
 
       <Nav.Screen name="NoticeStack" component={NoticeStack} />
+      <Nav.Screen name="AddPartyStack" component={AddPartyStack}/>
     </Nav.Navigator>
   );
 }

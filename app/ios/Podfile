@@ -11,14 +11,14 @@ install! 'cocoapods',
 
 target 'front' do
   use_expo_modules!
-  pod 'NMapsMap', '3.10.1'
+  pod 'NMapsMap', '3.15.0'
   config = use_native_modules!
 
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
 
   # Flags change depending on the env values.
   flags = get_default_flags()
-
+  use_frameworks! :linkage => :static
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => flags[:hermes_enabled] || podfile_properties['expo.jsEngine'] == 'hermes',
@@ -26,7 +26,7 @@ target 'front' do
     # An absolute path to your application root.
     :app_path => "#{Dir.pwd}/.."
   )
-
+  pod 'GoogleUtilities', :modular_headers => true
   # Uncomment to opt-in to using Flipper
   # Note that if you have use_frameworks! enabled, Flipper will not work
   #

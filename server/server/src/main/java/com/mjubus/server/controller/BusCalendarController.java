@@ -1,27 +1,33 @@
 package com.mjubus.server.controller;
 
 
-import com.mjubus.server.domain.BusCalendar;
+import com.mjubus.server.dto.request.BusCalendarSetDateRequest;
+import com.mjubus.server.dto.response.BusCalendarGetDateResponse;
+import com.mjubus.server.dto.response.BusCalendarResponse;
 import com.mjubus.server.service.busCalendar.BusCalendarService;
-import com.mjubus.server.util.DateHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/calendar")
 @Api(tags = {"일정 조회 API"})
 public class BusCalendarController {
 
+    private final BusCalendarService busCalendarService;
+
     @Autowired
-    private BusCalendarService busCalendarService;
+    public BusCalendarController(BusCalendarService busCalendarService) {
+        this.busCalendarService = busCalendarService;
+    }
 
     @GetMapping("/")
     @ApiOperation(value = "오늘 해당되는 일정 정보를 확인한다.")
@@ -29,8 +35,10 @@ public class BusCalendarController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public BusCalendar info() {
-        return busCalendarService.findByDate(DateHandler.getToday());
+    public ResponseEntity<BusCalendarResponse> info() {
+        return ResponseEntity.ok(
+            busCalendarService.findBusCalendar()
+        );
     }
 
 
@@ -40,11 +48,11 @@ public class BusCalendarController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public LocalDateTime setDate(@PathVariable String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime localDate = LocalDateTime.parse(date, formatter);
-        DateHandler.setZonedDateTime(localDate);
-        return DateHandler.getToday();
+    public ResponseEntity<BusCalendarGetDateResponse> setDate(@PathVariable BusCalendarSetDateRequest date) {
+        busCalendarService.setDate(date);
+        return ResponseEntity.ok(
+            busCalendarService.getDate()
+        );
     }
 
     @GetMapping("/set/today")
@@ -53,9 +61,11 @@ public class BusCalendarController {
             @ApiResponse(responseCode = "200", description = "정상 응답"),
     })
     @ResponseBody
-    public LocalDateTime setDateToday() {
-        DateHandler.reset();
-        return DateHandler.getToday();
+    public ResponseEntity<BusCalendarGetDateResponse> setDateToday() {
+        busCalendarService.resetDate();
+        return ResponseEntity.ok(
+            busCalendarService.getDate()
+        );
     }
 
 }

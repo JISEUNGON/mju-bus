@@ -1,4 +1,4 @@
-package com.mjubus.server.dto;
+package com.mjubus.server.dto.busTimeTable;
 
 import lombok.Getter;
 import lombok.Setter;

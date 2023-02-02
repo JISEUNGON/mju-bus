@@ -38,7 +38,7 @@ public class DateHandler {
 
     public static LocalDateTime getDateWith(int month, int dayOfMonth, int hour, int minute) {
         ZonedDateTime zonedDateTime = getZonedDateTime();
-        zonedDateTime = zonedDateTime.with(LocalDateTime.of(LocalDate.of(2022, month, dayOfMonth), LocalTime.of(hour, minute)));
+        zonedDateTime = zonedDateTime.with(LocalDateTime.of(LocalDate.of(2023, month, dayOfMonth), LocalTime.of(hour, minute)));
         return zonedDateTime.toLocalDateTime();
     }
 

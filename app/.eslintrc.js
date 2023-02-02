@@ -15,6 +15,6 @@ module.exports = {
   plugins: ["react"],
   rules: {
     "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
-    "react/prop-types": ["error"],
+    "react/prop-types": ["off"],  //error-> off변경
   },
 };

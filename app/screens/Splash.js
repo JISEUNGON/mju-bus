@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Animated, BackHandler, Dimensions } from "react-native";
