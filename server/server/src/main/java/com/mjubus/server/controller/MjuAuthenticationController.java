@@ -39,7 +39,8 @@ public class MjuAuthenticationController {
     @ApiOperation("명지대학교 학생이면 사용자의 ROLE을 변경하고, 아니면 변경하지 않는다. 변경 여부를 받아온다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답"),
-            @ApiResponse(responseCode = "404", description = "해당 정보를 가진 사용자가 없어 변경하지 않음")
+            @ApiResponse(responseCode = "400", description = "해당 사용자가 GUEST 권한이 아님"),
+            @ApiResponse(responseCode = "404", description = "해당 정보를 가진 Member가 없거나 해당 정보를 가진 명지대학교 학생이 없어 변경하지 않음")
     })
     public ResponseEntity<String> findAndRoleChange(@PathVariable(value = "userId") MjuAuthRequest authRequest, @RequestBody MjuAuthInfoRequest request) {
         MjuAuthInfoResponse authInfoResponse = mjuAuthService.getAuthInfo(request);

@@ -7,7 +7,9 @@ import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.request.MjuAuthInfoRequest;
 import com.mjubus.server.dto.request.MjuAuthRequest;
 import com.mjubus.server.dto.response.MjuAuthInfoResponse;
+import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.exception.auth.MjuUserNotFoundException;
+import com.mjubus.server.exception.auth.RoleUpdateTargetMisMatchException;
 import com.mjubus.server.exception.member.MemberNotFoundException;
 import com.mjubus.server.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +68,7 @@ public class MjuAuthServiceImpl implements MjuAuthService {
             // TODO: User role change event
             return "success";
         }
-            return null;
+        return null;
     }
 
     @Transactional
@@ -74,10 +76,14 @@ public class MjuAuthServiceImpl implements MjuAuthService {
     public String changeUserRoleWithId(MjuAuthRequest mjuAuthRequest, MjuAuthInfoResponse authInfoResponse) {
         if (authInfoResponse.getIsMjuUser().equals("yes")) {
             Optional<Member> findResult = memberRepository.findById(mjuAuthRequest.getId());
-            findResult.orElseThrow(() -> new MemberNotFoundException("해당 아이디를 가진 사용자가 존재하지 않습니다."))
-                    .upgradeRoleFromGuestToUser();
+            Member targetMember = findResult.orElseThrow(() -> new MemberNotFoundException("해당 아이디를 가진 사용자가 존재하지 않습니다."));
+
+            if (targetMember.getRole() != MemberRole.GUEST) {
+                throw new RoleUpdateTargetMisMatchException("해당 사용자는 GUEST 권한이 아닙니다.");
+            }
+            targetMember.upgradeRoleFromGuestToUser();
             return "success";
         }
-        return null;
+        return "fail";
     }
 }
