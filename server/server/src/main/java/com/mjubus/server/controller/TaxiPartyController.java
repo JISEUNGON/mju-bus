@@ -1,9 +1,15 @@
 package com.mjubus.server.controller;
 
+import com.mjubus.server.domain.TaxiPartyMembers;
+import com.mjubus.server.dto.request.TaxiPartyMembersRequest;
 import com.mjubus.server.dto.request.TaxiPartyRequest;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
+import com.mjubus.server.dto.response.TaxiPartyMembersListResponse;
+import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
+import com.mjubus.server.repository.TaxiPartyMembersRepository;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
+import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
@@ -22,10 +29,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TaxiPartyController {
 
     private final TaxiPartyService taxiPartyService;
+    private final TaxiPartyMembersService taxiPartyMembersService;
+    private final TaxiPartyMembersRepository taxiPartyMembersRepository;
 
     @Autowired
-    public TaxiPartyController(TaxiPartyService taxiPartyService) {
+    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService,
+                               TaxiPartyMembersRepository taxiPartyMembersRepository) {
         this.taxiPartyService = taxiPartyService;
+        this.taxiPartyMembersService = taxiPartyMembersService;
+        this.taxiPartyMembersRepository = taxiPartyMembersRepository;
     }
 
     @GetMapping("/list")
@@ -50,4 +62,26 @@ public class TaxiPartyController {
         );
     }
 
+    @GetMapping("/list/{group-id}/members")
+    @ApiOperation(value = "그룹 참여 인원 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
+    })
+    public ResponseEntity<TaxiPartyMembersListResponse> memberinfo(@PathVariable(name = "group-id") TaxiPartyMembersRequest id){
+        return ResponseEntity.ok(
+                taxiPartyMembersService.findTaxiPartyMembers(id)
+        );
+    }
+
+    @GetMapping("/list/{group-id}/members/curnum")
+    @ApiOperation(value = "그룹 현재 인원 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
+    })
+    @ResponseBody
+    public Long currentNum(@PathVariable(name="group-id")TaxiPartyMembersRequest id){
+        return taxiPartyMembersService.findCurrentMemberNum(id);
+    }
 }

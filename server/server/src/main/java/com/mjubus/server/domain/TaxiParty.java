@@ -25,13 +25,15 @@ public class TaxiParty {
     @ApiModelProperty(example = "고유 식별 ID")
     private Long id;
 
-    @Column(name ="administer", columnDefinition = "int")
+    @OneToOne
+    @JoinColumn(name = "administer")
     @ApiModelProperty(example = "파티장")
-    private Long administer;
+    private Member administer;
 
-    @Column(name ="taxi_destination_id", columnDefinition = "int")
+    @OneToOne
+    @JoinColumn(name = "taxi_destination_id")
     @ApiModelProperty(example = "택시 도착 정류장")
-    private Long taxi_destination_id;
+    private TaxiDestination taxi_destination_id;
 
     @Column(name ="meeting_latitude", columnDefinition = "double")
     @ApiModelProperty(example = "만남장소_위도")

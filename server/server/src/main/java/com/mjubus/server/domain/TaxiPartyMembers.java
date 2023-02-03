@@ -27,10 +27,10 @@ public class TaxiPartyMembers {
     @ManyToOne
     @JoinColumn(name = "member_id")
     @ApiModelProperty(example = "파티 멤버")
-    private Station member_id;
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "taxi_party_id")
     @ApiModelProperty(example = "파티 ID")
-    private Station taxi_party_id;
+    private TaxiParty taxiParty;
 }
