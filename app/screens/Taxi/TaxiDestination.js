@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-function Taxi_destination({navigation}) {
+function TaxiDestination({navigation}) {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.back} onPress={() => {navigation.goBack()}}>
@@ -97,7 +97,7 @@ function Taxi_destination({navigation}) {
   );
 }
 
-export default Taxi_destination;
+export default TaxiDestination;
 
 const styles = StyleSheet.create({
   container: {
