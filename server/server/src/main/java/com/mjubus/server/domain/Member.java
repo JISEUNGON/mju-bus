@@ -67,4 +67,10 @@ public class Member {
         this.status = true;
     }
 
+    public void upgradeRoleFromGuestToUser() {
+        if (this.role == MemberRole.GUEST) {
+            this.role = MemberRole.USER;
+        }
+    }
+
 }
