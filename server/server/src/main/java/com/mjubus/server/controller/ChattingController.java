@@ -22,7 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/chatting")
-@Api(tags = {"체팅 기록 조회 api"})
+@Api(tags = {"채팅 기록 조회 api"})
 public class ChattingController {
 
     private final RedisMessagePubService redisMessagePubService;
