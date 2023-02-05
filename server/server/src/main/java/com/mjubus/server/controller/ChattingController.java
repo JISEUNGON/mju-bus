@@ -36,6 +36,7 @@ public class ChattingController {
 
     @MessageMapping("/chatting-service")
     public void getChattingMessage(ChattingMessage chattingMessage) {
+        chattingMessage.encodeSenderAndMessage();
         redisMessagePubService.saveMessage(chattingMessage);
         redisMessagePubService.publish(chattingMessage);
     }
