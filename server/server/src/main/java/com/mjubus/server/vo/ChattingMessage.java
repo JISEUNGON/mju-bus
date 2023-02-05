@@ -3,6 +3,7 @@ package com.mjubus.server.vo;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Base64;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +14,9 @@ public class ChattingMessage implements Serializable {
     private String roomId;
     private String sender;
     private String message;
+
+    public void encodeSenderAndMessage() {
+        sender = Base64.getEncoder().encodeToString(sender.getBytes());
+        message = Base64.getEncoder().encodeToString(message.getBytes());
+    }
 }
