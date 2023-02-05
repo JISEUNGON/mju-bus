@@ -1,8 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 function TaxiDestination({navigation}) {
+  const campusAddress = ["정문 앞", "채플관", "명진당", "함박관", "제 1공학관", "제 2공학관", "제 3공학관", "제 5공학관", "차세대 과학관"];
+
+  const renderResult = ({item}) => 
+  (<View style={styles.listView}>
+    <View>    
+      <Text style={styles.campusAddress}>{item}</Text>
+    </View>
+    <TouchableOpacity style={styles.destBtn}>
+      <Text style={styles.destText}>도착</Text>
+    </TouchableOpacity>
+  </View>);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.back} onPress={() => {navigation.goBack()}}>
@@ -11,88 +23,17 @@ function TaxiDestination({navigation}) {
       <Text style={styles.title}>
         택시 도착지를 설정하세요
       </Text>
-      <TextInput 
+      {/* <TextInput 
           // onChangeText={}
           // value={}
           placeholder="교내 도착지 검색"
           placeholderTextColor= "#AAB2BB"
           style={styles.searchBox}
-      />
-
-      <ScrollView>
-        <View style={styles.listView}>
-          <View><Text style={styles.campusAddress}>정문 앞</Text></View>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>채플관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>명진당</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>함박관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>제 1공학관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>제 2공학관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>제 3공학관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>제 5공학관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-
-        <View style={styles.listView}>
-          <Text style={styles.campusAddress}>차세대 과학관</Text>
-          <TouchableOpacity style={styles.destBtn}>
-            <Text style={styles.destText}>도착</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line}/>
-      </ScrollView>
-        
+      /> */}
+      <FlatList
+            showsVerticalScrollIndicator={false}
+            data={campusAddress}
+            renderItem={renderResult}/>     
     </View>
   );
 }
@@ -112,6 +53,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "700",
+    marginBottom: 30,
   },
   searchBox: {
     backgroundColor: "#F5F6F8",
@@ -131,6 +73,7 @@ const styles = StyleSheet.create({
   listView: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   campusAddress: {
     fontSize: 17,
