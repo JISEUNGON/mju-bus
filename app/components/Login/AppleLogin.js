@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
-import {TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React from "react";
+import {TouchableOpacity, Image } from 'react-native';
 import AppleImage from "../../assets/image/apple_login.png"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 export default function AppleLogin () {
+    const supported = appleAuth.isSupported;
 
     const onAppleButtonPress = async () => {
         if (!appleAuth.isSupported) {
-            // FIX-ME - show some UI 
+            // 안드로이드인 경우 보여지지 않음. 
             console.log('Apple Authentication is not supported on this device.');
         } else {
             const appleAuthRequestResponse = await appleAuth.performRequest({
@@ -19,7 +20,7 @@ export default function AppleLogin () {
     }
     return (
         <TouchableOpacity onPress={onAppleButtonPress}>
-            <Image source={AppleImage} />
+            {supported && <Image source={AppleImage} />}
         </TouchableOpacity>
     );
 }

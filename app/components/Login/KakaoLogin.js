@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import {TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React from "react";
+import {TouchableOpacity, Image } from 'react-native';
 import KakaoImage from "../../assets/image/kakao_login.png"
 import { login } from '@react-native-seoul/kakao-login';
 

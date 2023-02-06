@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {TouchableOpacity, Image } from 'react-native';
 import GoogleImage from "../../assets/image/google_login.png"
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const GoogleLogin = () => {
-    const styles = StyleSheet.create({
-        btn: {
-            flex: 1,
-            width: null,
-            resizeMode: 'contain',
-            height: 220
-        },
-    });
 
     const [userInfo, setUserInfo] = useState(null);
 
