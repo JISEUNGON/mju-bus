@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "styled-components/native";
@@ -8,6 +8,7 @@ import Root from "./navigation/Root";
 import { darkTheme, lightTheme } from "./styled";
 import useCodePush from "./hooks";
 import SyncProgressView from "./screens/SyncProgressView";
+import TaxiTabs from "./navigation/TaxiDetailTabs";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,7 @@ function App() {
           <SyncProgressView syncProgress={syncProgress} />
         ) : (
           <NavigationContainer>
-            <Root />
+            <TaxiTabs />
           </NavigationContainer>
         )}
       </ThemeProvider>
