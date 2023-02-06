@@ -31,6 +31,7 @@ public class RedisMessageLogServiceImpl implements RedisMessageLogService {
 
         list.forEach(objectTypeElement -> {
             MessageLog messageLogVo = (MessageLog) objectTypeElement;
+            messageLogVo.decodeSenderAndMessage();
             MessageLogResponse messageLogResponse = MessageLogResponse.builder().build();
             messageLogResponse.setMessageLogVo(messageLogVo);
             messageLogList.add(messageLogResponse);
