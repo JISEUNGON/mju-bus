@@ -5,16 +5,7 @@ import { login } from '@react-native-seoul/kakao-login';
 
 function KakaoLogin() {
 
-    const styles = StyleSheet.create({
-        btn: {
-            flex: 1,
-            width: null,
-            resizeMode: 'contain',
-            height: 220
-        },
-    });
-
-    const kakao_login = async () => {
+    const onKaKaoButtonPress = async () => {
         try {
             const token = await login();
             console.log(token);
@@ -25,8 +16,8 @@ function KakaoLogin() {
     }
 
     return (
-        <TouchableOpacity onPress={kakao_login}>
-            <Image source={KakaoImage}  style={styles.btn}/>
+        <TouchableOpacity onPress={onKaKaoButtonPress}>
+            <Image source={KakaoImage} />
         </TouchableOpacity>
     );
 }

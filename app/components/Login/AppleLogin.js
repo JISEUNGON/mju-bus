@@ -4,16 +4,8 @@ import AppleImage from "../../assets/image/apple_login.png"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 export default function AppleLogin () {
-    const styles = StyleSheet.create({
-        btn: {
-            flex: 1,
-            width: null,
-            resizeMode: 'contain',
-            height: 220
-        },
-    });
 
-    const apple_login = async () => {
+    const onAppleButtonPress = async () => {
         if (!appleAuth.isSupported) {
             // FIX-ME - show some UI 
             console.log('Apple Authentication is not supported on this device.');
@@ -26,8 +18,8 @@ export default function AppleLogin () {
         }
     }
     return (
-        <TouchableOpacity onPress={apple_login}>
-            <Image source={AppleImage}  style={styles.btn}/>
+        <TouchableOpacity onPress={onAppleButtonPress}>
+            <Image source={AppleImage} />
         </TouchableOpacity>
     );
 }

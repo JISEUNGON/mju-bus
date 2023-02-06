@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
 import {TouchableOpacity, Image, StyleSheet } from 'react-native';
+import GoogleImage from "../../assets/image/google_login.png"
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 const GoogleLogin = () => {
+    const styles = StyleSheet.create({
+        btn: {
+            flex: 1,
+            width: null,
+            resizeMode: 'contain',
+            height: 220
+        },
+    });
+
     const [userInfo, setUserInfo] = useState(null);
 
     const onGoogleButtonPress = async () => { 
@@ -40,14 +50,9 @@ const GoogleLogin = () => {
     }
 
     return (
-    <>
-    <GoogleSigninButton
-        style={{ width: 192, height: 48 }}
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={onGoogleButtonPress}
-    />
-    </>
+        <TouchableOpacity onPress={onGoogleButtonPress}>
+            <Image source={GoogleImage}/>
+        </TouchableOpacity>
     )
 };
 export default GoogleLogin;
