@@ -7,7 +7,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 @Slf4j
 @Controller
-public class ChattingPubEventController implements ApplicationListener<SessionUnsubscribeEvent> {
+public class ChattingUnsubEventController implements ApplicationListener<SessionUnsubscribeEvent> {
     @Override
     public void onApplicationEvent(SessionUnsubscribeEvent event) {
         log.info("[unsubscribe] | command: " + event.getMessage().getHeaders().get("stompCommand"));
