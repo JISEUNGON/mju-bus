@@ -1,13 +1,16 @@
 package com.mjubus.server.controller;
 
 import com.mjubus.server.domain.TaxiPartyMembers;
+import com.mjubus.server.dto.request.ChattingRoomQuitRequest;
 import com.mjubus.server.dto.request.TaxiPartyMembersRequest;
+import com.mjubus.server.dto.request.TaxiPartyQuitRequest;
 import com.mjubus.server.dto.request.TaxiPartyRequest;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyMembersListResponse;
 import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
+import com.mjubus.server.service.chatting.RedisMessageService;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
 import io.swagger.annotations.Api;
@@ -17,10 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -30,13 +30,14 @@ public class TaxiPartyController {
 
     private final TaxiPartyService taxiPartyService;
     private final TaxiPartyMembersService taxiPartyMembersService;
+    private final RedisMessageService redisMessageService;
     private final TaxiPartyMembersRepository taxiPartyMembersRepository;
 
     @Autowired
-    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService,
-                               TaxiPartyMembersRepository taxiPartyMembersRepository) {
+    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, TaxiPartyMembersRepository taxiPartyMembersRepository) {
         this.taxiPartyService = taxiPartyService;
         this.taxiPartyMembersService = taxiPartyMembersService;
+        this.redisMessageService = redisMessageService;
         this.taxiPartyMembersRepository = taxiPartyMembersRepository;
     }
 
@@ -83,5 +84,16 @@ public class TaxiPartyController {
     @ResponseBody
     public Long currentNum(@PathVariable(name="group-id")TaxiPartyMembersRequest id){
         return taxiPartyMembersService.findCurrentMemberNum(id);
+    }
+
+    @DeleteMapping("/{group-id}/quit")
+    @ApiOperation(value = "파티 탈퇴")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답")
+    })
+    @ResponseBody
+    public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") TaxiPartyQuitRequest taxiPartyQuitRequest, @RequestParam(value = "sessionMatchingHashKey") ChattingRoomQuitRequest chattingRoomQuitRequest) {
+        return ResponseEntity.ok(redisMessageService.chattingRoomQuit(taxiPartyQuitRequest, chattingRoomQuitRequest)
+        );
     }
 }
