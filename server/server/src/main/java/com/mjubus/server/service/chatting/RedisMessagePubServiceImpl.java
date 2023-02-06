@@ -5,6 +5,7 @@ import com.mjubus.server.vo.ChattingMessage;
 import com.mjubus.server.vo.MessageLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -52,5 +55,13 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
                 .build();
 
         redisTemplate.opsForList().rightPush(chattingMessage.getRoomId(), messageLog);
+    }
+
+    @Override
+    public void saveSessionHash(ChattingMessage chattingMessage) {
+        String hashName = "room-" + chattingMessage.getRoomId() + "-subscription";
+        if (!redisTemplate.hasKey(hashName)) {
+            redisTemplate.opsForHash().put(hashName, "init", "init");
+        }
     }
 }

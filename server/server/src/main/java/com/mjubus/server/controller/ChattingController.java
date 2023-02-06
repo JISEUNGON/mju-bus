@@ -38,6 +38,7 @@ public class ChattingController {
     public void getChattingMessage(ChattingMessage chattingMessage) {
         chattingMessage.encodeSenderAndMessage();
         redisMessagePubService.saveMessage(chattingMessage);
+        redisMessagePubService.saveSessionHash(chattingMessage);
         redisMessagePubService.publish(chattingMessage);
     }
 
