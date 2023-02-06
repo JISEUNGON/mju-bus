@@ -21,6 +21,7 @@ import RouteSelect from "./RouteSelect";
 import { stationId } from "../../id";
 import KakaoLogin from "../../components/Login/KakaoLogin";
 import AppleLogin from "../../components/Login/AppleLogin";
+import GoogleLogin from "../../components/Login/GoogleLogin";
 
 const STORAGE_KEY = "@routes";
 
@@ -251,8 +252,9 @@ function Home({ route: { params }, navigation: { navigate } }) {
                 </TitleContainer>
                 <RunningRedBus data={redBusRemain} />
               </RedBusComingContainer>
-              <KakaoLogin/>
-              <AppleLogin/>
+              <KakaoLogin />
+              <AppleLogin />
+              <GoogleLogin />
             </>
           }
         />

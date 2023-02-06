@@ -7,6 +7,7 @@
 #import <React/RCTConvert.h>
 #import <CodePush/CodePush.h>
 #import <React/RCTAppSetupUtils.h>
+#import <RNGoogleSignin/RNGoogleSignin.h>
 
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
