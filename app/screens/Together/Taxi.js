@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
+<<<<<<< HEAD
 import {
   Dimensions,
   StyleSheet,
@@ -13,12 +14,18 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+=======
+import { Dimensions, StyleSheet, TouchableOpacity, Platform} from "react-native";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { BottomSheetModal, BottomSheetModalProvider, SCREEN_HEIGHT} from "@gorhom/bottom-sheet";
+>>>>>>> b24e126049ef5db6f45b599f701006ab1567e878
 import styled from "styled-components";
 import { Fontisto, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/AntDesign";
 import LinkJoin from "../../components/LinkJoin";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
 
 const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
@@ -57,14 +64,38 @@ const Hr = styled.View`
 const ContentsTitleContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
+<<<<<<< HEAD
+=======
+  //background-color: beige;
+  background-color: ${props => props.theme.scheduleBgColor};
+`
+const BodyContainer = styled.View`
+  width: ${SCREEN_WIDTH}px;
+  padding: 0 20px;
+  height:110%;
+  padding-bottom: 20px;
+  //background-color: beige;
+>>>>>>> b24e126049ef5db6f45b599f701006ab1567e878
   background-color: ${props => props.theme.scheduleBgColor};
   //background-color: beige;
   margin-bottom: 20px;
 `;
+<<<<<<< HEAD
+=======
+
+
+const ParticipationContainer = styled.View`
+  //background-color: aqua;
+  width: 100%;
+  //height:20%;
+`;
+
+>>>>>>> b24e126049ef5db6f45b599f701006ab1567e878
 const ContentsTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 18px;
   color: ${props => props.theme.mainTextColor};
+<<<<<<< HEAD
   padding-top: 3px;
   //background-color: beige;
   
@@ -87,12 +118,29 @@ const BorderView = styled.View`
   z-index: -10;
   background-color: beige;
 `;
+=======
+  margin-bottom: 20px;
+`;
+
+
+const RecruitmentContainer = styled(ParticipationContainer)`
+  //background-color: green;
+  //height:50%;
+  margin-top: 15px;
+  
+`;
+>>>>>>> b24e126049ef5db6f45b599f701006ab1567e878
 const ModalContainer = styled.View`
   flex: 1;
   width: 350px;
   padding: 0 20px;
+<<<<<<< HEAD
   margin-left: 22px;
   margin-bottom: 5px;
+=======
+  margin-left:22px;
+  margin-bottom:5px;
+>>>>>>> b24e126049ef5db6f45b599f701006ab1567e878
   //background-color: beige;
 `;
 
@@ -128,6 +176,7 @@ const Styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     ...Platform.select({
+<<<<<<< HEAD
       ios: {
         left: 335,
         top: 630,
@@ -137,6 +186,18 @@ const Styles = StyleSheet.create({
         top: 480,
       },
     }),
+=======
+      ios:{
+        left: 335,
+        top: 630,
+      },
+      android:{
+        left: 350,
+        top: 480,
+      }
+
+    })
+>>>>>>> b24e126049ef5db6f45b599f701006ab1567e878
   },
   con: {
     backgroundColor: "#888888",
@@ -282,4 +343,7 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
   );
 }
 export default Taxi;
+
+
+
 
