@@ -11,6 +11,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +23,11 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
     private RedisTemplate<String, Object> redisTemplate;
     private SimpMessageSendingOperations simpMessageSendingOperations;
     private ObjectMapper objectMapper;
+
+    private interface RedisHashFlag {
+        String ON = "true";
+        String OFF = "false";
+    }
 
     @Autowired
     public RedisMessageSubServiceImpl(RedisTemplate<String, Object> redisTemplate, SimpMessageSendingOperations simpMessageSendingOperations, ObjectMapper objectMapper) {
@@ -49,5 +55,28 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         String simpSubscriptionId = (String) messageHeaders.get("simpSubscriptionId");
         String simpSessionId = (String) messageHeaders.get("simpSessionId");
         redisTemplate.opsForHash().putIfAbsent("session-matching", simpSubscriptionId, simpSessionId);
+    }
+
+    @Override
+    public void saveSessionHash(SessionSubscribeEvent subscribeEvent) {
+        MessageHeaders messageHeaders = subscribeEvent.getMessage().getHeaders();
+        String simpSessionId = (String) messageHeaders.get("simpSessionId");
+
+        String simpDestination = (String) messageHeaders.get("simpDestination");
+        String hashName = "room-" + (simpDestination.split("/"))[2] + "-subscription";
+
+        redisTemplate.opsForHash().put(hashName, simpSessionId, RedisHashFlag.ON);
+    }
+
+    @Override
+    public void updateSessionHash(SessionUnsubscribeEvent unsubscribeEvent) {
+        MessageHeaders messageHeaders = unsubscribeEvent.getMessage().getHeaders();
+        String simpSessionId = (String) messageHeaders.get("simpSessionId");
+        log.info("[EVENT] | message: " + unsubscribeEvent.getMessage());
+        //sub dest를 id로 받아와 판단
+        String simpDestination = (String) messageHeaders.get("simpSubscriptionId");
+        String hashName = "room-" + (simpDestination.split("/"))[2] + "-subscription";
+
+        redisTemplate.opsForHash().put(hashName, simpSessionId, RedisHashFlag.OFF);
     }
 }

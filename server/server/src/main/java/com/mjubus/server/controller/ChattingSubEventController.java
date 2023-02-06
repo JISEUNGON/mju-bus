@@ -1,6 +1,7 @@
 package com.mjubus.server.controller;
 
 import com.mjubus.server.service.chatting.RedisMessageSubService;
+import com.mjubus.server.service.chatting.RedisMessageSubServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -21,5 +22,6 @@ public class ChattingSubEventController implements ApplicationListener<SessionSu
     @Override
     public void onApplicationEvent(SessionSubscribeEvent event) {
         redisMessageSubService.sessionMatching(event);
+        redisMessageSubService.saveSessionHash(event);
     }
 }
