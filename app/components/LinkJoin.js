@@ -9,13 +9,13 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Board = styled.View`
   width: 100%;
-  height: 110px;
+  height: 90px;
   background-color: ${props => props.theme.taxiFrameColor};
   padding: 10px ${SCREEN_WIDTH * 0.04}px;
   border-radius: 20px;
   flex-direction: row;
   align-items: center;
-  //margin-bottom: 3px;
+  margin-bottom: 10px;
 `;
 
 const Column = styled.View`

@@ -1,7 +1,18 @@
 import React, { useState, useRef, useCallback, useMemo } from "react";
-import { Dimensions, StyleSheet, TouchableOpacity} from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModal, BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import {
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,View
+} from "react-native";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 import styled from "styled-components";
 import { Fontisto, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -20,7 +31,7 @@ const HeaderContainer = styled.View`
 const HighlightTaxi = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
-  color: #4F8645;
+  color: #4f8645;
 `;
 
 const Title = styled.Text`
@@ -43,53 +54,46 @@ const Hr = styled.View`
   opacity: 0.3;
   border-bottom-width: 2px;
 `;
-
-const BodyContainer = styled.View`
-  flex:1;
+const ContentsTitleContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
-  height: 500px;
   padding: 0 20px;
-  padding-bottom: 20px;
-  //background-color: beige;
   background-color: ${props => props.theme.scheduleBgColor};
+  //background-color: beige;
+  margin-bottom: 20px;
 `;
-
-
-const ParticipationContainer = styled.ScrollView`
-  //background-color: aqua;
-  width: 100%;
-  height:20%;
-`;
-
 const ContentsTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 18px;
   color: ${props => props.theme.mainTextColor};
-  margin-bottom: 20px;
-`;
-
-const RecruitmentContainer = styled(ParticipationContainer)`
-  //background-color: green;
-  height:50%;
-  margin-top: 20px;
+  padding-top: 3px;
+  //background-color: beige;
   
 `;
-
-const BottomContainer = styled.View`
+const ParticipationContainer = styled.View`
+  //background-color: aqua;
   width: ${SCREEN_WIDTH}px;
-  height:40px;
   padding: 0 20px;
   background-color: ${props => props.theme.scheduleBgColor};
 `;
 
 
+const RecruitmentContainer = styled(ParticipationContainer)`
+  //background-color: green;
+  //height:50%;
+  
+`;
+const BorderView = styled.View`
+  margin-top: 40px;
+  z-index: -10;
+  background-color: beige;
+`;
 const ModalContainer = styled.View`
   flex: 1;
   width: 350px;
   padding: 0 20px;
-  margin-left:22px;
-  margin-bottom:5px;
-  background-color: beige;
+  margin-left: 22px;
+  margin-bottom: 5px;
+  //background-color: beige;
 `;
 
 const ModalTitle = styled.Text`
@@ -104,7 +108,7 @@ const Row = styled.View`
   flex-direction: row;
   justify-content: flex-start;
   margin-bottom: 10px;
-  background-color: aqua;
+  //background-color: aqua;
 `;
 
 const ModalText = styled.Text`
@@ -114,34 +118,44 @@ const ModalText = styled.Text`
   margin-bottom: 10px;
 `;
 
-
 const Styles = StyleSheet.create({
   circle: {
     backgroundColor: "#EFEFEF",
     position: "absolute",
     width: 40,
     height: 40,
-    left: 340,
-    top: -10,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+    ...Platform.select({
+      ios: {
+        left: 335,
+        top: 630,
+      },
+      android: {
+        left: 350,
+        top: 480,
+      },
+    }),
   },
   con: {
     backgroundColor: "#888888",
   },
   hr: {
-    borderBottomColor:"#737577"
+    borderBottomColor: "#737577",
   },
   text: {
-    color:"#555555"
+    color: "#555555",
   },
-  
 });
 
-export function highlightTaxi(contents, isOpen){
+export function highlightTaxi(contents, isOpen) {
   //
-  return <HighlightTaxi style = {[isOpen ? Styles.title : null]}>{contents}</HighlightTaxi>;
+  return (
+    <HighlightTaxi style={[isOpen ? Styles.title : null]}>
+      {contents}
+    </HighlightTaxi>
+  );
 }
 
 function Taxi({ route: { params }, navigation: { navigate } }) {
@@ -149,7 +163,7 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = useMemo(() => ["25%"], []);
+  const snapPoints = useMemo(() => [Platform.OS === "ios" ? "25%" : "35%"], []);
 
   const handlePresentModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -158,100 +172,112 @@ function Taxi({ route: { params }, navigation: { navigate } }) {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <BottomSheetModalProvider>
-        {/* Head Conatiner*/}
-        <HeaderContainer style={[isOpen ? Styles.con : null]}>
-          <Title>같이 {highlightTaxi( "배달", isOpen)} 시킬 사람 구해요!</Title>
-          <SubTitle style = {[isOpen ? Styles.text : null]}>배달 파티를 모집 하거나 참여 해보세요</SubTitle>
-          <Hr style={[isOpen ? Styles.hr : null]} />
-        </HeaderContainer>
+      <BottomSheetModalProvider>
+        
+        <ScrollView
+          stickyHeaderIndices={[1, 4]}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Head Conatiner*/}
+          <HeaderContainer style={[isOpen ? Styles.con : null]}>
+            <Title>
+              같이 {highlightTaxi("배달", isOpen)} 시킬 사람 구해요!
+            </Title>
+            <SubTitle style={[isOpen ? Styles.text : null]}>
+              배달 파티를 모집 하거나 참여 해보세요
+            </SubTitle>
+            <Hr style={[isOpen ? Styles.hr : null]} />
+          </HeaderContainer>
 
-        {/*BodyContainer*/}
-        <BodyContainer style={[isOpen ? Styles.con : null]}>
-          <ParticipationContainer>
+          <ContentsTitleContainer style={[isOpen ? Styles.con : null]}>
             <ContentsTitle>참여 중인 파티</ContentsTitle>
-            <LinkJoin isOpen={isOpen} screenName ="참여"/>
+          </ContentsTitleContainer>
+
+          <ParticipationContainer style={[isOpen ? Styles.con : null]}>
+            <LinkJoin isOpen={isOpen} screenName="참여" />
+            <LinkJoin isOpen={isOpen} screenName="참여" />
+            <LinkJoin isOpen={isOpen} screenName="참여" />
           </ParticipationContainer>
-          <RecruitmentContainer >
+
+          <BorderView  style={[isOpen ? Styles.con : null]}/>
+          <ContentsTitleContainer style={[isOpen ? Styles.con : null]}>
             <ContentsTitle>모집 중인 파티</ContentsTitle>
-            <LinkJoin isOpen={isOpen} screenName = "모집"/>
+          </ContentsTitleContainer>
+
+          <RecruitmentContainer style={[isOpen ? Styles.con : null]}>
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
+            <LinkJoin isOpen={isOpen} screenName="모집" />
           </RecruitmentContainer>
-        </BodyContainer>
+        </ScrollView>
 
-        {/*BottomContainer*/}
-        <BottomContainer style={[isOpen ? Styles.con : null]}>
-      
+        <TouchableOpacity style={Styles.circle} onPress={handlePresentModal}>
+          <Icon name="plus" size={18} color="#788898" active />
+        </TouchableOpacity>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+          backgroundStyle={{
+            borderRadius: 22,
+            marginHorizontal: 10,
+            marginTop: 5,
+          }}
+          bottomInset={8}
+          detached={true}
+          onDismiss={() => setIsOpen(false)}
+        >
+          <ModalContainer>
+            <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
             <TouchableOpacity
-              style={Styles.circle}
-              onPress={handlePresentModal}
-            >
-              <Icon name="plus" size={18} color="#788898" />
-            </TouchableOpacity>
-            <BottomSheetModal
-              ref={bottomSheetModalRef}
-              index={0}
-              snapPoints={snapPoints}
-              backgroundStyle={{
-                borderRadius: 22,
-                marginHorizontal: 10,
-                marginTop: 5,
+              onPress={() => {
+                navigate("TaxiStack", {
+                  screen: "Taxi_nmap",
+                });
               }}
-              bottomInset={8}
-              detached={true}
-              onDismiss={() => setIsOpen(false)}
             >
-              <ModalContainer>
-                <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
-                <TouchableOpacity
-                    onPress={() => {
-                      navigate("AddPartyStack", {
-                        screen: "AddTaxi",
-                      });
-                    }}
-                  >
-                <Row>
-                    <Fontisto name="taxi" size={15} color="rgb(255,211,26)"/>
-                    <ModalText>택시</ModalText>
-                  
-                </Row>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                      navigate("AddPartyStack", {
-                        screen: "AddDelivery",
-                      });
-                    }}
-                  >
-                <Row>
-                    <MaterialIcons
-                      name="delivery-dining"
-                      size={24}
-                      color="rgb(76,150,180)"
-                    />
-                    <ModalText>배달</ModalText>
-                  
-                </Row>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                      navigate("AddPartyStack", {
-                        screen: "AddCarPool",
-                      });
-                    }}
-                  >
-                <Row>
-                
-                  <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)"/>
-                  <ModalText>카풀</ModalText>
-                  
-                </Row>
-                </TouchableOpacity>
-              </ModalContainer>
-            </BottomSheetModal>
-          
-        </BottomContainer>
-
-    </BottomSheetModalProvider>
+              <Row>
+                <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
+                <ModalText>택시</ModalText>
+              </Row>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigate("AddPartyStack", {
+                  screen: "AddDelivery",
+                });
+              }}
+            >
+              <Row>
+                <MaterialIcons
+                  name="delivery-dining"
+                  size={24}
+                  color="rgb(76,150,180)"
+                />
+                <ModalText>배달</ModalText>
+              </Row>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigate("AddPartyStack", {
+                  screen: "AddCarPool",
+                });
+              }}
+            >
+              <Row>
+                <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)" />
+                <ModalText>카풀</ModalText>
+              </Row>
+            </TouchableOpacity>
+          </ModalContainer>
+        </BottomSheetModal>
+        
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }
