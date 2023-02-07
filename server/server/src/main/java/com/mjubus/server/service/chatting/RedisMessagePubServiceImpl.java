@@ -5,15 +5,14 @@ import com.mjubus.server.vo.ChattingMessage;
 import com.mjubus.server.vo.MessageLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Slf4j
@@ -58,9 +57,8 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
 
     @Override
     public void saveMessage(ChattingMessage chattingMessage) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date now = new Date();
-        String dateTime = format.format(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS"));
 
         MessageLog messageLog = MessageLog.builder()
                 .time(dateTime)
