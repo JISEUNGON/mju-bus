@@ -40,6 +40,7 @@ public class ChattingController {
         redisMessagePubService.saveMessage(chattingMessage);
         redisMessagePubService.saveSessionHash(chattingMessage);
         redisMessagePubService.publish(chattingMessage);
+        redisMessagePubService.publishForFCM(chattingMessage);
     }
 
     @GetMapping("/history/{roomId}")

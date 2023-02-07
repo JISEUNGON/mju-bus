@@ -27,7 +27,7 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
     private SimpMessageSendingOperations simpMessageSendingOperations;
     private ObjectMapper objectMapper;
 
-    private interface RedisHashFlag {
+    public interface RedisHashFlag {
         String ON = "true";
         String OFF = "false";
     }

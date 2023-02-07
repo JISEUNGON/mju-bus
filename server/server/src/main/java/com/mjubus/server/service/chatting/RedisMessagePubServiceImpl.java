@@ -43,6 +43,20 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
     }
 
     @Override
+    public void publishForFCM(ChattingMessage chattingMessage) {
+        String hashName = "room-" + chattingMessage.getRoomId() + "-subscription";
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(hashName);
+        entries.forEach((key, value) -> {
+            String flag = (String) value;
+            String session = (String) key;
+            if (flag.equals(RedisMessageSubServiceImpl.RedisHashFlag.OFF)) {
+                log.info("session " + session  +": false");
+                //TODO: FCM Actions
+            }
+        });
+    }
+
+    @Override
     public void saveMessage(ChattingMessage chattingMessage) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date now = new Date();
