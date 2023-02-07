@@ -24,8 +24,9 @@ public class RedisMessageServiceImpl implements RedisMessageService {
     @Transactional
     @Override
     public String chattingRoomQuit(TaxiPartyQuitRequest taxiPartyQuitRequest, ChattingRoomQuitRequest chattingRoomQuitRequest) {
-        Optional<Object> sessionId = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", chattingRoomQuitRequest.getSessionMatchingHashKey()));
-        if (sessionId.isEmpty()) throw new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다.");
+        Optional<Object> sessionIdGet = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", chattingRoomQuitRequest.getSessionMatchingHashKey()));
+        if (sessionIdGet.isEmpty()) throw new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다.");
+        String sessionId = (String) sessionIdGet.get();
 
         String hashName = "room-" + taxiPartyQuitRequest.getGroupId() + "-subscription";
         if (!redisTemplate.hasKey(hashName)) throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
