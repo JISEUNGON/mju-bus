@@ -22,6 +22,6 @@ public class ChattingSubEventController implements ApplicationListener<SessionSu
     @Override
     public void onApplicationEvent(SessionSubscribeEvent event) {
         redisMessageSubService.sessionMatching(event);
-        redisMessageSubService.saveSessionHash(event);
+        redisMessageSubService.updateSessionHash(event);
     }
 }
