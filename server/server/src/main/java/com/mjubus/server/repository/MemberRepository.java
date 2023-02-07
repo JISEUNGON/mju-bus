@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Optional<Member> findMemberByServiceProviderAndServiceId(String serviceProvider, Long serviceId);
+    Optional<Member> findMemberByServiceProviderAndServiceId(String serviceProvider, String serviceId);
 }
 

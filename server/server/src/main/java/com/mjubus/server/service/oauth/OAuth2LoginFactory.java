@@ -16,7 +16,7 @@ public class OAuth2LoginFactory {
                 .refreshToken((String) userRequest.getAdditionalParameters().get("refresh_token"))
                 .serviceRefreshTokenExpiredAt(DateHandler.getToday().plusSeconds((Integer) userRequest.getAdditionalParameters().get("refresh_token_expires_in")))
                 .serviceProvider("KAKAO")
-                .serviceId((Long) response.get("id"))
+                .serviceId(response.get("id").toString())
                 .build();
     }
 

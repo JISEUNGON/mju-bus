@@ -40,7 +40,14 @@ external:
   naver:
     key: ${NAVER_KEY}
     client-id: ${NAVER_CLIENT_ID}
-        
+  apple:
+    token-uri: https://appleid.apple.com/auth/token
+    audience-uri: https://appleid.apple.com
+    client-id: ${APPLE_CLIENT_ID}
+    team-id: ${APPLE_TEAM_ID}
+    bundle-id: com.mjubus.mbus
+    private-key: ${APPLE_PRIVATE_KEY}
+
 logging:
   config: classpath:logback-spring.xml
 

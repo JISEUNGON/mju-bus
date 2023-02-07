@@ -11,11 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
@@ -47,8 +44,8 @@ public class Member {
     @Column(name="service", columnDefinition = "char(10)")
     private String serviceProvider;
 
-    @Column(name="service_id", columnDefinition = "bigint")
-    private Long serviceId;
+    @Column(name="service_id", columnDefinition = "char(255)")
+    private String serviceId;
 
     @Column(name="refresh_token_expired_at", columnDefinition = "datetime")
     private LocalDateTime serviceRefreshTokenExpiredAt;
@@ -62,7 +59,6 @@ public class Member {
 
     @PrePersist
     public void prePersist() {
-        this.role = MemberRole.USER;
         this.createdAt = LocalDateTime.now();
         this.status = true;
     }
