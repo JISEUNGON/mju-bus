@@ -65,5 +65,12 @@ export const loginApi = {
     return fetch(
       `${URL}/login/kakao?data=${encodedPayLoad}`,
     ).then(res => res.json());
+  },
+
+  google_login : ({ queryKey }) => {
+    const { encodedPayLoad } = queryKey;
+    return fetch(
+      `${URL}/login/google?data=${encodedPayLoad}`,
+    ).then(res => res.json());
   }
 }

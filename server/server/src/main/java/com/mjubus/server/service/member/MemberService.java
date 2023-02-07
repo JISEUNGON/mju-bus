@@ -2,6 +2,7 @@ package com.mjubus.server.service.member;
 
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
+import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
 
 public interface MemberService {
@@ -14,4 +15,6 @@ public interface MemberService {
     Member saveOrGetAppleMember(AppleAuthTokenDto appleAuthTokenDto);
 
     Member saveOrGetKakaoMember(KaKaoAuthTokenDto kaKaoAuthTokenDto);
+
+    Member saveOrGetGoogleMember(GoogleAuthTokenDto googleAuthTokenDto);
 }

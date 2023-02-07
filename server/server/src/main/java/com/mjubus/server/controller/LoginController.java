@@ -2,6 +2,7 @@ package com.mjubus.server.controller;
 
 import com.mjubus.server.dto.response.LoginResponse;
 import com.mjubus.server.service.login.AppleLoginStrategy;
+import com.mjubus.server.service.login.GoogleLoginStrategy;
 import com.mjubus.server.service.login.KakaoLoginStrategy;
 import com.mjubus.server.service.login.LoginStrategy;
 import io.swagger.annotations.Api;
@@ -19,11 +20,13 @@ public class LoginController {
 
     private final LoginStrategy appleLoginStrategy;
     private final LoginStrategy kakaoLoginStrategy;
+    private final LoginStrategy googleLoginStrategy;
 
     @Autowired
-    public LoginController(AppleLoginStrategy appleLoginStrategy, KakaoLoginStrategy kakaoLoginStrategy) {
+    public LoginController(AppleLoginStrategy appleLoginStrategy, KakaoLoginStrategy kakaoLoginStrategy, GoogleLoginStrategy googleLoginStrategy) {
         this.appleLoginStrategy = appleLoginStrategy;
         this.kakaoLoginStrategy = kakaoLoginStrategy;
+        this.googleLoginStrategy = googleLoginStrategy;
     }
 
     @GetMapping("/apple")
@@ -36,7 +39,7 @@ public class LoginController {
     @GetMapping("/google")
     public ResponseEntity<LoginResponse> googleLogin(@RequestParam String data) {
         return ResponseEntity.ok(
-                kakaoLoginStrategy.login(data)
+                googleLoginStrategy.login(data)
         );
     }
 

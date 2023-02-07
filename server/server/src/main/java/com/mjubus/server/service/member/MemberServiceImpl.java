@@ -2,6 +2,7 @@ package com.mjubus.server.service.member;
 
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
+import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
 import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.repository.MemberRepository;
@@ -54,6 +55,24 @@ public class MemberServiceImpl implements MemberService {
             return memberRepository.save(member);
         }
 
+    }
+
+    @Override
+    public Member saveOrGetGoogleMember(GoogleAuthTokenDto googleAuthTokenDto) {
+        Optional<Member> memberOptional = memberRepository.findMemberByServiceProviderAndServiceId("GOOGLE", googleAuthTokenDto.getUserId());
+        if (memberOptional.isPresent())
+            return memberOptional.get();
+        else {
+            Member member = Member.builder()
+                    .serviceProvider("GOOGLE")
+                    .name("GOOGLE 유저")
+                    .serviceId(googleAuthTokenDto.getUserId())
+                    .refreshToken(googleAuthTokenDto.getRefreshToken())
+                    .serviceRefreshTokenExpiredAt(googleAuthTokenDto.getRefreshTokenExpiresAt())
+                    .role(MemberRole.GUEST)
+                    .build();
+            return memberRepository.save(member);
+        }
     }
 }
 
