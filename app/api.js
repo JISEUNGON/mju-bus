@@ -1,4 +1,4 @@
-const URL = "http://api.mju-bus.com";
+const URL = "http://localhost:8080";
 
 export const busApi = {
   bus: ({ queryKey }) => {
@@ -51,3 +51,12 @@ export const pathApi = {
     ).then(res => res.json());
   },
 };
+
+export const loginApi = {
+  apple_login : ({ queryKey }) => {
+    const { encodedPayLoad } = queryKey;
+    return fetch(
+      `${URL}/login/apple?data=${encodedPayLoad}`,
+    ).then(res => res.json());
+  }
+}
