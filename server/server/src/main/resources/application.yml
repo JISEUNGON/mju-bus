@@ -47,7 +47,8 @@ external:
     team-id: ${APPLE_TEAM_ID}
     bundle-id: com.mjubus.mbus
     private-key: ${APPLE_PRIVATE_KEY}
-
+  kakao:
+    validate-uri: https://kapi.kakao.com/v1/user/access_token_info
 logging:
   config: classpath:logback-spring.xml
 

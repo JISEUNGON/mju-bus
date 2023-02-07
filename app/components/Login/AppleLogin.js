@@ -35,8 +35,7 @@ export default function AppleLogin () {
             })
 
             const encodedPayLoad = base64.encode(payload);
-            loginApi.apple_login({ queryKey: {encodedPayLoad} }).then(res => 
-                setUser(res));   
+            loginApi.apple_login({ queryKey: {encodedPayLoad} }).then(res =>  setUser(res));   
         }
 
         setOnLogin(false);

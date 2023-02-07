@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppleLoginVo {
+public class AppleLoginDto {
     private String authorizationCode;
     private String identityToken;
     private String user;

@@ -58,5 +58,12 @@ export const loginApi = {
     return fetch(
       `${URL}/login/apple?data=${encodedPayLoad}`,
     ).then(res => res.json());
+  },
+
+  kakao_login : ({ queryKey }) => {
+    const { encodedPayLoad } = queryKey;
+    return fetch(
+      `${URL}/login/kakao?data=${encodedPayLoad}`,
+    ).then(res => res.json());
   }
 }

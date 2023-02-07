@@ -8,7 +8,7 @@ import com.mjubus.server.enums.LoginStrategyName;
 import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.util.DateHandler;
-import com.mjubus.server.dto.login.AppleLoginVo;
+import com.mjubus.server.dto.login.AppleLoginDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -65,11 +65,11 @@ public class AppleLoginStrategy implements LoginStrategy {
     public LoginResponse login(String encryptedData) {
        try {
            // 1. 클라이언트로부터 받은 기본 인증 정보 Base64 Decode
-           AppleLoginVo appleLoginVo = objectMapper.readValue(new String(Base64.getDecoder().decode(encryptedData), StandardCharsets.UTF_8), AppleLoginVo.class);
+           AppleLoginDto appleLoginDto = objectMapper.readValue(new String(Base64.getDecoder().decode(encryptedData), StandardCharsets.UTF_8), AppleLoginDto.class);
 
            // 2. 기본 정보로 JWT 생성 및 refreshToken 발급
-           AppleAuthTokenDto appleAuthTokenDto = getAppleAuthTokenDto(appleLoginVo);
-           appleAuthTokenDto.setUser_id(appleLoginVo.getUser());
+           AppleAuthTokenDto appleAuthTokenDto = getAppleAuthTokenDto(appleLoginDto);
+           appleAuthTokenDto.setUser_id(appleLoginDto.getUser());
 
            // 3. 멤버 조회 및 저장
            Member member = memberService.saveOrGetAppleMember(appleAuthTokenDto);
@@ -117,11 +117,11 @@ public class AppleLoginStrategy implements LoginStrategy {
         return converter.getPrivateKey(object);
     }
 
-    public AppleAuthTokenDto getAppleAuthTokenDto(AppleLoginVo appleLoginVo) throws IOException {
+    public AppleAuthTokenDto getAppleAuthTokenDto(AppleLoginDto appleLoginDto) throws IOException {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", appleLoginVo.getAuthorizationCode());
+        params.add("code", appleLoginDto.getAuthorizationCode());
         params.add("client_id", bundleId);
         params.add("client_secret", createJwt());
         params.add("grant_type", "authorization_code");

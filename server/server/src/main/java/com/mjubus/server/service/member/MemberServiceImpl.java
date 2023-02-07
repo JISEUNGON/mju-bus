@@ -2,6 +2,7 @@ package com.mjubus.server.service.member;
 
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
+import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
 import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.repository.MemberRepository;
 import com.mjubus.server.util.DateHandler;
@@ -34,6 +35,25 @@ public class MemberServiceImpl implements MemberService {
                     .build();
             return memberRepository.save(member);
         }
+    }
+
+    @Override
+    public Member saveOrGetKakaoMember(KaKaoAuthTokenDto kaKaoAuthTokenDto) {
+        Optional<Member> memberOptional = memberRepository.findMemberByServiceProviderAndServiceId("KAKAO", kaKaoAuthTokenDto.getId());
+        if (memberOptional.isPresent())
+            return memberOptional.get();
+        else {
+            Member member = Member.builder()
+                    .serviceProvider("KAKAO")
+                    .name("KAKAO 유저")
+                    .serviceId(kaKaoAuthTokenDto.getId())
+                    .refreshToken(kaKaoAuthTokenDto.getRefreshToken())
+                    .serviceRefreshTokenExpiredAt(kaKaoAuthTokenDto.getRefreshTokenExpiresAt())
+                    .role(MemberRole.GUEST)
+                    .build();
+            return memberRepository.save(member);
+        }
+
     }
 }
 
