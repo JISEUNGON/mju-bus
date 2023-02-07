@@ -11,8 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
@@ -61,6 +64,9 @@ public class Member {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.status = true;
+    }
+    public void upgradeRoleFromGuestToUser() {
+        this.role = MemberRole.USER;
     }
 
 }

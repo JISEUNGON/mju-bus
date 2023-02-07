@@ -9,6 +9,9 @@ import com.mjubus.server.exception.Path.PathInfoNotFoundException;
 import com.mjubus.server.exception.Route.RouteInfoNotFoundException;
 import com.mjubus.server.exception.Route.RouteNotFoundException;
 import com.mjubus.server.exception.Station.StationNotFoundException;
+import com.mjubus.server.exception.chatting.RoomIdNotFoundExcption;
+import com.mjubus.server.exception.TaxiParty.TaxiPartyMembersNotFoundException;
+import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -74,6 +77,24 @@ public class ApiExceptionHandler {
     @ExceptionHandler(PathInfoNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleException(PathInfoNotFoundException ex) {
         ApiErrorResponse response = new ApiErrorResponse("ERROR-0010", "No PathInfo remains in : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RoomIdNotFoundExcption.class)
+    public ResponseEntity<ApiErrorResponse> handleException(RoomIdNotFoundExcption ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0011", "No RoomId remains in : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TaxiPartyNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TaxiPartyNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0012", "No TaxiParty remains in : " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TaxiPartyMembersNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleException(TaxiPartyMembersNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse("ERROR-0013", "No TaxiPartyMembers remains in : " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

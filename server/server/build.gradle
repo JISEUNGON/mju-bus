@@ -48,6 +48,10 @@ dependencies {
     // Google SDK
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.3.0'
     implementation 'com.google.api-client:google-api-client:2.2.0'
+    // Spring WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 }
 test {
