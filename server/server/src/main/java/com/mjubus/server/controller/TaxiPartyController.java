@@ -14,12 +14,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+@Slf4j
 @Controller
 @RequestMapping("/taxi")
 @Api(tags = {"택시 파티 API"})
@@ -114,9 +116,8 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "200", description = "정상 응답")
     })
     @ResponseBody
-    public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") TaxiPartyQuitRequest taxiPartyQuitRequest, @RequestParam(value = "sessionMatchingHashKey") ChattingRoomQuitRequest chattingRoomQuitRequest) {
-        return ResponseEntity.ok(redisMessageService.chattingRoomQuit(taxiPartyQuitRequest, chattingRoomQuitRequest)
-        );
+    public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") Long groupId, @RequestParam(value = "memberId") TaxiPartyQuitRequest taxiPartyQuitRequest) {
+        return ResponseEntity.ok(redisMessageService.chattingRoomQuit(groupId, taxiPartyQuitRequest));
     }
 
     @DeleteMapping("/quit")
