@@ -1,4 +1,4 @@
-package com.mjubus.server.dto.login;
+package com.mjubus.server.dto.request;
 
 
 import lombok.*;
@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaoLoginDto {
+public class KakaoLoginRequest {
     private String accessToken;
     private String accessTokenExpiresAt;
     private String refreshToken;

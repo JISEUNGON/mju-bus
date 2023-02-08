@@ -1,4 +1,4 @@
-package com.mjubus.server.dto.login;
+package com.mjubus.server.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoogleLoginDto {
+public class GoogleLoginRequest {
     private String id;
     private String serverAuthCode;
 }

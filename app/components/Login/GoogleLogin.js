@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {TouchableOpacity, Image } from 'react-native';
 import GoogleImage from "../../assets/image/google_login.png"
-import base64 from 'base-64'
 import { loginApi } from "../../api";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -32,9 +31,7 @@ const GoogleLogin = () => {
                     "id": userInfo.user.id,
                     "serverAuthCode": userInfo.serverAuthCode,
                 }
-
-                const encodedPayLoad = base64.encode(JSON.stringify(payload));
-                loginApi.google_login({ queryKey: {encodedPayLoad} }).then(res => setUserInfo(res));
+                loginApi.google_login({ queryKey: {payload} }).then(res => setUserInfo(res));
             } catch (error) {
                 console.log(error);
                 // if (error.code === statusCodes.SIGN_IN_CANCELLED) {

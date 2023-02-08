@@ -30,6 +30,7 @@ public class MemberServiceImpl implements MemberService {
 
             Member member = Member.of("APPLE 유저");
             MemberProvider memberProvider = MemberProvider.of(appleAuthTokenDto);
+            memberProvider.setMember(member);
 
             memberRepository.save(member);
             memberProviderRepository.save(memberProvider);
@@ -47,6 +48,8 @@ public class MemberServiceImpl implements MemberService {
         else {
             Member member = Member.of("KAKAO 유저");
             MemberProvider memberProvider = MemberProvider.of(kaKaoAuthTokenDto);
+            memberProvider.setMember(member);
+
             memberRepository.save(member);
             memberProviderRepository.save(memberProvider);
 
@@ -64,6 +67,7 @@ public class MemberServiceImpl implements MemberService {
         else {
             Member member = Member.of("GOOGLE 유저");
             MemberProvider memberProvider = MemberProvider.of(googleAuthTokenDto);
+            memberProvider.setMember(member);
 
             memberRepository.save(member);
             memberProviderRepository.save(memberProvider);

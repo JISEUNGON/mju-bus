@@ -6,6 +6,7 @@ import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
 import com.mjubus.server.util.DateHandler;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,6 +24,8 @@ public class MemberProvider {
     @Column(name ="id", columnDefinition = "int")
     private Long id;
 
+
+    @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
