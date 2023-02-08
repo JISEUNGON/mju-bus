@@ -1,10 +1,7 @@
 package com.mjubus.server.controller;
 
 import com.mjubus.server.domain.TaxiPartyMembers;
-import com.mjubus.server.dto.request.ChattingRoomQuitRequest;
-import com.mjubus.server.dto.request.TaxiPartyMembersRequest;
-import com.mjubus.server.dto.request.TaxiPartyQuitRequest;
-import com.mjubus.server.dto.request.TaxiPartyRequest;
+import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyMembersListResponse;
 import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
@@ -89,20 +86,22 @@ public class TaxiPartyController {
     @PostMapping("/create")
     @ApiOperation(value = "파티 생성")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답")
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "올바른 정보가 존재하지 않음")
     })
     @ResponseBody
-    public ResponseEntity<String> createNewParty() {
+    public ResponseEntity<String> createNewParty(@RequestBody TaxiPartyCreateRequest request) {
         return ResponseEntity.ok("success");
     }
 
     @PostMapping("/list/{group-id}/members/new")
     @ApiOperation(value = "파티 멤버 추가")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답")
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "404", description = "해당하는 파티가 없거나 멤버가 없음")
     })
     @ResponseBody
-    public ResponseEntity<String> addNewMember() {
+    public ResponseEntity<String> addNewMember(@PathVariable(value = "group-id") String groupId, @RequestBody TaxiPartyJoinRequest request) {
         return ResponseEntity.ok("success");
     }
 
