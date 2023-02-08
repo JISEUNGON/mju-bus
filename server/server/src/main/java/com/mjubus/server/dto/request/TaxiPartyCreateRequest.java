@@ -1,5 +1,6 @@
 package com.mjubus.server.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,19 +14,17 @@ public class TaxiPartyCreateRequest {
     private Long taxiDestinationId;
     private Long min;
     private Long max;
-    private Long status;
     private Double meetingLatitude;
     private Double meetingLongitude;
     private String memo;
     private LocalDateTime endAt;
 
-    public static TaxiPartyCreateRequest of(Long administer, Long taxiDestinationId, Long min, Long max, Long status, Double meetingLatitude, Double meetingLongitude, String memo, LocalDateTime endAt) {
+    public static TaxiPartyCreateRequest of(Long administer, Long taxiDestinationId, Long min, Long max, Double meetingLatitude, Double meetingLongitude, String memo, LocalDateTime endAt) {
         return new TaxiPartyCreateRequestBuilder()
                 .administer(administer)
                 .taxiDestinationId(taxiDestinationId)
                 .min(min)
                 .max(max)
-                .status(status)
                 .meetingLatitude(meetingLatitude)
                 .meetingLongitude(meetingLongitude)
                 .memo(memo)
