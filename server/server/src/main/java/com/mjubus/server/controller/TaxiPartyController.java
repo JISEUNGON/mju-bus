@@ -86,6 +86,27 @@ public class TaxiPartyController {
         return taxiPartyMembersService.findCurrentMemberNum(id);
     }
 
+    @PostMapping("/create")
+    @ApiOperation(value = "파티 생성")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답")
+    })
+    @ResponseBody
+    public ResponseEntity<String> createNewParty() {
+        return ResponseEntity.ok("success");
+    }
+
+    @PostMapping("/list/{group-id}/members/new")
+    @ApiOperation(value = "파티 멤버 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답")
+    })
+    @ResponseBody
+    public ResponseEntity<String> addNewMember() {
+        return ResponseEntity.ok("success");
+    }
+
+
     @DeleteMapping("/{group-id}/quit")
     @ApiOperation(value = "파티 탈퇴")
     @ApiResponses({
@@ -95,5 +116,15 @@ public class TaxiPartyController {
     public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") TaxiPartyQuitRequest taxiPartyQuitRequest, @RequestParam(value = "sessionMatchingHashKey") ChattingRoomQuitRequest chattingRoomQuitRequest) {
         return ResponseEntity.ok(redisMessageService.chattingRoomQuit(taxiPartyQuitRequest, chattingRoomQuitRequest)
         );
+    }
+
+    @DeleteMapping("/quit")
+    @ApiOperation(value = "파티 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답")
+    })
+    @ResponseBody
+    public ResponseEntity<String> partyDelete() {
+        return ResponseEntity.ok("success");
     }
 }
