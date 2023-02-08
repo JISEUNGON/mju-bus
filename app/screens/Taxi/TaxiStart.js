@@ -16,7 +16,7 @@ const searchingAddress = ({queryKey}) => {
   }).then((res) => res.json());
 }
 
-function Taxi_start({navigation}) {
+function TaxiStart({navigation}) {
   const [query, setQuery] = useState("");
   const onChangeText = (text) => setQuery(text);
   const { isLoading, data, refetch } = useQuery(["searchingAddress", query], searchingAddress, {enabled:false});
@@ -34,7 +34,7 @@ function Taxi_start({navigation}) {
       <Text style={styles.addressDetail}>{item.road_address_name}</Text>
     </View>
 
-    <TouchableOpacity style={styles.startBtn} onPress={() => navigation.navigate("Taxi_destination")}>
+    <TouchableOpacity style={styles.startBtn} onPress={() => navigation.navigate("TaxiDestination")}>
       <Text style={styles.startText}>출발</Text>
     </TouchableOpacity>
   </View>);
@@ -66,7 +66,7 @@ function Taxi_start({navigation}) {
   );
 }
 
-export default Taxi_start;
+export default TaxiStart;
 
 const styles = StyleSheet.create({
   container: {
