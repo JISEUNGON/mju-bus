@@ -91,6 +91,7 @@ public class TaxiPartyController {
     })
     @ResponseBody
     public ResponseEntity<String> createNewParty(@RequestBody TaxiPartyCreateRequest request) {
+        taxiPartyService.createTaxiParty(request);
         return ResponseEntity.ok("success");
     }
 
@@ -101,7 +102,8 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "해당하는 파티가 없거나 멤버가 없음")
     })
     @ResponseBody
-    public ResponseEntity<String> addNewMember(@PathVariable(value = "group-id") String groupId, @RequestBody TaxiPartyJoinRequest request) {
+    public ResponseEntity<String> addNewMember(@PathVariable(value = "group-id") Long groupId, @RequestBody TaxiPartyJoinRequest request) {
+        taxiPartyService.addNewMember(groupId, request);
         return ResponseEntity.ok("success");
     }
 
