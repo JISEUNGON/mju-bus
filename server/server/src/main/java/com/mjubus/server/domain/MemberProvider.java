@@ -1,5 +1,9 @@
 package com.mjubus.server.domain;
 
+import com.mjubus.server.dto.login.AppleAuthTokenDto;
+import com.mjubus.server.dto.login.GoogleAuthTokenDto;
+import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
+import com.mjubus.server.util.DateHandler;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -34,4 +38,31 @@ public class MemberProvider {
 
     @Column(name="refresh_token_expired_at", columnDefinition = "datetime")
     private LocalDateTime refreshTokenExpiredAt;
+
+    public static MemberProvider of(KaKaoAuthTokenDto kaKaoAuthTokenDto) {
+        return MemberProvider.builder()
+                .provider("KAKAO")
+                .providerId(kaKaoAuthTokenDto.getId())
+                .refreshToken(kaKaoAuthTokenDto.getRefreshToken())
+                .refreshTokenExpiredAt(kaKaoAuthTokenDto.getRefreshTokenExpiresAt())
+                .build();
+    }
+
+    public static MemberProvider of(GoogleAuthTokenDto googleAuthTokenDto) {
+        return MemberProvider.builder()
+                .provider("GOOGLE")
+                .providerId(googleAuthTokenDto.getUserId())
+                .refreshToken(googleAuthTokenDto.getRefreshToken())
+                .refreshTokenExpiredAt(DateHandler.getToday().plusYears(10))
+                .build();
+    }
+
+    public static MemberProvider of(AppleAuthTokenDto appleAuthTokenDto) {
+        return MemberProvider.builder()
+                .provider("APPLE")
+                .providerId(appleAuthTokenDto.getUser_id())
+                .refreshToken(appleAuthTokenDto.getRefresh_token())
+                .refreshTokenExpiredAt(DateHandler.getToday().plusYears(10))
+                .build();
+    }
 }
