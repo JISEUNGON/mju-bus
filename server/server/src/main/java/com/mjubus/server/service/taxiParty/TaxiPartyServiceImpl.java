@@ -6,6 +6,7 @@ import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.request.TaxiPartyCreateRequest;
 import com.mjubus.server.dto.request.TaxiPartyJoinRequest;
+import com.mjubus.server.dto.request.TaxiPartyQuitRequest;
 import com.mjubus.server.dto.request.TaxiPartyRequest;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
@@ -93,6 +94,19 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         if (partyMemberFind.isPresent()) throw new IllegalArgumentException("이미 존재하는 파티에 속한 멤버");
 
         partyMembersRepository.save(new TaxiPartyMembers(null, memberFindResult.get(), partyFindResult.get()));
+    }
+
+    @Override
+    public void removeMember(Long groupId, TaxiPartyQuitRequest request) {
+        Optional<Member> memberFindResult = memberRepository.findById(request.getMemberId());
+        if (memberFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 MEmber");
+        Optional<TaxiParty> partyFindResult = taxiPartyRepository.findById(groupId);
+        if (partyFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 파티");
+
+        Optional<TaxiPartyMembers> partyMemberFind = partyMembersRepository.findTaxiPartyMembersByTaxiParty_IdAndMember_Id(groupId, request.getMemberId());
+        if (partyMemberFind.isEmpty()) throw new IllegalArgumentException("파티에 존재하지 않음");
+
+        partyMembersRepository.delete(partyMemberFind.get());
     }
 
 }

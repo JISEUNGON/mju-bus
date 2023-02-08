@@ -4,6 +4,6 @@ import com.mjubus.server.dto.request.ChattingRoomQuitRequest;
 import com.mjubus.server.dto.request.TaxiPartyQuitRequest;
 
 public interface RedisMessageService {
-    public String chattingRoomQuit(Long groupId, TaxiPartyQuitRequest taxiPartyQuitRequest);
+    public void chattingRoomQuit(Long groupId, TaxiPartyQuitRequest taxiPartyQuitRequest);
 
 }

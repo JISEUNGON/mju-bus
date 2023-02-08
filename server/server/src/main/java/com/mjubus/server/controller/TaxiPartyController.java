@@ -117,7 +117,9 @@ public class TaxiPartyController {
     })
     @ResponseBody
     public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") Long groupId, @RequestParam(value = "memberId") TaxiPartyQuitRequest taxiPartyQuitRequest) {
-        return ResponseEntity.ok(redisMessageService.chattingRoomQuit(groupId, taxiPartyQuitRequest));
+        taxiPartyService.removeMember(groupId, taxiPartyQuitRequest);
+        redisMessageService.chattingRoomQuit(groupId, taxiPartyQuitRequest);
+        return ResponseEntity.ok("success");
     }
 
     @DeleteMapping("/quit")

@@ -23,7 +23,7 @@ public class RedisMessageServiceImpl implements RedisMessageService {
 
     @Transactional
     @Override
-    public String chattingRoomQuit(Long groupId, TaxiPartyQuitRequest taxiPartyQuitRequest) {
+    public void chattingRoomQuit(Long groupId, TaxiPartyQuitRequest taxiPartyQuitRequest) {
         String sessionMatchingKey = "sub-" + taxiPartyQuitRequest.getMemberId();
         Optional<Object> sessionIdGet = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", sessionMatchingKey));
         if (sessionIdGet.isEmpty()) throw new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다.");
@@ -34,6 +34,5 @@ public class RedisMessageServiceImpl implements RedisMessageService {
 
         redisTemplate.opsForHash().delete(hashName, sessionId);
         redisTemplate.opsForHash().delete("session-matching", sessionMatchingKey);
-        return "success";
     }
 }

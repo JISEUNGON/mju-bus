@@ -7,8 +7,8 @@ import lombok.*;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaxiPartyQuitRequest {
-    private String memberId;
+    private Long memberId;
     public static TaxiPartyQuitRequest of(String memberId) {
-        return new TaxiPartyQuitRequest(memberId);
+        return new TaxiPartyQuitRequest(Long.parseLong(memberId));
     }
 }
