@@ -47,8 +47,8 @@ public class Member {
     @Column(name="service", columnDefinition = "char(10)")
     private String serviceProvider;
 
-    @Column(name="service_id", columnDefinition = "bigint")
-    private Long serviceId;
+    @Column(name="service_id", columnDefinition = "char(255)")
+    private String serviceId;
 
     @Column(name="refresh_token_expired_at", columnDefinition = "datetime")
     private LocalDateTime serviceRefreshTokenExpiredAt;
@@ -62,11 +62,9 @@ public class Member {
 
     @PrePersist
     public void prePersist() {
-        this.role = MemberRole.USER;
         this.createdAt = LocalDateTime.now();
         this.status = true;
     }
-
     public void upgradeRoleFromGuestToUser() {
         this.role = MemberRole.USER;
     }

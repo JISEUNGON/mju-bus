@@ -1,6 +1,7 @@
 package com.mjubus.server.util;
 
 import java.time.*;
+import java.util.Date;
 
 public class DateHandler {
     private static ZonedDateTime zonedDateTime;
@@ -58,5 +59,9 @@ public class DateHandler {
 
     public static void reset() {
         zonedDateTime = null;
+    }
+
+    public static Date toDate(LocalDateTime now) {
+        return Date.from(now.atZone(ZoneId.of("Asia/Seoul")).toInstant());
     }
 }
