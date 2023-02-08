@@ -11,8 +11,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .anyRequest()	// 모든 요청에 대해서 허용하라.
-            .permitAll();
+        // CSRF disable;
+        http.csrf().disable()
+                .authorizeRequests()
+                .anyRequest()
+                .permitAll();
+
     }
 }

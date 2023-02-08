@@ -3,17 +3,22 @@ package com.mjubus.server.util;
 import com.mjubus.server.domain.Member;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class AccessTokenGenerator {
-    private static String JWT_SECRET_KEY;
+    public static String JWT_SECRET_KEY;
     private static final long EXPIRATION_TIME =  1000 * 60 * 60 * 24 * 3; // 3 days
 
-    @Value("${jwt.secret}")
+    @Value("${external.jwt.secret}")
     public void setKey(String key) {
         JWT_SECRET_KEY = key;
     }
@@ -33,7 +38,7 @@ public class AccessTokenGenerator {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiredDate)
-                .signWith(SignatureAlgorithm.HS512, JWT_SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();
     }
 }
