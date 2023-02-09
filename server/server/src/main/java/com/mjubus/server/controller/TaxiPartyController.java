@@ -1,10 +1,8 @@
 package com.mjubus.server.controller;
 
-import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyMembersListResponse;
-import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
 import com.mjubus.server.service.chatting.RedisMessageService;
@@ -19,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 
 @Slf4j
@@ -110,7 +110,7 @@ public class TaxiPartyController {
     }
 
 
-    @DeleteMapping("/{group-id}/quit")
+    @DeleteMapping("/{group-id}/members/quit")
     @ApiOperation(value = "파티 탈퇴")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답")
@@ -122,13 +122,15 @@ public class TaxiPartyController {
         return ResponseEntity.ok("success");
     }
 
-    @DeleteMapping("/quit")
+    @DeleteMapping("{group-id}/delete")
     @ApiOperation(value = "파티 삭제")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "정상 응답")
     })
     @ResponseBody
-    public ResponseEntity<String> partyDelete() {
+    public ResponseEntity<String> partyDelete(@PathParam(value = "group-id") TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
+        taxiPartyService.deleteParty(taxiPartyDeleteRequest);
+        redisMessageService.chattingRoomAndSessionDelete(taxiPartyDeleteRequest);
         return ResponseEntity.ok("success");
     }
 }
