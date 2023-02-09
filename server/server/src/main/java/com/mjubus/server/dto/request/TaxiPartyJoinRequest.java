@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaxiPartyJoinRequest {
-    @ApiModelProperty(example = "1", dataType = "int", value = "Member ID")
+    @ApiModelProperty(value = "멤버 ID", example = "1")
     private Long memberId;
 
     @JsonIgnore

@@ -5,9 +5,14 @@ import com.mjubus.server.domain.TaxiDestination;
 import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.request.*;
+import com.mjubus.server.dto.response.TaxiPartyCreateResponse;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
+import com.mjubus.server.exception.TaxiParty.IllegalPartyMembersStateException;
+import com.mjubus.server.exception.TaxiParty.IllegalPartyStateException;
 import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
+import com.mjubus.server.exception.member.MemberNotFoundException;
+import com.mjubus.server.exception.taxidestination.TaxiDestinationNotFoundException;
 import com.mjubus.server.repository.MemberRepository;
 import com.mjubus.server.repository.TaxiDestinationRepository;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
@@ -57,19 +62,22 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Transactional
     @Override
-    public void createTaxiParty(TaxiPartyCreateRequest request) {
-        Optional<Member> memberFindResult = memberRepository.findById(request.getAdminister());
-        if (memberFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 Member");
-        Optional<TaxiParty> adminFindResult = Optional.ofNullable(taxiPartyRepository.findByAdminister(memberFindResult.get()));
-        if (adminFindResult.isPresent()) throw new IllegalArgumentException("존재하는 파티");
-        Optional<TaxiDestination> destFindResult = taxiDestinationRepository.findById(request.getTaxiDestinationId());
-        if (destFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 택시 목적지");
+    public TaxiPartyCreateResponse createTaxiParty(TaxiPartyCreateRequest request) {
+        Optional<Member> administerFind = memberRepository.findById(request.getAdminister());
+        Member administer = administerFind.orElseThrow(() -> new MemberNotFoundException("존재하지 않는 Member"));
 
+        Optional<TaxiParty> partyFind = Optional.ofNullable(taxiPartyRepository.findByAdminister(administer));
+        partyFind.ifPresent((party) -> {
+            throw new IllegalPartyStateException("이미 존재하는 파티");
+        });
+
+        Optional<TaxiDestination> destinationFind = taxiDestinationRepository.findById(request.getTaxiDestinationId());
+        TaxiDestination destination = destinationFind.orElseThrow(() -> new TaxiDestinationNotFoundException("존재하지 않는 택시 목적지"));
 
         taxiPartyRepository.save(new TaxiParty(
                 null,
-                memberFindResult.get(),
-                destFindResult.get(),
+                administer,
+                destination,
                 request.getMeetingLatitude(),
                 request.getMeetingLongitude(),
                 request.getMemo(),
@@ -79,45 +87,51 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
                 DateHandler.getToday(),
                 1L
         ));
+        return TaxiPartyCreateResponse.builder().isCreated("success").build();
     }
 
     @Transactional
     @Override
     public void addNewMember(Long groupId, TaxiPartyJoinRequest request) {
-        log.info("[ADD_NEW_MEMBER]");
-        Optional<Member> memberFindResult = memberRepository.findById(request.getMemberId());
-        if (memberFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 MEmber");
-        Optional<TaxiParty> partyFindResult = taxiPartyRepository.findById(groupId);
-        if (partyFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 파티");
+        Optional<Member> memberFind = memberRepository.findById(request.getMemberId());
+        Member newMember = memberFind.orElseThrow(() -> new MemberNotFoundException("존재하지 않는 멤버"));
+
+        Optional<TaxiParty> partyFind = taxiPartyRepository.findById(groupId);
+        TaxiParty targetParty = partyFind.orElseThrow(() -> new TaxiPartyNotFoundException(groupId));
 
         Optional<TaxiPartyMembers> partyMemberFind = partyMembersRepository.findTaxiPartyMembersByTaxiParty_IdAndMember_Id(groupId, request.getMemberId());
-        if (partyMemberFind.isPresent()) throw new IllegalArgumentException("이미 존재하는 파티에 속한 멤버");
+        partyMemberFind.ifPresent((partyMember) -> {
+            throw new IllegalPartyMembersStateException("이미 파티에 속한 멤버");
+        });
 
-        partyMembersRepository.save(new TaxiPartyMembers(null, memberFindResult.get(), partyFindResult.get()));
+        partyMembersRepository.save(new TaxiPartyMembers(null, newMember, targetParty));
     }
 
     @Transactional
     @Override
     public void removeMember(Long groupId, TaxiPartyQuitRequest request) {
-        Optional<Member> memberFindResult = memberRepository.findById(request.getMemberId());
-        if (memberFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 MEmber");
-        Optional<TaxiParty> partyFindResult = taxiPartyRepository.findById(groupId);
-        if (partyFindResult.isEmpty()) throw new IllegalArgumentException("존재하지 않는 파티");
+        Optional<Member> memberFind = memberRepository.findById(request.getMemberId());
+        memberFind.orElseThrow(() -> new MemberNotFoundException("존재하지 않는 멤버"));
+
+        Optional<TaxiParty> partyFind = taxiPartyRepository.findById(groupId);
+        partyFind.orElseThrow(() -> new TaxiPartyNotFoundException(groupId));
 
         Optional<TaxiPartyMembers> partyMemberFind = partyMembersRepository.findTaxiPartyMembersByTaxiParty_IdAndMember_Id(groupId, request.getMemberId());
-        if (partyMemberFind.isEmpty()) throw new IllegalArgumentException("파티에 존재하지 않음");
+        TaxiPartyMembers taxiPartyMembers = partyMemberFind.orElseThrow(() -> new IllegalPartyMembersStateException("이미 파티에 존재하지 않음"));
 
-        partyMembersRepository.delete(partyMemberFind.get());
+        partyMembersRepository.delete(taxiPartyMembers);
     }
 
     @Transactional
     @Override
     public void deleteParty(TaxiPartyDeleteRequest request) {
         Optional<TaxiParty> partyFind = taxiPartyRepository.findById(request.getGroupId());
-        if (partyFind.isEmpty()) throw new IllegalArgumentException("존재하지 않는 파티");
+        TaxiParty taxiParty = partyFind.orElseThrow(() -> new TaxiPartyNotFoundException(request.getGroupId()));
+
         List<TaxiPartyMembers> partyMembers = partyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(request.getGroupId());
         partyMembers.forEach(partyMembersRepository::delete);
-        taxiPartyRepository.delete(partyFind.get());
+
+        taxiPartyRepository.delete(taxiParty);
     }
 
 }

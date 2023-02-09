@@ -4,6 +4,7 @@ import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.request.TaxiPartyDeleteRequest;
 import com.mjubus.server.dto.request.TaxiPartyQuitRequest;
+import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
 import com.mjubus.server.exception.chatting.RoomIdNotFoundExcption;
 import com.mjubus.server.exception.chatting.SessionIdNotFoundExcption;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
@@ -35,11 +36,12 @@ public class RedisMessageServiceImpl implements RedisMessageService {
     public void chattingRoomQuit(Long groupId, TaxiPartyQuitRequest taxiPartyQuitRequest) {
         String sessionMatchingKey = "sub-" + taxiPartyQuitRequest.getMemberId();
         Optional<Object> sessionIdGet = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", sessionMatchingKey));
-        if (sessionIdGet.isEmpty()) throw new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다.");
-        String sessionId = (String) sessionIdGet.get();
+        String sessionId = (String) sessionIdGet.orElseThrow(() -> new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다."));
 
         String hashName = "room-" + groupId + "-subscription";
-        if (!redisTemplate.hasKey(hashName)) throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(hashName))) {
+            throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
+        }
 
         redisTemplate.opsForHash().delete(hashName, sessionId);
         redisTemplate.opsForHash().delete("session-matching", sessionMatchingKey);
@@ -49,7 +51,7 @@ public class RedisMessageServiceImpl implements RedisMessageService {
     @Override
     public void chattingRoomAndSessionDelete(TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
         Optional<TaxiParty> taxiParty = taxiPartyRepository.findById(taxiPartyDeleteRequest.getGroupId());
-        if (taxiParty.isEmpty()) throw new IllegalArgumentException("해당하는 파티가 없습니다.");
+        taxiParty.orElseThrow(() -> new TaxiPartyNotFoundException(taxiPartyDeleteRequest.getGroupId()));
         redisTemplate.delete("room-" + taxiPartyDeleteRequest.getGroupId() + "-subscription");
 
         List<TaxiPartyMembers> partyMembers = partyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(taxiPartyDeleteRequest.getGroupId());
