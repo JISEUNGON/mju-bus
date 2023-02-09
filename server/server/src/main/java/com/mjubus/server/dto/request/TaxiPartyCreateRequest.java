@@ -12,9 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaxiPartyCreateRequest {
 
-    @ApiModelProperty(value = "파티장 Member ID", example = "1")
-    private Long administer;
-
     @ApiModelProperty(value = "택시 목적지 ID", example = "1")
     private Long taxiDestinationId;
 
@@ -41,7 +38,6 @@ public class TaxiPartyCreateRequest {
 
     public static TaxiPartyCreateRequest of(Long administer, Long taxiDestinationId, Long min, Long max, Double meetingLatitude, Double meetingLongitude, String memo, LocalDateTime endAt) {
         return new TaxiPartyCreateRequestBuilder()
-                .administer(administer)
                 .taxiDestinationId(taxiDestinationId)
                 .min(min)
                 .max(max)

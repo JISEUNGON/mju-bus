@@ -15,7 +15,6 @@ public interface TaxiPartyMembersRepository extends JpaRepository<TaxiPartyMembe
 
     List<TaxiPartyMembers> findTaxiPartyMembersByTaxiParty_Id(Long taxiParty_id);
 
-    //@Query(value = "SELECT COUNT(*) FROM TaxiPartyMembers t WHERE t.taxiParty_id :=taxi_party_id", nativeQuery = true)
     Long countTaxiPartyMembersByTaxiParty_Id(Long taxiParty_id);
 
     Optional<TaxiPartyMembers> findTaxiPartyMembersByTaxiParty_IdAndMember_Id(Long taxiPartyId, Long MemberId);

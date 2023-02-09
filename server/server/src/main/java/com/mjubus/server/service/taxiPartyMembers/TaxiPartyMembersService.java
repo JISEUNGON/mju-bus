@@ -26,4 +26,6 @@ public interface TaxiPartyMembersService {
     void addMember(TaxiParty taxiParty, Member member);
 
     void removeMember(TaxiParty taxiParty, Member member);
+
+    Long findMembersByTaxiParty(TaxiParty taxiParty);
 }

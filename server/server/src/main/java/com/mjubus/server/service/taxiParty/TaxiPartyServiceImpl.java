@@ -6,8 +6,10 @@ import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.TaxiPartyCreateResponse;
+import com.mjubus.server.dto.response.TaxiPartyDetailResponse;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
+import com.mjubus.server.enums.TaxiPartyEnum;
 import com.mjubus.server.exception.TaxiParty.IllegalPartyMembersStateException;
 import com.mjubus.server.exception.TaxiParty.IllegalPartyStateException;
 import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,26 +43,28 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         this.taxiPartyMembersService = taxiPartyMembersService;
     }
     @Override
-    public TaxiPartyResponse findTaxiParty(TaxiPartyRequest req) {
+    public TaxiPartyDetailResponse findTaxiParty(TaxiPartyRequest req) {
         TaxiParty result = taxiPartyRepository.findById(req.getId()).orElseThrow(() -> new TaxiPartyNotFoundException(req.getId()));
-        return TaxiPartyResponse.of(result);
+        return TaxiPartyDetailResponse.of(result);
     }
 
     @Override
     public TaxiPartyListResponse findTaxiPartyList() {
-        List<TaxiParty> result = taxiPartyRepository.findAll();
-        List<TaxiPartyResponse> taxipartyList = new ArrayList<>();
-        for (TaxiParty taxiParty : result) {
-            taxipartyList.add(TaxiPartyResponse.of(taxiParty));
-        }
-        return TaxiPartyListResponse.of(taxipartyList);
+        List<TaxiParty> taxiPartyList = taxiPartyRepository.findTaxiPartiesByStatus(TaxiPartyEnum.ON_GOING).orElse(new ArrayList<>());
+        List<TaxiPartyResponse> taxiPartyResponses = new LinkedList<>();
+
+        // taxiPartyList를 순회하면서, 각 taxiParty의 taxiPartyMembers를 가져온다.
+        taxiPartyList.forEach(taxiParty -> {
+            taxiPartyResponses.add(TaxiPartyResponse.of(taxiParty, taxiPartyMembersService.findMembersByTaxiParty(taxiParty)));
+        });
+
+        return TaxiPartyListResponse.of(taxiPartyResponses);
     }
+
 
     @Transactional
     @Override
-    public TaxiPartyCreateResponse createTaxiParty(TaxiPartyCreateRequest request) {
-        Member administer = memberService.findMemberById(request.getAdminister());
-
+    public TaxiPartyCreateResponse createTaxiParty(Member administer, TaxiPartyCreateRequest request) {
         // 진행중인 택시파티가 있는 경우
         if (hasActiveParty(administer)) {
             throw new IllegalPartyStateException("이미 진행중인 택시파티가 있습니다.");
@@ -73,14 +78,13 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         taxiPartyRepository.save(taxiParty);
 
         // 택시파티 생성 후 생성자를 파티에 참여
-        addNewMember(taxiParty.getId(), TaxiPartyJoinRequest.of(administer.getId()));
+        addNewMember(taxiParty.getId(), administer);
         return TaxiPartyCreateResponse.builder().isCreated("success").build();
     }
 
     @Transactional
     @Override
-    public void addNewMember(Long groupId, TaxiPartyJoinRequest request) {
-        Member member = memberService.findMemberById(request.getMemberId());
+    public void addNewMember(Long groupId, Member member) {
         TaxiParty taxiParty = findTaxiPartyById(groupId);
 
         if (taxiPartyMembersService.isGroupMember(taxiParty.getId(), member)) { // 이미 파티에 참여중인 경우
@@ -99,8 +103,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Transactional
     @Override
-    public void removeMember(Long groupId, TaxiPartyQuitRequest request) {
-        Member member = memberService.findMemberById(request.getMemberId());
+    public void removeMember(Long groupId, Member member) {
         TaxiParty taxiParty = findTaxiPartyById(groupId);
 
         if (!taxiPartyMembersService.isGroupMember(taxiParty.getId(), member)) { // 파티에 참여중이지 않은 경우

@@ -1,5 +1,6 @@
 package com.mjubus.server.service.chatting;
 
+import com.mjubus.server.domain.Member;
 import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.request.TaxiPartyDeleteRequest;
@@ -33,8 +34,8 @@ public class RedisMessageServiceImpl implements RedisMessageService {
 
     @Transactional
     @Override
-    public void chattingRoomQuit(Long groupId, TaxiPartyQuitRequest taxiPartyQuitRequest) {
-        String sessionMatchingKey = "sub-" + taxiPartyQuitRequest.getMemberId();
+    public void chattingRoomQuit(Long groupId, Member member) {
+        String sessionMatchingKey = "sub-" + member.getId();
         Optional<Object> sessionIdGet = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", sessionMatchingKey));
         String sessionId = (String) sessionIdGet.orElseThrow(() -> new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다."));
 

@@ -75,4 +75,9 @@ public class TaxiPartyMembersServiceImpl implements TaxiPartyMembersService{
     public void removeMember(TaxiParty taxiParty, Member member) {
         taxiPartyMembersRepository.deleteByTaxiParty_IdAndMember_Id(taxiParty.getId(), member.getId());
     }
+
+    @Override
+    public Long findMembersByTaxiParty(TaxiParty taxiParty) {
+        return taxiPartyMembersRepository.countTaxiPartyMembersByTaxiParty_Id(taxiParty.getId());
+    }
 }

@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 @ApiModel(value = "택시 파티 정보")
 @Table(name="taxi_party")
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class TaxiParty {
 
