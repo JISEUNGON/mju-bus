@@ -37,11 +37,15 @@ public class TaxiParty {
 
     @Column(name ="meeting_latitude", columnDefinition = "double")
     @ApiModelProperty(example = "만남장소_위도")
-    private double meeting_latitude;
+    private Double meeting_latitude;
 
     @Column(name ="meeting_longitude", columnDefinition = "double")
     @ApiModelProperty(example = "만남장소_경도")
-    private double meeting_longitude;
+    private Double meeting_longitude;
+
+    @Column(name = "meeting_place", columnDefinition = "char(50)")
+    @ApiModelProperty(example = "만남장소")
+    private String meeting_place;
 
     @Column(name ="memo", columnDefinition = "char(30)")
     @ApiModelProperty(example = "장소관련 간단한 메모")
