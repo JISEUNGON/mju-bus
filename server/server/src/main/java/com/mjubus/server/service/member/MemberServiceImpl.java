@@ -5,8 +5,13 @@ import com.mjubus.server.domain.MemberProvider;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
 import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
+import com.mjubus.server.dto.request.JwtResponse;
+import com.mjubus.server.exception.member.MemberNotFoundException;
+import com.mjubus.server.exception.member.RefreshTokenInvalidException;
 import com.mjubus.server.repository.MemberProviderRepository;
 import com.mjubus.server.repository.MemberRepository;
+import com.mjubus.server.util.JwtUtil;
+import com.nimbusds.oauth2.sdk.TokenResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -74,5 +79,22 @@ public class MemberServiceImpl implements MemberService {
 
             return member;
         }
+    }
+
+    @Override
+    public JwtResponse generateToken(Member member, String refreshToken) {
+        Member member_from_db = findMemberById(member.getId());
+
+        if (member_from_db.getRefreshToken().equals(refreshToken)) {
+            return JwtResponse.of(JwtUtil.createJwt(member_from_db));
+        }
+
+        throw new RefreshTokenInvalidException("Refresh Token is invalid");
+    }
+
+    @Override
+    public Member findMemberById(Long id) {
+        Optional<Member> memberOptional = memberRepository.findById(id);
+        return memberOptional.orElseThrow(() -> new MemberNotFoundException("해당 유저가 없습니다."));
     }
 }
