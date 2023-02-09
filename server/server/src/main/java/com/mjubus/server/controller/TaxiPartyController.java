@@ -79,8 +79,10 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
     })
     @ResponseBody
-    public Long currentNum(@PathVariable(name="group-id")TaxiPartyMembersRequest id){
-        return taxiPartyMembersService.findCurrentMemberNum(id);
+    public ResponseEntity<TaxiPartyParticipantResponse> findPartyParticipantsNum(@PathVariable(name="group-id")TaxiPartyMembersRequest id){
+        return ResponseEntity.ok(
+                taxiPartyMembersService.findPartyParticipantsNum(id)
+        );
     }
 
     @PostMapping("/create")

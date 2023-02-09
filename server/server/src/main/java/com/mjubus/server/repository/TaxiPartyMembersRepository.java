@@ -16,4 +16,8 @@ public interface TaxiPartyMembersRepository extends JpaRepository<TaxiPartyMembe
     Long countTaxiPartyMembersByTaxiParty_Id(Long taxiParty_id);
 
     Optional<TaxiPartyMembers> findTaxiPartyMembersByTaxiParty_IdAndMember_Id(Long taxiPartyId, Long MemberId);
+
+    List<TaxiPartyMembers> findTaxiPartyMembersByMember_Id(Long memberId);
+
+    void deleteByTaxiParty_IdAndMember_Id(Long taxiPartyId, Long memberId);
 }

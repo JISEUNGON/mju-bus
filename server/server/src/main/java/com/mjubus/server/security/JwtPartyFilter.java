@@ -70,7 +70,7 @@ public class JwtPartyFilter extends OncePerRequestFilter {
         }
 
         String groupId = request.getParameter("group-id");
-        if (groupId != null && taxiPartyMembersService.isMember(groupId, member)) {
+        if (groupId != null && taxiPartyMembersService.isGroupMember(groupId, member)) {
             log.error("JWT Token is not a member of the party");
             filterChain.doFilter(request, response);
             return;

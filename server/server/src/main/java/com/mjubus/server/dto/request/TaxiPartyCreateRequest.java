@@ -29,6 +29,10 @@ public class TaxiPartyCreateRequest {
 
     @ApiModelProperty(value = "만남 장소 경도")
     private Double meetingLongitude;
+
+    @ApiModelProperty(value = "만남 장소")
+    private String meetingPlace;
+
     @ApiModelProperty(value = "장소 관련 간단한 메모")
     private String memo;
 

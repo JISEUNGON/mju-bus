@@ -1,6 +1,7 @@
 package com.mjubus.server.service.taxiParty;
 
 import com.mjubus.server.domain.Member;
+import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.dto.request.TaxiPartyRequest;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.TaxiPartyCreateResponse;
@@ -17,5 +18,9 @@ public interface TaxiPartyService {
     void addNewMember(Long groupId, TaxiPartyJoinRequest request);
     void removeMember(Long groupId, TaxiPartyQuitRequest request);
     void deleteParty(TaxiPartyDeleteRequest request);
+
+    boolean hasActiveParty(Member member);
+
+    TaxiParty findTaxiPartyById(Long id);
 
 }

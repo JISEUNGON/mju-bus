@@ -95,6 +95,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findMemberById(Long id) {
         Optional<Member> memberOptional = memberRepository.findById(id);
-        return memberOptional.orElseThrow(() -> new MemberNotFoundException("해당 유저가 없습니다."));
+        return memberOptional.orElseThrow(() -> new MemberNotFoundException("존재하지 않는 Member 입니다."));
     }
 }

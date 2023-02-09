@@ -1,11 +1,10 @@
 package com.mjubus.server.domain;
 
+import com.mjubus.server.dto.request.TaxiPartyCreateRequest;
+import com.mjubus.server.enums.TaxiPartyEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,10 +12,9 @@ import java.time.LocalDateTime;
 @Entity
 @ApiModel(value = "택시 파티 정보")
 @Table(name="taxi_party")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class TaxiParty {
 
     @Id
@@ -67,11 +65,25 @@ public class TaxiParty {
     @ApiModelProperty(example = "생성일")
     private LocalDateTime created_at;
 
+
+    @Enumerated(EnumType.ORDINAL)
     @Column(name ="status", columnDefinition = "int")
     @ApiModelProperty(example = "모집 상황")
-    private Long status;
-    /**
-     * 1 : 모집중
-     * 2 : 모집완료
-     */
+    private TaxiPartyEnum status;
+
+    public static TaxiParty of(TaxiPartyCreateRequest request, Member administer, TaxiDestination destination) {
+        return TaxiParty.builder()
+                .administer(administer)
+                .taxi_destination_id(destination)
+                .meeting_latitude(request.getMeetingLatitude())
+                .meeting_longitude(request.getMeetingLongitude())
+                .meeting_place(request.getMeetingPlace())
+                .memo(request.getMemo())
+                .min(request.getMin())
+                .max(request.getMax())
+                .end_at(request.getEndAt())
+                .created_at(LocalDateTime.now())
+                .status(TaxiPartyEnum.ON_GOING)
+                .build();
+    }
 }
