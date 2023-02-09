@@ -45,6 +45,7 @@ public class RedisMessageServiceImpl implements RedisMessageService {
         redisTemplate.opsForHash().delete("session-matching", sessionMatchingKey);
     }
 
+    @Transactional
     @Override
     public void chattingRoomAndSessionDelete(TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
         Optional<TaxiParty> taxiParty = taxiPartyRepository.findById(taxiPartyDeleteRequest.getGroupId());

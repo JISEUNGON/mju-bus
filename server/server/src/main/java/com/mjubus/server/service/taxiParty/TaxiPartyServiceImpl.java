@@ -16,6 +16,7 @@ import com.mjubus.server.util.DateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         return TaxiPartyListResponse.of(taxipartyList);
     }
 
+    @Transactional
     @Override
     public void createTaxiParty(TaxiPartyCreateRequest request) {
         Optional<Member> memberFindResult = memberRepository.findById(request.getAdminister());
@@ -79,6 +81,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         ));
     }
 
+    @Transactional
     @Override
     public void addNewMember(Long groupId, TaxiPartyJoinRequest request) {
         log.info("[ADD_NEW_MEMBER]");
@@ -93,6 +96,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         partyMembersRepository.save(new TaxiPartyMembers(null, memberFindResult.get(), partyFindResult.get()));
     }
 
+    @Transactional
     @Override
     public void removeMember(Long groupId, TaxiPartyQuitRequest request) {
         Optional<Member> memberFindResult = memberRepository.findById(request.getMemberId());
@@ -106,6 +110,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         partyMembersRepository.delete(partyMemberFind.get());
     }
 
+    @Transactional
     @Override
     public void deleteParty(TaxiPartyDeleteRequest request) {
         Optional<TaxiParty> partyFind = taxiPartyRepository.findById(request.getGroupId());
