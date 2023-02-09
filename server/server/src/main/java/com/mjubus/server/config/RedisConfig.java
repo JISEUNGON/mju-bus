@@ -42,6 +42,7 @@ public class RedisConfig {
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(MessageLog.class));
+        redisTemplate.setEnableTransactionSupport(true);
         return redisTemplate;
     }
 }

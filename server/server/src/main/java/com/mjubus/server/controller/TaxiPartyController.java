@@ -1,14 +1,7 @@
 package com.mjubus.server.controller;
 
-import com.mjubus.server.domain.TaxiPartyMembers;
-import com.mjubus.server.dto.request.ChattingRoomQuitRequest;
-import com.mjubus.server.dto.request.TaxiPartyMembersRequest;
-import com.mjubus.server.dto.request.TaxiPartyQuitRequest;
-import com.mjubus.server.dto.request.TaxiPartyRequest;
-import com.mjubus.server.dto.response.TaxiPartyListResponse;
-import com.mjubus.server.dto.response.TaxiPartyMembersListResponse;
-import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
-import com.mjubus.server.dto.response.TaxiPartyResponse;
+import com.mjubus.server.dto.request.*;
+import com.mjubus.server.dto.response.*;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
 import com.mjubus.server.service.chatting.RedisMessageService;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
@@ -17,12 +10,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 
+
+@Slf4j
 @Controller
 @RequestMapping("/taxi")
 @Api(tags = {"택시 파티 API"})
@@ -86,14 +83,60 @@ public class TaxiPartyController {
         return taxiPartyMembersService.findCurrentMemberNum(id);
     }
 
-    @DeleteMapping("/{group-id}/quit")
-    @ApiOperation(value = "파티 탈퇴")
+    @PostMapping("/create")
+    @ApiOperation(value = "파티 생성")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "정상 응답")
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "400", description = "이미 존재하는 파티"),
+            @ApiResponse(responseCode = "404", description = "멤버 또는 택시 도착지가 존재하지 않음")
     })
     @ResponseBody
-    public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") TaxiPartyQuitRequest taxiPartyQuitRequest, @RequestParam(value = "sessionMatchingHashKey") ChattingRoomQuitRequest chattingRoomQuitRequest) {
-        return ResponseEntity.ok(redisMessageService.chattingRoomQuit(taxiPartyQuitRequest, chattingRoomQuitRequest)
-        );
+    public ResponseEntity<TaxiPartyCreateResponse> createNewParty(@RequestBody TaxiPartyCreateRequest request) {
+        return ResponseEntity.ok(taxiPartyService.createTaxiParty(request));
+    }
+
+    @PostMapping("/list/{group-id}/members/new")
+    @ApiOperation(value = "파티 멤버 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "204", description = "해당하는 파티가 존재하지 않음"),
+            @ApiResponse(responseCode = "400", description = "이미 파티에 속한 멤버임"),
+            @ApiResponse(responseCode = "404", description = "해당하는 멤버가 존재하지 않음")
+    })
+    @ResponseBody
+    public ResponseEntity<TaxiPartyJoinResponse> addNewMember(@PathVariable(value = "group-id") Long groupId, @RequestBody TaxiPartyJoinRequest request) {
+        taxiPartyService.addNewMember(groupId, request);
+        //TODO: FCM "~ 사용자님이 새롭게 들어왔습니다" Actions;
+        return ResponseEntity.ok(TaxiPartyJoinResponse.builder().isAdded("success").build());
+    }
+
+
+    @DeleteMapping("/{group-id}/members/quit")
+    @ApiOperation(value = "파티 탈퇴")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "204", description = "해당하는 파티가 존재하지 않음"),
+            @ApiResponse(responseCode = "400", description = "이미 파티에 존재하지 않음"),
+            @ApiResponse(responseCode = "404", description = "해당하는 멤버가 존재하지 않음")
+    })
+    @ResponseBody
+    public ResponseEntity<TaxiPartyQuitResponse> partyQuit(@PathVariable(value = "group-id") Long groupId, @RequestParam(value = "memberId") TaxiPartyQuitRequest taxiPartyQuitRequest) {
+        taxiPartyService.removeMember(groupId, taxiPartyQuitRequest);
+        redisMessageService.chattingRoomQuit(groupId, taxiPartyQuitRequest);
+        //TODO: FCM "~ 사용자님이 탈퇴하였습니다" Actions;
+        return ResponseEntity.ok(TaxiPartyQuitResponse.builder().isQuited("success").build());
+    }
+
+    @DeleteMapping("{group-id}/delete")
+    @ApiOperation(value = "파티 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "204", description = "해당하는 파티가 존재하지 않음")
+    })
+    @ResponseBody
+    public ResponseEntity<TaxiPartyDeleteResponse> partyDelete(@PathParam(value = "group-id") TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
+        redisMessageService.chattingRoomAndSessionDelete(taxiPartyDeleteRequest);
+        taxiPartyService.deleteParty(taxiPartyDeleteRequest);
+        return ResponseEntity.ok(TaxiPartyDeleteResponse.builder().isDeleted("success").build());
     }
 }
