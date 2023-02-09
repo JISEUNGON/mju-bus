@@ -3,12 +3,10 @@ package com.mjubus.server.service.login;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
+import com.mjubus.server.dto.request.AppleLoginRequest;
 import com.mjubus.server.dto.response.LoginResponse;
-import com.mjubus.server.enums.LoginStrategyName;
-import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.util.DateHandler;
-import com.mjubus.server.dto.login.AppleLoginDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -20,7 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -28,14 +26,11 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.util.*;
 
-@Component
-public class AppleLoginStrategy implements LoginStrategy {
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
+@Service
+public class AppleLoginService  {
 
     @Value("${external.apple.client-id}")
     private String clientId;
@@ -55,23 +50,19 @@ public class AppleLoginStrategy implements LoginStrategy {
     @Value("${external.apple.private-key}")
     private String appleSignKey;
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
-    public AppleLoginStrategy(MemberService memberService) {
+    public AppleLoginService(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @Override
-    public LoginResponse login(String encryptedData) {
+    public LoginResponse login(AppleLoginRequest appleLoginRequest) {
        try {
-           // 1. 클라이언트로부터 받은 기본 인증 정보 Base64 Decode
-           AppleLoginDto appleLoginDto = objectMapper.readValue(new String(Base64.getDecoder().decode(encryptedData), StandardCharsets.UTF_8), AppleLoginDto.class);
+           // 1. 기본 정보로 JWT 생성 및 refreshToken 발급
+           AppleAuthTokenDto appleAuthTokenDto = getAppleAuthTokenDto(appleLoginRequest);
+           appleAuthTokenDto.setUser_id(appleLoginRequest.getUser());
 
-           // 2. 기본 정보로 JWT 생성 및 refreshToken 발급
-           AppleAuthTokenDto appleAuthTokenDto = getAppleAuthTokenDto(appleLoginDto);
-           appleAuthTokenDto.setUser_id(appleLoginDto.getUser());
-
-           // 3. 멤버 조회 및 저장
+           // 2. 멤버 조회 및 저장
            Member member = memberService.saveOrGetAppleMember(appleAuthTokenDto);
 
            return LoginResponse.of(member);
@@ -79,11 +70,6 @@ public class AppleLoginStrategy implements LoginStrategy {
            e.printStackTrace();
           throw new RuntimeException("애플 로그인 실패");
        }
-    }
-
-    @Override
-    public LoginStrategyName getStrategyName() {
-        return LoginStrategyName.APPLE;
     }
 
     public String createJwt() throws IOException {
@@ -117,7 +103,7 @@ public class AppleLoginStrategy implements LoginStrategy {
         return converter.getPrivateKey(object);
     }
 
-    public AppleAuthTokenDto getAppleAuthTokenDto(AppleLoginDto appleLoginDto) throws IOException {
+    public AppleAuthTokenDto getAppleAuthTokenDto(AppleLoginRequest appleLoginDto) throws IOException {
         RestTemplate restTemplate = new RestTemplateBuilder().build();
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

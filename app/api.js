@@ -54,23 +54,49 @@ export const pathApi = {
 
 export const loginApi = {
   apple_login : ({ queryKey }) => {
-    const { encodedPayLoad } = queryKey;
+    const { payload } = queryKey;
     return fetch(
-      `${URL}/login/apple?data=${encodedPayLoad}`,
+      `${URL}/login/apple`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }
     ).then(res => res.json());
   },
 
   kakao_login : ({ queryKey }) => {
-    const { encodedPayLoad } = queryKey;
+    const { payload } = queryKey;
     return fetch(
-      `${URL}/login/kakao?data=${encodedPayLoad}`,
+      `${URL}/login/kakao`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }
     ).then(res => res.json());
   },
 
   google_login : ({ queryKey }) => {
-    const { encodedPayLoad } = queryKey;
+    const { payload } = queryKey;
     return fetch(
-      `${URL}/login/google?data=${encodedPayLoad}`,
+      `${URL}/login/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }
+    ).then(res => res.json());
+  },
+
+  guest_login : () => {
+    return fetch(
+      `${URL}/login/`, {
+        method: 'POST',
+      }
     ).then(res => res.json());
   }
 }

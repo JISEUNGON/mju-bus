@@ -1,7 +1,6 @@
 import React, { useState }from "react";
 import {TouchableOpacity, Image } from 'react-native';
 import KakaoImage from "../../assets/image/kakao_login.png"
-import base64 from 'base-64'
 import { loginApi } from "../../api";
 import { login } from '@react-native-seoul/kakao-login';
 
@@ -21,8 +20,7 @@ function KakaoLogin() {
                 "refreshTokenExpiresAt": res.refreshTokenExpiresAt,
             }
 
-            const encodedPayLoad = base64.encode(JSON.stringify(payload));
-            loginApi.kakao_login({ queryKey: {encodedPayLoad} }).then(res => setUser(res));
+            loginApi.kakao_login({ queryKey: {payload} }).then(res => setUser(res));
         
         }).catch(err => {
             console.log("Kakao Auth failed : ", err);

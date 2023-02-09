@@ -50,7 +50,6 @@ external:
     client_secret: ${GOOGLE_CLIENT_SECRET}
   jwt:
     secret: ${JWT_SECRET}
-
 logging:
   config: classpath:logback-spring.xml
 ---

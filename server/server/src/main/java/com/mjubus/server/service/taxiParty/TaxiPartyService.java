@@ -1,5 +1,7 @@
 package com.mjubus.server.service.taxiParty;
 
+import com.mjubus.server.domain.Member;
+import com.mjubus.server.dto.request.TaxiPartyRequest;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.TaxiPartyCreateResponse;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
