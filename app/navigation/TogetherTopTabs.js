@@ -4,6 +4,7 @@ import { useColorScheme } from "react-native";
 import Taxi from "../screens/Together/Taxi";
 import Delivery from "../screens/Together/Delivery";
 import CarPool from "../screens/Together/CarPool";
+import Participation from "../screens/Taxi/Participation";
 import { BLACK_COLOR, LIGHT_GRAY, WHITE_COLOR } from "../colors";
 
 const Tab = createMaterialTopTabNavigator();
