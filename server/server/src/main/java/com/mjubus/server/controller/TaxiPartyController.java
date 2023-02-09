@@ -106,6 +106,7 @@ public class TaxiPartyController {
     @ResponseBody
     public ResponseEntity<String> addNewMember(@PathVariable(value = "group-id") Long groupId, @RequestBody TaxiPartyJoinRequest request) {
         taxiPartyService.addNewMember(groupId, request);
+        //TODO: FCM "~ 사용자님이 새롭게 들어왔ㅆ브니다" Actions;
         return ResponseEntity.ok("success");
     }
 
@@ -119,6 +120,7 @@ public class TaxiPartyController {
     public ResponseEntity<String> partyQuit(@PathVariable(value = "group-id") Long groupId, @RequestParam(value = "memberId") TaxiPartyQuitRequest taxiPartyQuitRequest) {
         taxiPartyService.removeMember(groupId, taxiPartyQuitRequest);
         redisMessageService.chattingRoomQuit(groupId, taxiPartyQuitRequest);
+        //TODO: FCM "~ 사용자님이 탈퇴하였습니다" Actions;
         return ResponseEntity.ok("success");
     }
 
