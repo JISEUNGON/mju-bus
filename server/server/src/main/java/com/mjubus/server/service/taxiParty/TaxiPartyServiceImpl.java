@@ -104,6 +104,10 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
             throw new IllegalPartyMembersStateException("이미 파티에 속한 멤버");
         });
 
+        List<TaxiPartyMembers> groupPartyMembers = partyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(groupId);
+        long count = groupPartyMembers.stream().count();
+        if (count >= targetParty.getMax()) throw new IllegalPartyStateException("파티의 멤버가 가득 참");
+
         partyMembersRepository.save(new TaxiPartyMembers(null, newMember, targetParty));
     }
 
