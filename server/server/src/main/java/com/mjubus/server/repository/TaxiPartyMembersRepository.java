@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface TaxiPartyMembersRepository extends JpaRepository<TaxiPartyMembers, Long> {
 
-    List<TaxiPartyMembers> findTaxiPartyMembersByTaxiParty_Id(Long taxiParty_id);
+    Optional<List<TaxiPartyMembers>> findTaxiPartyMembersByTaxiParty_Id(Long taxiParty_id);
 
     Long countTaxiPartyMembersByTaxiParty_Id(Long taxiParty_id);
 

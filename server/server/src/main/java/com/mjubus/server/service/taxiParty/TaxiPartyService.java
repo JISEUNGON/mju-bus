@@ -9,6 +9,8 @@ import com.mjubus.server.dto.response.TaxiPartyDetailResponse;
 import com.mjubus.server.dto.response.TaxiPartyListResponse;
 import com.mjubus.server.dto.response.TaxiPartyResponse;
 
+import java.util.Optional;
+
 public interface TaxiPartyService {
 
     TaxiPartyDetailResponse findTaxiParty(TaxiPartyRequest req);
@@ -24,4 +26,5 @@ public interface TaxiPartyService {
 
     TaxiParty findTaxiPartyById(Long id);
 
+    Optional<TaxiParty> findOptionalPartyById(long parseLong);
 }

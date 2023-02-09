@@ -1,14 +1,17 @@
 package com.mjubus.server.config;
 
+import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.security.JwtMemberFilter;
 import com.mjubus.server.security.JwtPartyFilter;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity  // 해당 애노테이션을 붙인 필터(현재 클래스)를 스프링 필터체인에 등록.
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private MemberService memberService;
@@ -29,19 +31,26 @@ public class SecurityConfig {
     @Value("${external.jwt.secret}")
     private String secretKey;
 
+    public SecurityConfig(MemberService memberService, TaxiPartyMembersService taxiPartyMembersService) {
+        this.memberService = memberService;
+        this.taxiPartyMembersService = taxiPartyMembersService;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests().antMatchers("/login/**").permitAll()
-                .and().authorizeRequests().antMatchers("/member/**").authenticated()
-                .and().addFilterBefore(new JwtMemberFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class)
-//                .authorizeRequests()
-//                .antMatchers("/taxi/**").authenticated().and().addFilterBefore(new JwtPartyFilter(taxiPartyMembersService, secretKey), UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .cors().and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilterBefore(new JwtMemberFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests()
+                .antMatchers("/login/**").permitAll()
+                .antMatchers("/taxi/**/delete").hasAnyAuthority("ROLE_ADMIN", "GROUP_ADMIN")
+                .antMatchers("/taxi/**/chatting/**").hasAnyAuthority("ROLE_ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
+                .antMatchers(HttpMethod.DELETE, "/taxi/**").hasAnyAuthority("ROLE_ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
+                .antMatchers("/member/**", "/taxi/**").hasAnyAuthority("ROLE_MEMBER", "ROLE_ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
+                .and().build();
     }
 
 }

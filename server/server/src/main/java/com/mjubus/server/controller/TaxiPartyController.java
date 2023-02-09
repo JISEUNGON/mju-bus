@@ -3,8 +3,9 @@ package com.mjubus.server.controller;
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.*;
-import com.mjubus.server.repository.TaxiPartyMembersRepository;
+import com.mjubus.server.service.chatting.RedisMessageLogService;
 import com.mjubus.server.service.chatting.RedisMessageService;
+import com.mjubus.server.service.chatting.RedisMessageSubService;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
 import io.swagger.annotations.Api;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.List;
 
 
 @Slf4j
@@ -30,12 +32,17 @@ public class TaxiPartyController {
     private final TaxiPartyService taxiPartyService;
     private final TaxiPartyMembersService taxiPartyMembersService;
     private final RedisMessageService redisMessageService;
+    private final RedisMessageLogService redisMessageLogService;
+    private final RedisMessageSubService redisMessageSubService;
+
 
     @Autowired
-    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService) {
+    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, RedisMessageLogService redisMessageLogService, RedisMessageSubService redisMessageSubService) {
         this.taxiPartyService = taxiPartyService;
         this.taxiPartyMembersService = taxiPartyMembersService;
         this.redisMessageService = redisMessageService;
+        this.redisMessageLogService = redisMessageLogService;
+        this.redisMessageSubService = redisMessageSubService;
     }
 
     @GetMapping("/list")
@@ -145,4 +152,26 @@ public class TaxiPartyController {
         return ResponseEntity.ok(TaxiPartyDeleteResponse.builder().isDeleted("success").build());
     }
 
+    @GetMapping("/{group-id}/chatting")
+    @ApiOperation(value = "채팅 기록을 얻는다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
+            @ApiResponse(responseCode = "404", description = "Room ID가 정상적이지 않은 경우")
+    })
+    @ResponseBody
+    public ResponseEntity<List<MessageLogResponse>> findMessageHistory(Authentication authentication, @PathVariable(value = "group-id") MessageLogRequest req) {
+        return ResponseEntity.ok(redisMessageLogService.findMessageLog(req));
+    }
+
+    @PatchMapping("/{group-id}/chatting/status")
+    @ApiOperation(value = "채팅방에 참여중인 사람의 subscribed 상태를 변경한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
+            @ApiResponse(responseCode = "404", description = "Room ID가 정상적이지 않은 경우 또는 simpSubscriptionId가 존재하지 않는 경우")
+    })
+    public ResponseEntity<String> updateSessionHashStatus(Authentication authentication, @RequestBody UpdateChattingSessionHashRequest updateChattingSessionHashRequest) {
+        return ResponseEntity.ok(redisMessageSubService.updateSessionHash(updateChattingSessionHashRequest));
+    }
 }

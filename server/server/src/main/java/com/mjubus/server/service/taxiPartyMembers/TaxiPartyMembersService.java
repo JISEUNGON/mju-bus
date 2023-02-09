@@ -28,4 +28,8 @@ public interface TaxiPartyMembersService {
     void removeMember(TaxiParty taxiParty, Member member);
 
     Long findMembersByTaxiParty(TaxiParty taxiParty);
+
+    Optional<List<TaxiPartyMembers>> findOptionalPartyMembersByPartyId(long parseLong);
+
+    List<TaxiPartyMembers> findTaxiPartyMembersByPartyId(Long groupId);
 }

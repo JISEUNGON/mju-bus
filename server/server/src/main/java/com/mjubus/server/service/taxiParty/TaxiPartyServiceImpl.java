@@ -19,6 +19,7 @@ import com.mjubus.server.service.taxiDestination.TaxiDestinationService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
     private final TaxiPartyMembersService taxiPartyMembersService;
 
     @Autowired
-    public TaxiPartyServiceImpl(TaxiPartyRepository taxiPartyRepository, TaxiDestinationService taxiDestinationService, MemberService memberService, TaxiPartyMembersService taxiPartyMembersService) {
+    public TaxiPartyServiceImpl(TaxiPartyRepository taxiPartyRepository, TaxiDestinationService taxiDestinationService, @Lazy MemberService memberService, TaxiPartyMembersService taxiPartyMembersService) {
         this.taxiPartyRepository = taxiPartyRepository;
         this.taxiDestinationService = taxiDestinationService;
         this.memberService = memberService;
@@ -136,6 +137,11 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
     @Override
     public TaxiParty findTaxiPartyById(Long id) {
         return taxiPartyRepository.findById(id).orElseThrow(() -> new TaxiPartyNotFoundException(id));
+    }
+
+    @Override
+    public Optional<TaxiParty> findOptionalPartyById(long parseLong) {
+        return taxiPartyRepository.findById(parseLong);
     }
 
 }

@@ -8,6 +8,7 @@ import com.mjubus.server.dto.response.TaxiPartyMembersListResponse;
 import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
 import com.mjubus.server.dto.response.TaxiPartyParticipantResponse;
 import com.mjubus.server.enums.TaxiPartyEnum;
+import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class TaxiPartyMembersServiceImpl implements TaxiPartyMembersService{
 
     @Override
     public TaxiPartyMembersListResponse findTaxiPartyMembers(TaxiPartyMembersRequest req) {
-        List<TaxiPartyMembers> result = taxiPartyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(req.getId());
+        List<TaxiPartyMembers> result = findTaxiPartyMembersByPartyId(req.getId());
         List<TaxiPartyMembersResponse> taxipartyMembersList = new ArrayList<>();
         for (TaxiPartyMembers taxiPartyMembers : result) {
             taxipartyMembersList.add(TaxiPartyMembersResponse.of(taxiPartyMembers));
@@ -63,7 +64,7 @@ public class TaxiPartyMembersServiceImpl implements TaxiPartyMembersService{
 
     @Override
     public List<TaxiPartyMembers> findGroupPartyMembers(TaxiParty taxiParty) {
-        return taxiPartyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(taxiParty.getId());
+        return taxiPartyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(taxiParty.getId()).orElseThrow(() -> new TaxiPartyNotFoundException(taxiParty.getId()));
     }
 
     @Override
@@ -79,5 +80,15 @@ public class TaxiPartyMembersServiceImpl implements TaxiPartyMembersService{
     @Override
     public Long findMembersByTaxiParty(TaxiParty taxiParty) {
         return taxiPartyMembersRepository.countTaxiPartyMembersByTaxiParty_Id(taxiParty.getId());
+    }
+
+    @Override
+    public Optional<List<TaxiPartyMembers>> findOptionalPartyMembersByPartyId(long partyId) {
+        return taxiPartyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(partyId);
+    }
+
+    @Override
+    public List<TaxiPartyMembers> findTaxiPartyMembersByPartyId(Long groupId) {
+        return taxiPartyMembersRepository.findTaxiPartyMembersByTaxiParty_Id(groupId).orElseThrow(() -> new TaxiPartyNotFoundException(groupId));
     }
 }

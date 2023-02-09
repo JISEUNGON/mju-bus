@@ -2,6 +2,7 @@ package com.mjubus.server.service.member;
 
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.domain.MemberProvider;
+import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
 import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
@@ -10,10 +11,13 @@ import com.mjubus.server.exception.member.MemberNotFoundException;
 import com.mjubus.server.exception.member.RefreshTokenInvalidException;
 import com.mjubus.server.repository.MemberProviderRepository;
 import com.mjubus.server.repository.MemberRepository;
+import com.mjubus.server.service.taxiParty.TaxiPartyService;
+import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
 import com.mjubus.server.util.JwtUtil;
-import com.nimbusds.oauth2.sdk.TokenResponse;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,9 +26,14 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberProviderRepository memberProviderRepository;
 
-    public MemberServiceImpl(MemberRepository memberRepository, MemberProviderRepository memberProviderRepository) {
+    private final TaxiPartyMembersService taxiPartyMembersService;
+    private final TaxiPartyService taxiPartyService;
+
+    public MemberServiceImpl(MemberRepository memberRepository, MemberProviderRepository memberProviderRepository, @Lazy TaxiPartyMembersService taxiPartyMembersService, TaxiPartyService taxiPartyService) {
         this.memberRepository = memberRepository;
         this.memberProviderRepository = memberProviderRepository;
+        this.taxiPartyMembersService = taxiPartyMembersService;
+        this.taxiPartyService = taxiPartyService;
     }
     @Override
     public Member saveOrGetAppleMember(AppleAuthTokenDto appleAuthTokenDto) {
@@ -96,5 +105,25 @@ public class MemberServiceImpl implements MemberService {
     public Member findMemberById(Long id) {
         Optional<Member> memberOptional = memberRepository.findById(id);
         return memberOptional.orElseThrow(() -> new MemberNotFoundException("존재하지 않는 Member 입니다."));
+    }
+
+    @Override
+    public boolean hasGroupAuthority(Long id, String partyId) {
+        Optional<List<TaxiPartyMembers>> partyMembersList = taxiPartyMembersService.findOptionalPartyMembersByPartyId(Long.parseLong(partyId));
+        if (partyMembersList.isPresent()) {
+            for (TaxiPartyMembers partyMembers : partyMembersList.get()) {
+                if (partyMembers.getMember().getId().equals(id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isGroupAdminister(Long id, String partyId) {
+        return taxiPartyService.findOptionalPartyById(Long.parseLong(partyId))
+                .map(party -> party.getAdminister().getId().equals(id))
+                .orElse(false);
     }
 }
