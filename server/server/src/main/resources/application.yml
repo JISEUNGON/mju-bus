@@ -48,6 +48,8 @@ external:
     client-id: ${GOOGLE_CLIENT_ID}
     token-uri: https://oauth2.googleapis.com/token
     client_secret: ${GOOGLE_CLIENT_SECRET}
+  jwt:
+    secret: ${JWT_SECRET}
 
 logging:
   config: classpath:logback-spring.xml
@@ -96,7 +98,8 @@ external:
     client-id: ${GOOGLE_CLIENT_ID}
     token-uri: https://oauth2.googleapis.com/token
     client_secret: ${GOOGLE_CLIENT_SECRET}
-
+  jwt:
+    secret: ${JWT_SECRET}
 logging:
   config: classpath:logback-spring.xml
 

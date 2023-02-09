@@ -31,12 +31,12 @@ public class Member {
     @Column(name ="id", columnDefinition = "int")
     private Long id;
 
+    @Column(name="name", columnDefinition = "char(12)")
+    private String name;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(name="role", columnDefinition = "int")
     private MemberRole role;
-
-    @Column(name="name", columnDefinition = "char(12)")
-    private String name;
 
     @Column(name="profile", columnDefinition = "char(120)")
     private String profileImageUrl;
@@ -44,14 +44,8 @@ public class Member {
     @Column(name="refresh_token", columnDefinition = "char(120)")
     private String refreshToken;
 
-    @Column(name="service", columnDefinition = "char(10)")
-    private String serviceProvider;
-
-    @Column(name="service_id", columnDefinition = "char(255)")
-    private String serviceId;
-
     @Column(name="refresh_token_expired_at", columnDefinition = "datetime")
-    private LocalDateTime serviceRefreshTokenExpiredAt;
+    private LocalDateTime refreshTokenExpiredAt;
 
     @Column(name="created_at", columnDefinition = "datetime", updatable = false)
     private LocalDateTime createdAt;
