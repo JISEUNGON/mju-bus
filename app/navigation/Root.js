@@ -5,10 +5,9 @@ import Splash from "../screens/Splash";
 import SearchStack from "./SearchStack";
 import NoticeStack from "./NoticeStack";
 import AddPartyStack from "./AddPartyStack";
-import TaxiStack from "./TaxiStack";
-import Taxi_nmap from './../screens/Taxi/Taxi_nmap';
-import Taxi_start from "../screens/Taxi/Taxi_start";
-import Taxi_destination from "../screens/Taxi/Taxi_destination";
+import TaxiDestination from "../screens/Taxi/TaxiDestination";
+import TaxiStart from './../screens/Taxi/TaxiStart';
+import TaxiNmap from "../screens/Taxi/TaxiNmap";
 
 const Nav = createNativeStackNavigator();
 
@@ -34,7 +33,10 @@ function Root() {
 
       <Nav.Screen name="NoticeStack" component={NoticeStack} />
       <Nav.Screen name="AddPartyStack" component={AddPartyStack}/>
-      <Nav.Screen name="TaxiStack" component={TaxiStack}/>
+      
+      <Nav.Screen name="TaxiNmap" component={TaxiNmap}/>
+      <Nav.Screen name="TaxiStart" component={TaxiStart}/>
+      <Nav.Screen name="TaxiDestination" component={TaxiDestination}/>
     </Nav.Navigator>
   );
 }

@@ -30,7 +30,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
-  height:20%
+  height:20%;
   //height: 140px;
   //flex:0.4;
   justify-content: center;
@@ -201,15 +201,15 @@ const Styles = StyleSheet.create({
   background: {
     backgroundColor: "#888888",
   },
-  gray:{
-    color:"#555555",
+  gray: {
+    color: "#555555",
   },
-  hr:{
-    borderBottomColor:"#737577",
+  hr: {
+    borderBottomColor: "#737577",
   },
-  title:{
-    color:"#24272E",
-  }
+  title: {
+    color: "#24272E",
+  },
 });
 
 export function highlightTaxi(contents, isOpen) {
@@ -225,7 +225,12 @@ function ListItem({ item, isOpen }) {
     <Content>
       <Board style={[isOpen ? Styles.purple : null]}>
         <Row>
-          <Octicons name="person-fill" size={15} color="gray" style={[isOpen ? Styles.gray : null]}/>
+          <Octicons
+            name="person-fill"
+            size={15}
+            color="gray"
+            style={[isOpen ? Styles.gray : null]}
+          />
           <NumOfPerson style={[isOpen ? Styles.gray : null]}>
             {item.numOfPerson}/{item.MaxPerson}
           </NumOfPerson>
@@ -234,17 +239,23 @@ function ListItem({ item, isOpen }) {
           <Profile />
         </ProfileContent>
         <Column>
-          <ContentTitle style={[isOpen ? Styles.title : null]}>{item.start}에서</ContentTitle>
-          <ContentTitle  style={[isOpen ? Styles.title : null]}>{item.dest}로</ContentTitle>
+          <ContentTitle style={[isOpen ? Styles.title : null]}>
+            {item.start}에서
+          </ContentTitle>
+          <ContentTitle style={[isOpen ? Styles.title : null]}>
+            {item.dest}로
+          </ContentTitle>
         </Column>
       </Board>
       <PartyTitle>{item.nickname}의 파티</PartyTitle>
-      <RemainingTime style = {[isOpen ? Styles.red : null]}>{item.time}</RemainingTime>
+      <RemainingTime style={[isOpen ? Styles.red : null]}>
+        {item.time}
+      </RemainingTime>
     </Content>
   );
 }
 
-function Taxi({navigation: { navigate } }) {
+function Taxi({ navigation: { navigate } }) {
   const bottomSheetModalRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -264,8 +275,10 @@ function Taxi({navigation: { navigate } }) {
             <Title>
               같이 {highlightTaxi("택시", isOpen)} 시킬 사람 구해요!
             </Title>
-            <SubTitle style = {[isOpen ? Styles.gray : null]}>택시 파티를 모집 하거나 참여 해보세요</SubTitle>
-            <Hr style={[isOpen ? Styles.hr : null]}/>
+            <SubTitle style={[isOpen ? Styles.gray : null]}>
+              택시 파티를 모집 하거나 참여 해보세요
+            </SubTitle>
+            <Hr style={[isOpen ? Styles.hr : null]} />
           </HeaderContainer>
           <BodyContainer>
             <SectionList
@@ -291,10 +304,10 @@ function Taxi({navigation: { navigate } }) {
               }}
             />
           </BodyContainer>
-
           <TouchableOpacity style={Styles.circle} onPress={handlePresentModal}>
             <Icon name="plus" size={18} color="#788898" active />
           </TouchableOpacity>
+
           <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}
@@ -312,15 +325,13 @@ function Taxi({navigation: { navigate } }) {
               <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
               <TouchableOpacity
                 onPress={() => {
-                  navigate("TaxiStack", {
-                    screen: "Taxi_nmap",
-                  });
+                  navigate("TaxiNmap");
                 }}
               >
-                <ModalRow>
+                <Row>
                   <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
                   <ModalText>택시</ModalText>
-                </ModalRow>
+                </Row>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -329,14 +340,14 @@ function Taxi({navigation: { navigate } }) {
                   });
                 }}
               >
-                <ModalRow>
+                <Row>
                   <MaterialIcons
                     name="delivery-dining"
                     size={24}
                     color="rgb(76,150,180)"
                   />
                   <ModalText>배달</ModalText>
-                </ModalRow>
+                </Row>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -345,10 +356,10 @@ function Taxi({navigation: { navigate } }) {
                   });
                 }}
               >
-                <ModalRow>
+                <Row>
                   <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)" />
                   <ModalText>카풀</ModalText>
-                </ModalRow>
+                </Row>
               </TouchableOpacity>
             </ModalContainer>
           </BottomSheetModal>
