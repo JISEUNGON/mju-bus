@@ -3,6 +3,7 @@ import { View, Text, Linking } from "react-native";
 import styled from "styled-components/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import NaverMapView, { Marker } from "react-native-nmap";
+import { Link } from "@react-navigation/native";
 
 //------------------------------------- 상세 정보 --------------------------
 const Container = styled.View`
@@ -173,16 +174,35 @@ function Detail() {
     num = x.length;
     return num === 1 ? 0 : null;
   }
-  function gotoWebPage() {
-    return Linking.openURL(
-      // site&pinId=${your_site_id}
-      // `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
-      // `https://m.map.naver.com/map.naver?&query=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}&dlevel=12&mapMode=0&traffic=`,
-      // `https://map.naver.com/index.nhn?pinType=&lat=37.275296997802755&lng=127.11623345523063&dlevel=10&enc=b64
-      // `,
-      "nmap://place?lat=37.275296997802755&lng=127.11623345523063&name=모임장소&appname=com.mjubus.mbus",
-      // `navermap://?pinType=place&pinId=2080133&x=127.1052141&y=37.3596061`,
-    );
+  async function gotoWebPage() {
+    const isIOS = Platform.OS === 'ios';
+    const canOpenNaverMap = await Linking.canOpenURL('nmap://');
+    const canOpenKakaoMap = await Linking.canOpenURL('kakaomap://');
+    // can open naver map 
+    if (canOpenNaverMap) {
+      console.log("NAVER MAP INSTALL")
+      // await Linking.openURL(`nmap://place?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&name=${TaxiDetailData.startingAddress.address}&appname=Taxi`)
+    } else if (canOpenKakaoMap) { // can open kakao map
+      console.log("KAKAO MAP INSTALL")
+      // await Linking.openURL(`kakaomap://look?p=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}`)
+    } else {
+      if (isIOS) { // IOS 
+        console.log("IOS")
+        await Linking.openURL("ios-app://itunes.apple.com/app/id311867728")
+      } else { // ANDROID
+        console.log("ANDROID")
+        await Linking.openURL("market://details?id=com.nhn.android.nmap")
+      }
+    }
+    // return Linking.openURL(
+    //   // site&pinId=${your_site_id}
+    //   // `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
+    //   // `https://m.map.naver.com/map.naver?&query=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}&dlevel=12&mapMode=0&traffic=`,
+    //   // `https://map.naver.com/index.nhn?pinType=&lat=37.275296997802755&lng=127.11623345523063&dlevel=10&enc=b64
+    //   // `,
+    //   "nmap://place?lat=37.275296997802755&lng=127.11623345523063&name=모임장소&appname=com.mjubus.mbus",
+    //   // `navermap://?pinType=place&pinId=2080133&x=127.1052141&y=37.3596061`,
+    // );
   }
 
   return (
