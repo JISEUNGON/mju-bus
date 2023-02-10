@@ -1,28 +1,57 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
-function TaxiDestination({navigation}) {
-  const campusAddress = ["정문 앞", "채플관", "명진당", "함박관", "제 1공학관", "제 2공학관", "제 3공학관", "제 5공학관", "차세대 과학관"];
+function TaxiDestination({ navigation, route }) {
+  const campusAddress = [
+    "정문 앞",
+    "채플관",
+    "명진당",
+    "함박관",
+    "제 1공학관",
+    "제 2공학관",
+    "제 3공학관",
+    "제 5공학관",
+    "차세대 과학관",
+  ];
 
-  const renderResult = ({item}) => 
-  (<View style={styles.listView}>
-    <View>    
-      <Text style={styles.campusAddress}>{item}</Text>
+  const renderResult = ({ item }) => (
+    <View style={styles.listView}>
+      <View>
+        <Text style={styles.campusAddress}>{item}</Text>
+      </View>
+      <TouchableOpacity
+        style={styles.destBtn}
+        onPress={() =>
+          navigation.navigate("TaxiDetail", {
+            destination: item,
+            start: route.params.start,
+          })
+        }
+      >
+        <Text style={styles.destText}>도착</Text>
+      </TouchableOpacity>
     </View>
-    <TouchableOpacity style={styles.destBtn}>
-      <Text style={styles.destText}>도착</Text>
-    </TouchableOpacity>
-  </View>);
+  );
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.back} onPress={() => {navigation.goBack()}}>
+      <TouchableOpacity
+        style={styles.back}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
         <AntDesign name="left" size={25} color="black" />
       </TouchableOpacity>
-      <Text style={styles.title}>
-        택시 도착지를 설정하세요
-      </Text>
+      <Text style={styles.title}>택시 도착지를 설정하세요</Text>
       {/* <TextInput 
           // onChangeText={}
           // value={}
@@ -31,9 +60,10 @@ function TaxiDestination({navigation}) {
           style={styles.searchBox}
       /> */}
       <FlatList
-            showsVerticalScrollIndicator={false}
-            data={campusAddress}
-            renderItem={renderResult}/>     
+        showsVerticalScrollIndicator={false}
+        data={campusAddress}
+        renderItem={renderResult}
+      />
     </View>
   );
 }
@@ -42,7 +72,7 @@ export default TaxiDestination;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white", 
+    backgroundColor: "white",
     flex: 1,
     paddingHorizontal: 20,
   },
@@ -81,7 +111,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   destBtn: {
-    backgroundColor: "#F2F3F4", 
+    backgroundColor: "#F2F3F4",
     paddingHorizontal: 25,
     justifyContent: "center",
   },
