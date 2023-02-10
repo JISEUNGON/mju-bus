@@ -328,10 +328,10 @@ function Taxi({ navigation: { navigate } }) {
                   navigate("TaxiNmap");
                 }}
               >
-                <ModalRow>
+                <Row>
                   <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
                   <ModalText>택시</ModalText>
-                </ModalRow>
+                </Row>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -340,14 +340,14 @@ function Taxi({ navigation: { navigate } }) {
                   });
                 }}
               >
-                <ModalRow>
+                <Row>
                   <MaterialIcons
                     name="delivery-dining"
                     size={24}
                     color="rgb(76,150,180)"
                   />
                   <ModalText>배달</ModalText>
-                </ModalRow>
+                </Row>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -356,10 +356,10 @@ function Taxi({ navigation: { navigate } }) {
                   });
                 }}
               >
-                <ModalRow>
+                <Row>
                   <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)" />
                   <ModalText>카풀</ModalText>
-                </ModalRow>
+                </Row>
               </TouchableOpacity>
             </ModalContainer>
           </BottomSheetModal>
