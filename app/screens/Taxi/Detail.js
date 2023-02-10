@@ -12,7 +12,7 @@ const Container = styled.View`
 
 //------------------------------------ 모집 내용 ---------------------------
 const ContextContainer = styled.View`
-  flex: 1;
+  flex: 1.2;
   background-color: white;
   border-radius: 20px;
   margin: 20px 20px;
@@ -66,7 +66,7 @@ const StartingPointTitle = styled.Text`
   flex: 1;
   font-size: 15;
   font-weight: 700;
-  padding-top: 40px;
+  margin-top: 10px;
   padding-left: 25px;
   margin-bottom: -20px;
 `;
@@ -80,7 +80,6 @@ const DateText = styled.Text`
   font-size: 18px;
   font-weight: bold;
   padding-left: 34px;
-  margin-top: 10px;
 `;
 
 const TimeText = styled.Text`
@@ -92,7 +91,7 @@ const TimeText = styled.Text`
 const MapContainer = styled.View`
   flex: 3;
   background-color: pink;
-  margin: 0px 25px 30px;
+  margin: 0px 25px;
 `;
 
 const AddressContainer = styled.View`
@@ -101,7 +100,7 @@ const AddressContainer = styled.View`
 
 const AddressText = styled.Text`
   flex: 0.6;
-  font-size: 18px;
+  font-size: 16px;
   margin-left: 34px;
 `;
 
@@ -147,8 +146,10 @@ function Detail() {
       detailAddress: "경기 용인시 기흥구 구갈동 660-1",
     },
     coordinate: {
-      latitude: 37.275296997802755,
-      longitude: 127.11623345523063,
+      // latitude: 37.275296997802755,
+      // longitude: 127.11623345523063,
+      latitude: 37.4979502,
+      longitude: 127.0276368,
     },
   };
 
@@ -174,7 +175,13 @@ function Detail() {
   }
   function gotoWebPage() {
     return Linking.openURL(
-      `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
+      // site&pinId=${your_site_id}
+      // `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
+      // `https://m.map.naver.com/map.naver?&query=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}&dlevel=12&mapMode=0&traffic=`,
+      // `https://map.naver.com/index.nhn?pinType=&lat=37.275296997802755&lng=127.11623345523063&dlevel=10&enc=b64
+      // `,
+      "nmap://place?lat=37.275296997802755&lng=127.11623345523063&name=모임장소&appname=com.mjubus.mbus",
+      // `navermap://?pinType=place&pinId=2080133&x=127.1052141&y=37.3596061`,
     );
   }
 

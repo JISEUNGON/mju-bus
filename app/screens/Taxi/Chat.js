@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import styled from "styled-components/native";
 import UserAvatar from "react-native-user-avatar";
+import { TaxiChatContext } from "./Taxicontext";
 
 const Container = styled.View`
   flex: 1;
@@ -83,12 +84,20 @@ function Chat() {
       mins: 40,
     },
   ];
-
+  const { goChat, setGoChat, join, setJoin } = useContext(TaxiChatContext);
+  const windowHeight = Dimensions.get("window").height;
+  const ChattingOnOff = () => {
+    return setGoChat(!goChat), setJoin(!join);
+  };
   return (
     <Container>
       <TopClearView></TopClearView>
       <ProfileView>
-        <UserAvatar size={60} src={memberData[0].memberImage} bgColor="white" />
+        <UserAvatar
+          size={windowHeight > 700 ? 60 : 50}
+          src={memberData[0].memberImage}
+          bgColor="white"
+        />
       </ProfileView>
       <MainTextView>
         <MainText>{memberData[0].memberName}님의</MainText>
@@ -110,6 +119,7 @@ function Chat() {
             alignItems: "center",
             borderRadius: 20,
           }}
+          onPress={ChattingOnOff}
         >
           <Text style={{ fontSize: 20, fontWeight: "bold", color: "#4F8645" }}>
             참가 후 메시지 보내기

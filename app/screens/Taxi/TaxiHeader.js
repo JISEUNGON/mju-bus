@@ -5,6 +5,7 @@ import Taxi from "../Together/Taxi";
 
 const HeaderContainer = styled.View`
   flex: 0.1;
+  background-color: white;
 `;
 const DataContainer = styled.View`
   flex: 1;

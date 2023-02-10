@@ -5,9 +5,11 @@ import {
   TouchableOpacity,
   RecyclerViewBackedScrollViewBase,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import styled from "styled-components/native";
 import UserAvatar from "react-native-user-avatar";
+import { TaxiChatContext } from "./Taxicontext";
 
 // 전체를 감싸는 컨테이너
 const JoinMemberContainer = styled.View`
@@ -89,14 +91,16 @@ const MemberContainer = styled.View`
 
 // 사용자의 프로필 사진을 담는 View
 const MemberProfileImage = styled.View`
-  flex: 1;
+  flex: 1.3;
   width: 60px;
   align-items: center;
+
+  /* margin-bottom: 10px; */
 `;
 
 // 사용자의 프로필 이름을 담는 View
 const MemberProfileName = styled.View`
-  flex: 0.4;
+  flex: 0.7;
   justify-content: center;
   align-items: center;
   width: 40px;
@@ -107,11 +111,12 @@ const MemberProfile = styled.View`
   flex: 1;
   align-items: center;
   margin-left: 15px;
+  margin-top: 10px;
 `;
 
 // 파티장과 참가할때 자신을 나타내는 표시를 담을 View
 const MemberCapMe = styled.View`
-  flex: 0.3;
+  flex: 0.5;
   align-items: center;
   width: 40px;
 `;
@@ -166,11 +171,14 @@ function Profile(props) {
       return <></>;
     }
   };
+
+  const windowHeight = Dimensions.get("window").height;
+
   return (
     <MemberProfile>
       <MemberProfileImage>
         <UserAvatar
-          size={40}
+          size={windowHeight > 700 ? 41 : 31}
           src={props.img}
           bgColor={props.back}
           name={props.pro}
@@ -180,7 +188,7 @@ function Profile(props) {
         {props.name === "모집중" ? (
           <Text style={{ color: "#C4C4C4" }}>모집중</Text>
         ) : (
-          <Text>{props.name}</Text>
+          <Text style={{ fontSize: 14 }}>{props.name}</Text>
         )}
       </MemberProfileName>
       <MemberCapMe>
@@ -286,11 +294,12 @@ function Member() {
   const [minMember, setMinmember] = useState(2);
   const [maxMember, setMaxmember] = useState(3);
 
-  const [join, setJoin] = useState(false);
+  const { goChat, setGoChat, join, setJoin } = useContext(TaxiChatContext);
 
   const PressJoinButton = function () {
     if (join === false) {
       setJoin(!join);
+      setGoChat(!goChat);
       if (presentmember !== 4) {
         setPresentmember(presentmember + 1);
         setMaxmember(maxMember - 1);
@@ -300,6 +309,7 @@ function Member() {
       }
     } else {
       setJoin(!join);
+      setGoChat(!goChat);
       setPresentmember(presentmember - 1);
       setMaxmember(maxMember + 1);
       setMinmember(minMember + 1);
