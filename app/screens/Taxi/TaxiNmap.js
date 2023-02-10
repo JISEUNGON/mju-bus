@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import { AntDesign } from '@expo/vector-icons';
 import NaverMapView, {Marker} from "react-native-nmap";
 
-function Taxi_nmap({navigation}) {
+function TaxiNmap({navigation}) {
     const [currentLocation, setCurrentLocation] = useState({latitude: 0, longitude: 0});
     const locationHandler = (e) => setCurrentLocation(e);
     const [startName, setStartName] = useState("");
@@ -38,7 +38,7 @@ function Taxi_nmap({navigation}) {
                 <Text style={styles.title}>
                     택시 출발지를 설정하세요
                 </Text>
-                <TouchableOpacity onPress={() => {navigation.navigate("Taxi_start")}}>
+                <TouchableOpacity onPress={() => {navigation.navigate("TaxiStart")}}>
                   <TextInput 
                       onChangeText={onChangeStartName}
                       value={startName}
@@ -61,14 +61,14 @@ function Taxi_nmap({navigation}) {
                          useTextureView={true}>
                 <Marker coordinate={currentLocation}/>           
             </NaverMapView>
-            {(currentLocation.longitude >= 1 && currentLocation.latitude >=1) && <TouchableOpacity style={styles.nextBtn} onPress={() => navigation.navigate("Taxi_destination")}>
+            {(currentLocation.longitude >= 1 && currentLocation.latitude >=1) && <TouchableOpacity style={styles.nextBtn} onPress={() => navigation.navigate("TaxiDestination")}>
                 <Text style={styles.nextText}>다음</Text>
             </TouchableOpacity>}
         </View>
     );
 }
 
-export default Taxi_nmap;
+export default TaxiNmap;
 
 const styles = StyleSheet.create({
     container: {
