@@ -34,7 +34,7 @@ public class JwtMemberFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.error("JWT Token does not begin with Bearer String");
+            log.error("JWT Token does not begin with Bearer String with URL : {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,7 +44,8 @@ public class JwtMemberFilter extends OncePerRequestFilter {
 
         // Token 검증
         if (!JwtUtil.isKeyValid(token)) {
-            log.error("JWT Token is not valid");
+            log.error("JWT Token is not valid with Jwt : {}", token);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,6 +53,7 @@ public class JwtMemberFilter extends OncePerRequestFilter {
         // Token 만료 체크
         if (JwtUtil.isExpired(token)) {
             log.error("JWT Token is expired");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is expired");
             filterChain.doFilter(request, response);
             return;
         }
