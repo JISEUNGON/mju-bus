@@ -1,3 +1,6 @@
+server:
+  port: 5000
+
 spring:
   profiles:
     active: ${PROFILE}
@@ -34,7 +37,6 @@ external:
     naver:
         key: ${NAVER_KEY}
         client-id: ${NAVER_CLIENT_ID}
-
 logging:
   config: classpath:logback-spring.xml
 ---
