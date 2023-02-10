@@ -15,6 +15,7 @@ public class MessageLog implements Serializable {
     private String time;
     private String sender;
     private String message;
+    private String memberId;
 
     public void decodeSenderAndMessage() {
         sender = new String(Base64.getDecoder().decode(sender.getBytes()));
