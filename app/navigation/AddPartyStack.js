@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import AddDelivery from "../screens/Party/AddDelivery";
 import AddCarPool from "../screens/Party/AddCarPool";
-import Taxi_nmap from "../screens/Taxi/Taxi_nmap";
 const Search = createNativeStackNavigator();
 
 function AddPartyStack() {

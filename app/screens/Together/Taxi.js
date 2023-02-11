@@ -30,7 +30,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
-  height:20%;
+  height: 20%;
   //height: 140px;
   //flex:0.4;
   justify-content: center;
@@ -325,7 +325,9 @@ function Taxi({ navigation: { navigate } }) {
               <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
               <TouchableOpacity
                 onPress={() => {
-                  navigate("TaxiNmap");
+                  navigate("TaxiStack", {
+                    screen: "TaxiNmap",
+                  });
                 }}
               >
                 <Row>

@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import Taxi_nmap from "../screens/Taxi/Taxi_nmap";
-import Taxi_start from "../screens/Taxi/Taxi_start";
-import Taxi_destination from "../screens/Taxi/Taxi_destination";
+import TaxiNmap from "../screens/Taxi/TaxiNmap";
+import TaxiStart from "../screens/Taxi/TaxiStart";
+import TaxiDestination from "../screens/Taxi/TaxiDestination";
 
 const Search = createNativeStackNavigator();
 
@@ -15,16 +15,16 @@ function TaxiStack() {
       }}
     >
       <Search.Screen
-        name="Taxi_nmap"
-        component={Taxi_nmap}
+        name="TaxiNmap"
+        component={TaxiNmap}
       />
       <Search.Screen
-        name="Taxi_start"
-        component={Taxi_start}
+        name="TaxiStartk"
+        component={TaxiStart}
       />
       <Search.Screen
-        name="Taxi_destination"
-        component={Taxi_destination}
+        name="TaxiDestination"
+        component={TaxiDestination}
       />
 
     </Search.Navigator>
