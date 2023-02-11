@@ -302,11 +302,58 @@ function Taxi({ navigation: { navigate } }) {
               renderItem={({ item, section }) => {
                 return null;
               }}
-            />
-          </BodyContainer>
-          <TouchableOpacity style={Styles.circle} onPress={handlePresentModal}>
-            <Icon name="plus" size={18} color="#788898" active />
-          </TouchableOpacity>
+              bottomInset={8}
+              detached={true}
+              onDismiss={() => setIsOpen(false)}
+            >
+              <ModalContainer>
+                <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
+                <TouchableOpacity
+                    onPress={() => {
+                      navigate("TaxiNmap");
+                    }}
+                  >
+                <Row>
+                    <Fontisto name="taxi" size={15} color="rgb(255,211,26)"/>
+                    <ModalText>택시</ModalText>
+                  
+                </Row>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                      navigate("AddPartyStack", {
+                        screen: "AddDelivery",
+                      });
+                    }}
+                  >
+                <Row>
+                    <MaterialIcons
+                      name="delivery-dining"
+                      size={24}
+                      color="rgb(76,150,180)"
+                    />
+                    <ModalText>배달</ModalText>
+                  
+                </Row>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                      navigate("AddPartyStack", {
+                        screen: "AddCarPool",
+                      });
+                    }}
+                  >
+                <Row>
+                
+                  <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)"/>
+                  <ModalText>카풀</ModalText>
+                  
+                </Row>
+                </TouchableOpacity>
+              </ModalContainer>
+            </BottomSheetModal>
+          
+        </BottomContainer>
 
           <BottomSheetModal
             ref={bottomSheetModalRef}
