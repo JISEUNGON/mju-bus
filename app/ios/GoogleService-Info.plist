@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>62083011019-d2bldmt0gb4kqvb14r496ppuh3b5mme7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.62083011019-d2bldmt0gb4kqvb14r496ppuh3b5mme7</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>62083011019-r9qfi5virdo4lgc4k683g387rr6evh54.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBux4Z-MHy-ZN5JHWEazDsNuaCazfKtfyY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>62083011019</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mjubus.mbus</string>
+	<key>PROJECT_ID</key>
+	<string>mjubusalarm</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mjubusalarm.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:62083011019:ios:a1fcbc87e431153277264e</string>
+</dict>
+</plist>

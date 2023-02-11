@@ -11,7 +11,9 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -40,17 +42,39 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
     }
 
     @Override
+    public void publishForFCM(ChattingMessage chattingMessage) {
+        String hashName = "room-" + chattingMessage.getRoomId() + "-subscription";
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(hashName);
+        entries.forEach((key, value) -> {
+            String flag = (String) value;
+            String session = (String) key;
+            if (flag.equals(RedisMessageSubServiceImpl.RedisHashFlag.OFF)) {
+                log.info("session " + session  +": false");
+                //TODO: FCM Actions
+            }
+        });
+    }
+
+    @Override
     public void saveMessage(ChattingMessage chattingMessage) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date now = new Date();
-        String dateTime = format.format(now);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS"));
 
         MessageLog messageLog = MessageLog.builder()
                 .time(dateTime)
                 .sender(chattingMessage.getSender())
                 .message(chattingMessage.getMessage())
+                .memberId(chattingMessage.getMemberId())
                 .build();
 
         redisTemplate.opsForList().rightPush(chattingMessage.getRoomId(), messageLog);
+    }
+
+    @Override
+    public void saveSessionHash(ChattingMessage chattingMessage) {
+        String hashName = "room-" + chattingMessage.getRoomId() + "-subscription";
+        if (!redisTemplate.hasKey(hashName)) {
+            redisTemplate.opsForHash().put(hashName, "init", "init");
+        }
     }
 }
