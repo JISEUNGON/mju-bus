@@ -178,7 +178,7 @@ function Profile(props) {
     <MemberProfile>
       <MemberProfileImage>
         <UserAvatar
-          size={windowHeight > 700 ? 41 : 31}
+          size={windowHeight > 700 ? 47 : 33}
           src={props.img}
           bgColor={props.back}
           name={props.pro}
@@ -327,7 +327,7 @@ function Member() {
   const MaxMember = function () {
     return (
       <DetailIconTextContainer>
-        <DetailIcon style={{ backgroundColor: "#AADCC4" }}></DetailIcon>
+        <DetailIcon style={{ backgroundColor: "#DFF1E8" }}></DetailIcon>
         <DetailText>택시 최대 인원까지 {maxMember}명</DetailText>
       </DetailIconTextContainer>
     );

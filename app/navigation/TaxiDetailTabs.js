@@ -26,7 +26,7 @@ function TaxiTabs() {
         edges={["top"]}
         style={{ flex: 0.01, backgroundColor: "white" }}
       />
-      <View style={{ marginLeft: 10, width: 30 }}>
+      {/* <View style={{ marginLeft: 10, width: 30 }}>
         <TouchableOpacity
           onPress={() => {
             navigation.goBack();
@@ -34,7 +34,7 @@ function TaxiTabs() {
         >
           <AntDesign name="left" size={25} color="black" />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <TaxiHeader />
 

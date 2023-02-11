@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
-import { Text } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 import Taxi from "../Together/Taxi";
 
 const HeaderContainer = styled.View`
@@ -14,14 +15,16 @@ const DataContainer = styled.View`
 
 const DataTextView = styled.View`
   flex: auto;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
 `;
 
 const DataText = styled.Text`
-  text-align: right;
   padding-right: 10px;
   font-size: 19px;
   font-weight: 800;
+  margin-left: -10px;
 `;
 const DataIconView = styled.View`
   flex: auto;
@@ -82,6 +85,15 @@ function TaxiHeader() {
     <HeaderContainer>
       <DataContainer>
         <DataTextView>
+          <View style={{ marginLeft: 5 }}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <AntDesign name="left" size={25} color="black" />
+            </TouchableOpacity>
+          </View>
           <DataText>
             {TaxiDetailData.basicsData.startingPoint} →{" "}
             {TaxiDetailData.basicsData.endingPoint}

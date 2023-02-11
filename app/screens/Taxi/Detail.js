@@ -22,10 +22,10 @@ const ContextContainer = styled.View`
 
 const ContextTitle = styled.Text`
   flex: 0.3;
-  margin-top: 20px;
+  margin-top: 14px;
   margin-left: 20px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: bold;
 `;
 
 const ContextInsideContainer = styled.View`
@@ -67,8 +67,8 @@ const StartingPointTitle = styled.Text`
   flex: 1;
   font-size: 15;
   font-weight: 700;
-  margin-top: 10px;
-  padding-left: 25px;
+  margin-top: 14px;
+  padding-left: 20px;
   margin-bottom: -20px;
 `;
 
@@ -92,7 +92,7 @@ const TimeText = styled.Text`
 const MapContainer = styled.View`
   flex: 3;
   background-color: pink;
-  margin: 0px 25px;
+  margin: 10px 25px;
 `;
 
 const AddressContainer = styled.View`
@@ -147,10 +147,10 @@ function Detail() {
       detailAddress: "경기 용인시 기흥구 구갈동 660-1",
     },
     coordinate: {
-      // latitude: 37.275296997802755,
-      // longitude: 127.11623345523063,
-      latitude: 37.4979502,
-      longitude: 127.0276368,
+      latitude: 37.275296997802755,
+      longitude: 127.11623345523063,
+      // latitude: 37.4979502,
+      // longitude: 127.0276368,
     },
   };
 
@@ -174,37 +174,50 @@ function Detail() {
     num = x.length;
     return num === 1 ? 0 : null;
   }
+
+  // function gotoWebPage() {
+  //   return Linking.openURL(
+  //     // site&pinId=${your_site_id}
+  //     // `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
+  //     // `https://m.map.naver.com/map.naver?&query=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}&dlevel=12&mapMode=0&traffic=`,
+  //     // `https://map.naver.com/index.nhn?pinType=&lat=37.275296997802755&lng=127.11623345523063&dlevel=10&enc=b64
+  //     // `,
+  //     "nmap://place?lat=37.275296997802755&lng=127.11623345523063&name=모임장소&appname=com.mjubus.mbus",
+  //     // `navermap://?pinType=place&pinId=2080133&x=127.1052141&y=37.3596061`,
+  //   );
+  // }
   async function gotoWebPage() {
-    const isIOS = Platform.OS === 'ios';
-    const canOpenNaverMap = await Linking.canOpenURL('nmap://');
-    const canOpenKakaoMap = await Linking.canOpenURL('kakaomap://');
-    // can open naver map 
+    const isIOS = Platform.OS === "ios";
+    const canOpenNaverMap = await Linking.canOpenURL("nmap://");
+    const canOpenKakaoMap = await Linking.canOpenURL("kakaomap://");
+    // can open naver map
     if (canOpenNaverMap) {
-      console.log("NAVER MAP INSTALL")
-      // await Linking.openURL(`nmap://place?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&name=${TaxiDetailData.startingAddress.address}&appname=Taxi`)
-    } else if (canOpenKakaoMap) { // can open kakao map
-      console.log("KAKAO MAP INSTALL")
-      // await Linking.openURL(`kakaomap://look?p=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}`)
+      console.log("NAVER MAP INSTALL");
+      await Linking.openURL(
+        `nmap://place?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&name=모임 장소&appname=`,
+      );
+    } else if (canOpenKakaoMap) {
+      // can open kakao map
+      console.log("KAKAO MAP INSTALL");
+      await Linking.openURL(
+        `kakaomap://look?p=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}`,
+      );
     } else {
-      if (isIOS) { // IOS 
-        console.log("IOS")
-        await Linking.openURL("ios-app://itunes.apple.com/app/id311867728")
-      } else { // ANDROID
-        console.log("ANDROID")
-        await Linking.openURL("market://details?id=com.nhn.android.nmap")
+      if (isIOS) {
+        // IOS
+        console.log("IOS");
+        await Linking.openURL(
+          "https://apps.apple.com/us/app/naver-map-navigation/id311867728",
+        );
+      } else {
+        // ANDROID
+        console.log("ANDROID");
+        await Linking.openURL(
+          "https://play.google.com/store/apps/details?id=com.nhn.android.nmap&hl=ko&gl=US",
+        );
       }
     }
-    // return Linking.openURL(
-    //   // site&pinId=${your_site_id}
-    //   // `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
-    //   // `https://m.map.naver.com/map.naver?&query=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}&dlevel=12&mapMode=0&traffic=`,
-    //   // `https://map.naver.com/index.nhn?pinType=&lat=37.275296997802755&lng=127.11623345523063&dlevel=10&enc=b64
-    //   // `,
-    //   "nmap://place?lat=37.275296997802755&lng=127.11623345523063&name=모임장소&appname=com.mjubus.mbus",
-    //   // `navermap://?pinType=place&pinId=2080133&x=127.1052141&y=37.3596061`,
-    // );
   }
-
   return (
     <Container>
       <ContextContainer>
