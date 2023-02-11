@@ -325,9 +325,7 @@ function Taxi({ navigation: { navigate } }) {
               <ModalTitle>어떤 파티를 만들까요?</ModalTitle>
               <TouchableOpacity
                 onPress={() => {
-                  navigate("TaxiStack", {
-                    screen: "TaxiNmap",
-                  });
+                  navigate("TaxiNmap");
                 }}
               >
                 <Row>
