@@ -23,4 +23,8 @@ public interface MemberService {
 
     JwtResponse generateToken(Member member, String refreshToken);
     Member findMemberById(Long id);
+
+    boolean hasGroupAuthority(Long id, String groupId);
+
+    boolean isGroupAdminister(Long id, String groupId);
 }

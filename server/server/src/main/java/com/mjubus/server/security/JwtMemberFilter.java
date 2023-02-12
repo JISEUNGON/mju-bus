@@ -32,10 +32,9 @@ public class JwtMemberFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        log.info("authorizationHeader: {}", authorizationHeader);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.error("JWT Token does not begin with Bearer String");
+            log.error("JWT Token does not begin with Bearer String with URL : {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,7 +44,8 @@ public class JwtMemberFilter extends OncePerRequestFilter {
 
         // Token 검증
         if (!JwtUtil.isKeyValid(token)) {
-            log.error("JWT Token is not valid");
+            log.error("JWT Token is not valid with Jwt : {}", token);
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,23 +53,33 @@ public class JwtMemberFilter extends OncePerRequestFilter {
         // Token 만료 체크
         if (JwtUtil.isExpired(token)) {
             log.error("JWT Token is expired");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is expired");
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 유저 식별 ID
+        // 유저 식별
         Member member = JwtUtil.getMember(token);
+        String role = member.getRole().getKey();
         log.info("member: {}", member);
 
-        // 게스트 차단
-        if (member.getRole() == MemberRole.GUEST) {
-            log.error("JWT Token is not valid");
-            filterChain.doFilter(request, response);
-            return;
+        String[] path = request.getServletPath().split("/");
+        // 그룹에 대한 요청인 경우
+        if (path.length > 2 && path[1].equals("taxi") && path[2].matches("[0-9]+")) {
+            String groupId = path[2];
+            if (memberService.hasGroupAuthority(member.getId(), groupId)) {
+                if (memberService.isGroupAdminister(member.getId(), groupId)) {
+                    role = "GROUP_ADMIN";
+                } else {
+                    role = "GROUP_MEMBER";
+                }
+            }
+
         }
 
+        log.warn("role: {}", role);
         // 권한 부여
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member, null, List.of(new SimpleGrantedAuthority("USER")));
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member, null, List.of(new SimpleGrantedAuthority(role)));
 
         // UserDetail을 통해 인증된 사용자 정보를 SecurityContext에 저장
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

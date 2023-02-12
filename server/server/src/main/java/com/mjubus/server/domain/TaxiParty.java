@@ -1,11 +1,10 @@
 package com.mjubus.server.domain;
 
+import com.mjubus.server.dto.request.TaxiPartyCreateRequest;
+import com.mjubus.server.enums.TaxiPartyEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,10 +12,10 @@ import java.time.LocalDateTime;
 @Entity
 @ApiModel(value = "택시 파티 정보")
 @Table(name="taxi_party")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class TaxiParty {
 
     @Id
@@ -37,11 +36,15 @@ public class TaxiParty {
 
     @Column(name ="meeting_latitude", columnDefinition = "double")
     @ApiModelProperty(example = "만남장소_위도")
-    private double meeting_latitude;
+    private Double meeting_latitude;
 
     @Column(name ="meeting_longitude", columnDefinition = "double")
     @ApiModelProperty(example = "만남장소_경도")
-    private double meeting_longitude;
+    private Double meeting_longitude;
+
+    @Column(name = "meeting_place", columnDefinition = "char(50)")
+    @ApiModelProperty(example = "만남장소")
+    private String meeting_place;
 
     @Column(name ="memo", columnDefinition = "char(30)")
     @ApiModelProperty(example = "장소관련 간단한 메모")
@@ -63,11 +66,25 @@ public class TaxiParty {
     @ApiModelProperty(example = "생성일")
     private LocalDateTime created_at;
 
+
+    @Enumerated(EnumType.ORDINAL)
     @Column(name ="status", columnDefinition = "int")
     @ApiModelProperty(example = "모집 상황")
-    private Long status;
-    /**
-     * 1 : 모집중
-     * 2 : 모집완료
-     */
+    private TaxiPartyEnum status;
+
+    public static TaxiParty of(TaxiPartyCreateRequest request, Member administer, TaxiDestination destination) {
+        return TaxiParty.builder()
+                .administer(administer)
+                .taxi_destination_id(destination)
+                .meeting_latitude(request.getMeetingLatitude())
+                .meeting_longitude(request.getMeetingLongitude())
+                .meeting_place(request.getMeetingPlace())
+                .memo(request.getMemo())
+                .min(request.getMin())
+                .max(request.getMax())
+                .end_at(request.getEndAt())
+                .created_at(LocalDateTime.now())
+                .status(TaxiPartyEnum.ON_GOING)
+                .build();
+    }
 }
