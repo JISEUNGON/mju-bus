@@ -1,4 +1,4 @@
-import { Image, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View,Text } from "react-native";
 import KakaoLogin from "./KakaoLogin";
 import AppleLogin from './AppleLogin';
 import GoogleLogin from './GoogleLogin';
@@ -30,8 +30,8 @@ const SimpleLoginView = styled.View`
   margin-bottom: 40px;
 `;
 const SimpleLoginText = styled.Text`
-    font-size: 12px;
     color: #AAB2BB;
+    font-size: 12px;
     font-weight: 700;
 `;
 
@@ -47,7 +47,11 @@ function Login({navigation: { navigate }}) {
                     </Image>
 
                     <View>     
-                        <TouchableOpacity onPress={() => navigate("Home")}>
+                        <TouchableOpacity onPress={() => {
+                            navigate("Splash");
+                        
+                        
+                        }}>
                             <GuestStartView>
                                 <GuestStartText>게스트로 시작하기</GuestStartText>
                             </GuestStartView>      
@@ -61,6 +65,7 @@ function Login({navigation: { navigate }}) {
                             <GoogleLogin/>
                             <AppleLogin/>
                             <KakaoLogin/>
+                            <TouchableOpacity onPress={() => navigate("StudentAuth")}><Text>테스트재학생인증</Text></TouchableOpacity>
                         </SimpleLoginView>       
                     </View>         
                 </View>   

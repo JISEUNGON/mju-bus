@@ -5,6 +5,8 @@ import Splash from "../screens/Splash";
 import SearchStack from "./SearchStack";
 import NoticeStack from "./NoticeStack";
 import Login from "../components/Login/Login";
+import Home from "../screens/Home/Home";
+import StudentAuth from "../components/Login/StudentAuth";
 
 const Nav = createNativeStackNavigator();
 
@@ -18,6 +20,7 @@ function Root() {
     >
       <Nav.Screen name="Login" component={Login} />
       <Nav.Screen name="Splash" component={Splash} />
+      <Nav.Screen name="StudentAuth" component={StudentAuth} />
       <Nav.Screen
         name="HomeBottomTabs"
         component={HomeBottomTabs}

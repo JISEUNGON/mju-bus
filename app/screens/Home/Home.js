@@ -252,9 +252,6 @@ function Home({ route: { params }, navigation: { navigate } }) {
                 </TitleContainer>
                 <RunningRedBus data={redBusRemain} />
               </RedBusComingContainer>
-              <KakaoLogin />
-              <AppleLogin />
-              <GoogleLogin />
             </>
           }
         />
