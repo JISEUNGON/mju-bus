@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
@@ -65,7 +66,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "멤버 또는 택시 도착지가 존재하지 않음")
     })
     @ResponseBody
-    public ResponseEntity<TaxiPartyCreateResponse> createNewParty(Authentication authentication, @RequestBody TaxiPartyCreateRequest request) {
+    public ResponseEntity<TaxiPartyCreateResponse> createNewParty(@ApiIgnore Authentication authentication, @RequestBody TaxiPartyCreateRequest request) {
         return ResponseEntity.ok(taxiPartyService.createTaxiParty((Member) authentication.getPrincipal(), request));
     }
 
@@ -76,7 +77,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
             @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
     })
-    public ResponseEntity<TaxiPartyDetailResponse> info(Authentication authentication, @PathVariable(name = "group-id")TaxiPartyRequest id){
+    public ResponseEntity<TaxiPartyDetailResponse> info(@ApiIgnore Authentication authentication, @PathVariable(name = "group-id")TaxiPartyRequest id){
         return ResponseEntity.ok(
                 taxiPartyService.findTaxiParty(id)
         );
@@ -91,7 +92,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "해당하는 멤버가 존재하지 않음")
     })
     @ResponseBody
-    public ResponseEntity<TaxiPartyJoinResponse> addNewMember(Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
+    public ResponseEntity<TaxiPartyJoinResponse> addNewMember(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
         taxiPartyService.addNewMember(groupId, (Member) authentication.getPrincipal());
         //TODO: FCM "~ 사용자님이 새롭게 들어왔습니다" Actions;
         return ResponseEntity.ok(TaxiPartyJoinResponse.builder().isAdded("success").build());
@@ -106,7 +107,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "해당하는 멤버가 존재하지 않음")
     })
     @ResponseBody
-    public ResponseEntity<TaxiPartyQuitResponse> partyQuit(Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
+    public ResponseEntity<TaxiPartyQuitResponse> partyQuit(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
         taxiPartyService.removeMember(groupId, (Member) authentication.getPrincipal());
         redisMessageService.chattingRoomQuit(groupId, (Member) authentication.getPrincipal());
         //TODO: FCM "~ 사용자님이 탈퇴하였습니다" Actions;
@@ -120,7 +121,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
             @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
     })
-    public ResponseEntity<TaxiPartyMembersListResponse> memberinfo(Authentication authentication, @PathVariable(name = "group-id") TaxiPartyMembersRequest id){
+    public ResponseEntity<TaxiPartyMembersListResponse> memberinfo(@ApiIgnore Authentication authentication, @PathVariable(name = "group-id") TaxiPartyMembersRequest id){
         return ResponseEntity.ok(
                 taxiPartyMembersService.findTaxiPartyMembers(id)
         );
@@ -133,7 +134,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "게시물이 없습니다.")
     })
     @ResponseBody
-    public ResponseEntity<TaxiPartyParticipantResponse> findPartyParticipantsNum(Authentication authentication, @PathVariable(name="group-id")TaxiPartyMembersRequest id){
+    public ResponseEntity<TaxiPartyParticipantResponse> findPartyParticipantsNum(@ApiIgnore Authentication authentication, @PathVariable(name="group-id")TaxiPartyMembersRequest id){
         return ResponseEntity.ok(
                 taxiPartyMembersService.findPartyParticipantsNum(id)
         );
@@ -146,7 +147,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "204", description = "해당하는 파티가 존재하지 않음")
     })
     @ResponseBody
-    public ResponseEntity<TaxiPartyDeleteResponse> partyDelete(Authentication authentication, @PathParam(value = "group-id") TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
+    public ResponseEntity<TaxiPartyDeleteResponse> partyDelete(@ApiIgnore Authentication authentication, @PathParam(value = "group-id") TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
         redisMessageService.chattingRoomAndSessionDelete(taxiPartyDeleteRequest);
         taxiPartyService.deleteParty(taxiPartyDeleteRequest);
         return ResponseEntity.ok(TaxiPartyDeleteResponse.builder().isDeleted("success").build());
@@ -160,7 +161,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "Room ID가 정상적이지 않은 경우")
     })
     @ResponseBody
-    public ResponseEntity<List<MessageLogResponse>> findMessageHistory(Authentication authentication, @PathVariable(value = "group-id") MessageLogRequest req) {
+    public ResponseEntity<List<MessageLogResponse>> findMessageHistory(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") MessageLogRequest req) {
         return ResponseEntity.ok(redisMessageLogService.findMessageLog(req));
     }
 
@@ -171,7 +172,7 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
             @ApiResponse(responseCode = "404", description = "Room ID가 정상적이지 않은 경우 또는 simpSubscriptionId가 존재하지 않는 경우")
     })
-    public ResponseEntity<String> updateSessionHashStatus(Authentication authentication, @RequestBody UpdateChattingSessionHashRequest updateChattingSessionHashRequest) {
+    public ResponseEntity<String> updateSessionHashStatus(@ApiIgnore Authentication authentication, @RequestBody UpdateChattingSessionHashRequest updateChattingSessionHashRequest) {
         return ResponseEntity.ok(redisMessageSubService.updateSessionHash(updateChattingSessionHashRequest));
     }
 }
