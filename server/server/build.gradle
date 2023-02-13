@@ -41,6 +41,7 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:2.2.0' // Google OAuth2
     implementation 'org.springframework.boot:spring-boot-starter-websocket' // WebSocket
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0' //slack-appender
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
