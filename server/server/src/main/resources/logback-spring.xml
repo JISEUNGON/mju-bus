@@ -61,6 +61,7 @@
     <logger name="com.mjubus.server" level="debug" additivity="false">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="SYSLOG" />
+        <appender-ref ref="ASYNC_SLACK" />
     </logger>
 
 
