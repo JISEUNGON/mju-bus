@@ -2,7 +2,8 @@
 <configuration>
 
     <!-- 로그파일 저장 경로 -->
-    <property name="LOG_DIR" value="./log" />
+    <property name="LOG_DIR" value="${LOG_DIR}" />
+    <property name="WEBHOOK_URI" value="${WEBHOOK_URI}" />
 
     <!-- CONSOLE, 콘솔 출력 설정, console에 로그를 찍기 위한 appender 클래스를 사용 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -34,9 +35,28 @@
     </appender>
     <!-- // SYSLOG -->
 
+
+    <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
+        <webhookUri>${WEBHOOK_URI}</webhookUri>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} : %30logger{5} - %msg%n
+            </Pattern>
+        </layout>
+        <username>ERROR-CATCHER</username>
+        <colorCoding>true</colorCoding>
+    </appender>
+    <appender name="ASYNC_SLACK" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SLACK"/>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
     <root level="info">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="SYSLOG" />
+        <appender-ref ref="ASYNC_SLACK" />
     </root>
     <logger name="com.mjubus.server" level="debug" additivity="false">
         <appender-ref ref="CONSOLE" />
