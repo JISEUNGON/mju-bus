@@ -2,16 +2,22 @@ package com.mjubus.server.service.member;
 
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.domain.MemberProvider;
+import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
 import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
-import com.mjubus.server.enums.MemberRole;
+import com.mjubus.server.dto.request.JwtResponse;
+import com.mjubus.server.exception.member.MemberNotFoundException;
+import com.mjubus.server.exception.member.RefreshTokenInvalidException;
 import com.mjubus.server.repository.MemberProviderRepository;
 import com.mjubus.server.repository.MemberRepository;
-import com.mjubus.server.util.DateHandler;
-import com.mjubus.server.util.RefreshTokenGenerator;
+import com.mjubus.server.service.taxiParty.TaxiPartyService;
+import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
+import com.mjubus.server.util.JwtUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,9 +26,14 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberProviderRepository memberProviderRepository;
 
-    public MemberServiceImpl(MemberRepository memberRepository, MemberProviderRepository memberProviderRepository) {
+    private final TaxiPartyMembersService taxiPartyMembersService;
+    private final TaxiPartyService taxiPartyService;
+
+    public MemberServiceImpl(MemberRepository memberRepository, MemberProviderRepository memberProviderRepository, @Lazy TaxiPartyMembersService taxiPartyMembersService, TaxiPartyService taxiPartyService) {
         this.memberRepository = memberRepository;
         this.memberProviderRepository = memberProviderRepository;
+        this.taxiPartyMembersService = taxiPartyMembersService;
+        this.taxiPartyService = taxiPartyService;
     }
     @Override
     public Member saveOrGetAppleMember(AppleAuthTokenDto appleAuthTokenDto) {
@@ -31,22 +42,9 @@ public class MemberServiceImpl implements MemberService {
             return memberProviderOptional.get().getMember();
         else {
 
-            Member member = Member.builder()
-                    .name("APPLE 유저")
-                    .profileImageUrl("sample_url")
-                    .refreshToken(RefreshTokenGenerator.generateRefreshToken())
-                    .refreshTokenExpiredAt(DateHandler.getToday().plusDays(14))
-                    .role(MemberRole.GUEST)
-                    .build();
-
-            // Apple은 RefreshToken의 만료일이 없다.
-            MemberProvider memberProvider = MemberProvider.builder()
-                    .provider("APPLE")
-                    .member(member)
-                    .providerId(appleAuthTokenDto.getUser_id())
-                    .refreshToken(appleAuthTokenDto.getRefresh_token())
-                    .refreshTokenExpiredAt(DateHandler.getToday().plusYears(10))
-                    .build();
+            Member member = Member.of("APPLE 유저");
+            MemberProvider memberProvider = MemberProvider.of(appleAuthTokenDto);
+            memberProvider.setMember(member);
 
             memberRepository.save(member);
             memberProviderRepository.save(memberProvider);
@@ -62,21 +60,9 @@ public class MemberServiceImpl implements MemberService {
         if (memberProviderOptional.isPresent())
             return memberProviderOptional.get().getMember();
         else {
-            Member member = Member.builder()
-                    .name("KAKAO 유저")
-                    .profileImageUrl("sample_url")
-                    .refreshToken(RefreshTokenGenerator.generateRefreshToken())
-                    .refreshTokenExpiredAt(DateHandler.getToday().plusDays(14))
-                    .role(MemberRole.GUEST)
-                    .build();
-
-            MemberProvider memberProvider = MemberProvider.builder()
-                    .provider("APPLE")
-                    .member(member)
-                    .providerId(kaKaoAuthTokenDto.getId())
-                    .refreshToken(kaKaoAuthTokenDto.getRefreshToken())
-                    .refreshTokenExpiredAt(kaKaoAuthTokenDto.getRefreshTokenExpiresAt())
-                    .build();
+            Member member = Member.of("KAKAO 유저");
+            MemberProvider memberProvider = MemberProvider.of(kaKaoAuthTokenDto);
+            memberProvider.setMember(member);
 
             memberRepository.save(member);
             memberProviderRepository.save(memberProvider);
@@ -93,27 +79,51 @@ public class MemberServiceImpl implements MemberService {
         if (memberProviderOptional.isPresent())
             return memberProviderOptional.get().getMember();
         else {
-            Member member = Member.builder()
-                    .name("GOOGLE 유저")
-                    .profileImageUrl("sample_url")
-                    .refreshToken(RefreshTokenGenerator.generateRefreshToken())
-                    .refreshTokenExpiredAt(DateHandler.getToday().plusDays(14))
-                    .role(MemberRole.GUEST)
-                    .build();
-
-            // Google은 RefreshToken의 만료일이 없다.
-            MemberProvider memberProvider = MemberProvider.builder()
-                    .provider("GOOGLE")
-                    .member(member)
-                    .providerId(googleAuthTokenDto.getUserId())
-                    .refreshToken(googleAuthTokenDto.getRefreshToken())
-                    .refreshTokenExpiredAt(DateHandler.getToday().plusYears(10))
-                    .build();
+            Member member = Member.of("GOOGLE 유저");
+            MemberProvider memberProvider = MemberProvider.of(googleAuthTokenDto);
+            memberProvider.setMember(member);
 
             memberRepository.save(member);
             memberProviderRepository.save(memberProvider);
 
             return member;
         }
+    }
+
+    @Override
+    public JwtResponse generateToken(Member member, String refreshToken) {
+        Member member_from_db = findMemberById(member.getId());
+
+        if (member_from_db.getRefreshToken().equals(refreshToken)) {
+            return JwtResponse.of(JwtUtil.createJwt(member_from_db));
+        }
+
+        throw new RefreshTokenInvalidException("Refresh Token is invalid");
+    }
+
+    @Override
+    public Member findMemberById(Long id) {
+        Optional<Member> memberOptional = memberRepository.findById(id);
+        return memberOptional.orElseThrow(() -> new MemberNotFoundException("존재하지 않는 Member 입니다."));
+    }
+
+    @Override
+    public boolean hasGroupAuthority(Long id, String partyId) {
+        Optional<List<TaxiPartyMembers>> partyMembersList = taxiPartyMembersService.findOptionalPartyMembersByPartyId(Long.parseLong(partyId));
+        if (partyMembersList.isPresent()) {
+            for (TaxiPartyMembers partyMembers : partyMembersList.get()) {
+                if (partyMembers.getMember().getId().equals(id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isGroupAdminister(Long id, String partyId) {
+        return taxiPartyService.findOptionalPartyById(Long.parseLong(partyId))
+                .map(party -> party.getAdminister().getId().equals(id))
+                .orElse(false);
     }
 }

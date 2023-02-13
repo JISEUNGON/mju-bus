@@ -1,52 +1,62 @@
 package com.mjubus.server.controller;
 
+import com.mjubus.server.dto.request.AppleLoginRequest;
+import com.mjubus.server.dto.request.GoogleLoginRequest;
+import com.mjubus.server.dto.request.KakaoLoginRequest;
 import com.mjubus.server.dto.response.LoginResponse;
-import com.mjubus.server.service.login.AppleLoginStrategy;
-import com.mjubus.server.service.login.GoogleLoginStrategy;
-import com.mjubus.server.service.login.KakaoLoginStrategy;
-import com.mjubus.server.service.login.LoginStrategy;
+import com.mjubus.server.service.login.AppleLoginService;
+import com.mjubus.server.service.login.GoogleLoginService;
+import com.mjubus.server.service.login.GuestLoginService;
+import com.mjubus.server.service.login.KakaoLoginService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/login")
 @Api(tags = {"로그인 API"})
 public class LoginController {
 
-    private final LoginStrategy appleLoginStrategy;
-    private final LoginStrategy kakaoLoginStrategy;
-    private final LoginStrategy googleLoginStrategy;
+    private final KakaoLoginService kakaoLoginService;
+    private final GoogleLoginService googleLoginService;
+    private final AppleLoginService appleLoginService;
+    private final GuestLoginService guestLoginService;
 
     @Autowired
-    public LoginController(AppleLoginStrategy appleLoginStrategy, KakaoLoginStrategy kakaoLoginStrategy, GoogleLoginStrategy googleLoginStrategy) {
-        this.appleLoginStrategy = appleLoginStrategy;
-        this.kakaoLoginStrategy = kakaoLoginStrategy;
-        this.googleLoginStrategy = googleLoginStrategy;
+    public LoginController(KakaoLoginService kakaoLoginService, GoogleLoginService googleLoginService, AppleLoginService appleLoginService, GuestLoginService guestLoginService) {
+        this.kakaoLoginService = kakaoLoginService;
+        this.googleLoginService = googleLoginService;
+        this.appleLoginService = appleLoginService;
+        this.guestLoginService = guestLoginService;
     }
 
-    @GetMapping("/apple")
-    public ResponseEntity<LoginResponse> appleLogin(@RequestParam String data) {
+    @PostMapping("/")
+    public ResponseEntity<LoginResponse> guestLogin() {
         return ResponseEntity.ok(
-               appleLoginStrategy.login(data)
+                guestLoginService.login()
         );
     }
 
-    @GetMapping("/google")
-    public ResponseEntity<LoginResponse> googleLogin(@RequestParam String data) {
+    @PostMapping("/apple")
+    public ResponseEntity<LoginResponse> appleLogin(@RequestBody AppleLoginRequest appleLoginRequest) {
         return ResponseEntity.ok(
-                googleLoginStrategy.login(data)
+                appleLoginService.login(appleLoginRequest)
         );
     }
 
-    @GetMapping("/kakao")
-    public ResponseEntity<LoginResponse> kakaoLogin(@RequestParam String data) {
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> googleLogin(@RequestBody GoogleLoginRequest googleLoginRequest) {
         return ResponseEntity.ok(
-                kakaoLoginStrategy.login(data)
+                googleLoginService.login(googleLoginRequest)
+        );
+    }
+
+    @PostMapping("/kakao")
+    public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody KakaoLoginRequest kakaoLoginRequest) {
+        return ResponseEntity.ok(
+                kakaoLoginService.login(kakaoLoginRequest)
         );
     }
 }

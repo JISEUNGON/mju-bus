@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {TouchableOpacity, Image } from 'react-native';
 import AppleImage from "../../assets/image/apple_login.png"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
-import base64 from 'base-64'
 import { loginApi } from "../../api";
 
 export default function AppleLogin () {
@@ -24,18 +23,16 @@ export default function AppleLogin () {
             }).catch(err => {
                 console.log("Apple Auth failed : ", err);
                 setOnLogin(false);
-            });
-            if (!onLogin)
                 return;
+            });
             
-            const payload = JSON.stringify({
+            const payload = {
                 'authorizationCode': appleAuthRequestResponse.authorizationCode,
                 'identityToken': appleAuthRequestResponse.identityToken,
                 'user': appleAuthRequestResponse.user,
-            })
+            }
 
-            const encodedPayLoad = base64.encode(payload);
-            loginApi.apple_login({ queryKey: {encodedPayLoad} }).then(res =>  setUser(res));   
+            loginApi.apple_login({ queryKey: {payload} }).then(res =>  setUser(res));   
         }
 
         setOnLogin(false);
