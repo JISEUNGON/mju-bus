@@ -1,5 +1,6 @@
 package com.mjubus.server.domain;
 
+import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
 import com.mjubus.server.enums.MemberRole;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -11,11 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import com.mjubus.server.util.DateHandler;
+import com.mjubus.server.util.RefreshTokenGenerator;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
@@ -24,6 +24,7 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@ToString
 public class Member {
 
     @Id
@@ -61,6 +62,16 @@ public class Member {
     }
     public void upgradeRoleFromGuestToUser() {
         this.role = MemberRole.USER;
+    }
+
+    public static Member of(String name) {
+        return Member.builder()
+                .name(name)
+                .profileImageUrl("sample_url")
+                .refreshToken(RefreshTokenGenerator.generateRefreshToken())
+                .refreshTokenExpiredAt(DateHandler.getToday().plusYears(1))
+                .role(MemberRole.GUEST)
+                .build();
     }
 
 }

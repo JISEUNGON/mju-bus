@@ -1,4 +1,4 @@
-package com.mjubus.server.dto.login;
+package com.mjubus.server.dto.request;
 
 
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppleLoginDto {
+public class AppleLoginRequest {
     private String authorizationCode;
     private String identityToken;
     private String user;

@@ -26,4 +26,9 @@ public class HealthController {
         return "pong";
     }
 
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
 }

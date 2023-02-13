@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.util.List;
 
 @Configuration
-@Profile("local")
+@Profile({"local", "test"})
 public class RedisConfig {
 
     //참고: https://github.com/codej99/websocket-chat-server/blob/feature/redis-pub-sub/src/main/java/com/websocket/chat/config/RedisConfig.java

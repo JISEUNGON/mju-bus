@@ -1,8 +1,7 @@
 package com.mjubus.server.dto.response;
 
 import com.mjubus.server.domain.Member;
-import com.mjubus.server.enums.MemberRole;
-import com.mjubus.server.util.AccessTokenGenerator;
+import com.mjubus.server.util.JwtUtil;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +14,7 @@ public class LoginResponse {
 
     public static LoginResponse of(Member member) {
         return LoginResponse.builder()
-                .accessToken(AccessTokenGenerator.generateAccessToken(member))
+                .accessToken(JwtUtil.createJwt(member))
                 .refreshToken(member.getRefreshToken())
                 .build();
     }

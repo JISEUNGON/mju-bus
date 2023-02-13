@@ -64,6 +64,7 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
                 .time(dateTime)
                 .sender(chattingMessage.getSender())
                 .message(chattingMessage.getMessage())
+                .memberId(chattingMessage.getMemberId())
                 .build();
 
         redisTemplate.opsForList().rightPush(chattingMessage.getRoomId(), messageLog);
