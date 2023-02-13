@@ -14,6 +14,7 @@ public class ChattingMessage implements Serializable {
     private String roomId;
     private String sender;
     private String message;
+    private String imgUrl;
 
     public void encodeSenderAndMessage() {
         sender = Base64.getEncoder().encodeToString(sender.getBytes());

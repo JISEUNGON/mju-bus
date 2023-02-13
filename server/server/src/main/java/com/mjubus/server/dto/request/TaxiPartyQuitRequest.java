@@ -1,5 +1,6 @@
 package com.mjubus.server.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
@@ -7,8 +8,11 @@ import lombok.*;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TaxiPartyQuitRequest {
-    private String groupId;
-    public static TaxiPartyQuitRequest of(String groupId) {
-        return new TaxiPartyQuitRequest(groupId);
+
+    @ApiModelProperty(value = "멤버 ID", example = "1")
+    private Long memberId;
+
+    public static TaxiPartyQuitRequest of(String memberId) {
+        return new TaxiPartyQuitRequest(Long.parseLong(memberId));
     }
 }

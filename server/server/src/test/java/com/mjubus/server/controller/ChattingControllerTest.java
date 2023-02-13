@@ -60,8 +60,8 @@ class ChattingControllerTest {
         String requestUrl = "/chatting/history/testRoom";
 
         List<ChattingMessage> chattingMessages = new ArrayList<>();
-        chattingMessages.add(new ChattingMessage(channel, "gildong", "first message"));
-        chattingMessages.add(new ChattingMessage(channel, "chulsu", "second message"));
+        //chattingMessages.add(new ChattingMessage(channel, "gildong", "first message"));
+        //chattingMessages.add(new ChattingMessage(channel, "chulsu", "second message"));
 
         chattingMessages.forEach(message -> {
             redisMessagePubService.saveMessage(message);

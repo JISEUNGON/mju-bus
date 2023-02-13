@@ -37,10 +37,10 @@ public class ChattingController {
     @MessageMapping("/chatting-service")
     public void getChattingMessage(ChattingMessage chattingMessage) {
         chattingMessage.encodeSenderAndMessage();
-        redisMessagePubService.saveMessage(chattingMessage);
-        redisMessagePubService.saveSessionHash(chattingMessage);
         redisMessagePubService.publish(chattingMessage);
         redisMessagePubService.publishForFCM(chattingMessage);
+        redisMessagePubService.saveMessage(chattingMessage);
+        redisMessagePubService.saveSessionHash(chattingMessage);
     }
 
     @GetMapping("/history/{roomId}")
