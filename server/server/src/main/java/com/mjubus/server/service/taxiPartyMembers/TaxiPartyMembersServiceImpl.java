@@ -10,8 +10,11 @@ import com.mjubus.server.dto.response.TaxiPartyParticipantResponse;
 import com.mjubus.server.enums.TaxiPartyEnum;
 import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

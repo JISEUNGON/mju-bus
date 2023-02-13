@@ -24,7 +24,7 @@ public class TaxiPartyMembers {
     @ApiModelProperty(example = "고유 식별 ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
     @ApiModelProperty(example = "파티 멤버")
     private Member member;
