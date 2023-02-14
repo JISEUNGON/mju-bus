@@ -4,6 +4,7 @@ import AppleLogin from './AppleLogin';
 import GoogleLogin from './GoogleLogin';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
+import StudentAuth from './StudentAuth';
 
 const GuestStartView = styled.View`
   margin-top: 100px;
@@ -47,11 +48,7 @@ function Login({navigation: { navigate }}) {
                     </Image>
 
                     <View>     
-                        <TouchableOpacity onPress={() => {
-                            navigate("Splash");
-                        
-                        
-                        }}>
+                        <TouchableOpacity onPress={() => navigate("Splash")}>
                             <GuestStartView>
                                 <GuestStartText>게스트로 시작하기</GuestStartText>
                             </GuestStartView>      
