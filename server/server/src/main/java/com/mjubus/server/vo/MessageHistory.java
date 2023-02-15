@@ -18,6 +18,8 @@ public class MessageHistory {
     @DynamoDBRangeKey(attributeName = "published_at")
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     private LocalDateTime publishedAt;
+    @DynamoDBAttribute(attributeName = "user")
+    private String user;
     @DynamoDBAttribute(attributeName = "message")
     private String message;
     @DynamoDBAttribute(attributeName = "user-id")
@@ -27,6 +29,7 @@ public class MessageHistory {
         return MessageHistory.builder()
                 .partyId(Long.parseLong(chattingMessage.getRoomId()))
                 .message(chattingMessage.getMessage())
+                .user(chattingMessage.getSender())
                 .userId(Long.parseLong(chattingMessage.getMemberId()))
                 .publishedAt(LocalDateTime.now())
                 .build();
