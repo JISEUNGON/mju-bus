@@ -20,6 +20,8 @@ import styled from "styled-components/native";
 import { Keyboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import uuid from "react-native-uuid";
+import { TaxiChatContext } from "./Taxicontext";
+import { useIsFocused } from "@react-navigation/native";
 
 const BottomView = styled.View`
   height: 25px;
@@ -27,6 +29,8 @@ const BottomView = styled.View`
 `;
 const Chatting = () => {
   const [keyboardStatus, setKeyboardStatus] = useState("");
+  const { focused, setFocused } = useContext(TaxiChatContext);
+  setFocused(useIsFocused());
 
   const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
     setKeyboardStatus(true);
@@ -36,31 +40,44 @@ const Chatting = () => {
   });
 
   const [messages, setMessages] = useState([]);
+
   let client = useRef({});
 
   let textDecoder = useRef({});
+  const [subscription, setSubscription] = useState(null);
 
   const subscribe = () => {
-    client.subscribe("/sub/9", message => {
-      let nav = JSON.parse(textDecoder.decode(message._binaryBody));
-      const chattingLog = {
-        _id: uuid.v4(),
-        text: Base64.decode(nav.message),
-        createdAt: new Date(),
-        user: {
-          _id: nav.memberId,
-          avatar: nav.imgUrl,
-          name: Base64.decode(nav.sender),
-        },
-      };
+    setSubscription(
+      client.subscribe(
+        "/sub/9",
+        message => {
+          let nav = JSON.parse(textDecoder.decode(message._binaryBody));
+          const chattingLog = {
+            _id: uuid.v4(),
+            text: Base64.decode(nav.message),
+            createdAt: new Date(),
+            user: {
+              _id: 2,
+              avatar: nav.imgUrl,
+              name: Base64.decode(nav.sender),
+            },
+          };
 
-      if (chattingLog.user.name !== "멋쟁이라이언") {
-        setMessages(previousMessages =>
-          GiftedChat.append(previousMessages, chattingLog),
-        );
-      }
-    });
+          if (chattingLog.user.name !== "멋쟁이라이언") {
+            setMessages(previousMessages =>
+              GiftedChat.append(previousMessages, chattingLog),
+            );
+          }
+        },
+        { id: "sub-" + 1 },
+      ),
+    );
   };
+
+  const unsubscribe = room_id => {
+    subscription.unsubscribe({ id: "/sub/" + room_id });
+  };
+
   const onSend = useCallback(msg => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, msg));
     console.log(messages.length, ": ", msg);
@@ -83,7 +100,6 @@ const Chatting = () => {
       appendMissingNULLonIncoming: true,
       onConnect: str => {
         console.log("onConnect : ", str);
-        subscribe();
       },
       debug: str => {
         console.log("debug: ", new Date(), str);
@@ -118,17 +134,10 @@ const Chatting = () => {
     );
   }
 
-  // function renderComposer(props) {
-  //   return <Composer {...props} placeholder="메시지 입력" />;
-  // }
   function renderInputToolbar(props) {
     return <InputToolbar {...props} containerStyle={{ paddingLeft: 10 }} />;
   }
-  // function renderUsername(){
-  //   return (
 
-  //   )
-  // }
   function renderBubble(props) {
     if (
       isSameUser(props.currentMessage, props.previousMessage) &&
@@ -189,6 +198,11 @@ const Chatting = () => {
           />
         </View>
       );
+  }
+  if (focused == false) {
+    unsubscribe(9);
+  } else {
+    subscribe;
   }
   return (
     <>
