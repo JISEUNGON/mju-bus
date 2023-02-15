@@ -1,7 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { Text, TouchableOpacity, Dimensions } from "react-native";
 import styled from "styled-components/native";
 import UserAvatar from "react-native-user-avatar";
+import { TaxiChatContext } from "./Taxicontext";
 
 const Container = styled.View`
   flex: 1;
@@ -41,6 +47,7 @@ const MainText = styled.Text`
   font-size: 27px;
   font-weight: bold;
   text-align: center;
+  font-family: "SpoqaHanSansNeo-Bold";
 `;
 
 const BottomClearView = styled.View`
@@ -83,21 +90,57 @@ function Chat() {
       mins: 40,
     },
   ];
+  const { goChat, setGoChat, join, setJoin } = useContext(TaxiChatContext);
+  const windowHeight = Dimensions.get("window").height;
+  const ChattingOnOff = () => {
+    return setGoChat(!goChat), setJoin(!join);
+  };
+
+  const [data, setData] = useState(null);
+  const [diffHours, setDiffHours] = useState(null);
+  const [diffMinutes, setDiffMinutes] = useState(null);
+  useEffect(() => {
+    fetch("http://staging-api.mju-bus.com:80/taxi/21/")
+      .then(res => res.json())
+      .then(data => setData(data));
+  }, []);
+  useEffect(() => {
+    if (data !== null) {
+      let dateStr = data.end_at;
+      let date = new Date(dateStr);
+
+      let presentTime = new Date();
+      let diffTime = date - presentTime;
+
+      setDiffMinutes(Math.floor(diffTime / 1000 / 60) % 60);
+      setDiffHours(Math.floor(diffTime / 1000 / 60 / 60));
+    }
+  }, [data]);
 
   return (
     <Container>
       <TopClearView></TopClearView>
       <ProfileView>
-        <UserAvatar size={60} src={memberData[0].memberImage} bgColor="white" />
+        <UserAvatar
+          size={windowHeight > 700 ? 60 : 50}
+          src={memberData[0].memberImage}
+          bgColor="white"
+        />
       </ProfileView>
       <MainTextView>
         <MainText>{memberData[0].memberName}님의</MainText>
         <MainText> 택시 파티에 참여하시겠어요?</MainText>
       </MainTextView>
       <TimeTextView>
-        <Text style={{ color: "#929292", textAlign: "center", fontSize: 16 }}>
-          모집 마감 까지 {timeData[0].hours - timeData[1].hours}시간{" "}
-          {timeData[0].mins - timeData[1].mins}분 남았어요!
+        <Text
+          style={{
+            color: "#929292",
+            textAlign: "center",
+            fontSize: 16,
+            fontFamily: "SpoqaHanSansNeo-Medium",
+          }}
+        >
+          모집 마감 까지 {diffHours}시간 {diffMinutes}분 남았어요!
         </Text>
       </TimeTextView>
       <ButtonView>
@@ -110,8 +153,16 @@ function Chat() {
             alignItems: "center",
             borderRadius: 20,
           }}
+          onPress={ChattingOnOff}
         >
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#4F8645" }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "#4F8645",
+              fontFamily: "SpoqaHanSansNeo-Bold",
+            }}
+          >
             참가 후 메시지 보내기
           </Text>
         </TouchableOpacity>
