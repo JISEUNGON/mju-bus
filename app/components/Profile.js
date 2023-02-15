@@ -8,7 +8,7 @@ import styled from "styled-components";
 function Profile() {
   return (
     <MaterialCommunityIcons 
-        name = "account-circle" size={50} color="#576F72" />
+        name = "account-circle" size={25} color="#576F72" />
   );
 }
 
