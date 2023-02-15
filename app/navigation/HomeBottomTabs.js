@@ -1,11 +1,15 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, useColorScheme, View } from "react-native";
 import Home from "../screens/Home/Home";
 import ScheduleTopTabs from "./ScheduleTopTabs";
 import BusTopTabs from "./BusTopTabs";
+import TogetherTopTabs from "./TogetherTopTabs";
+import ViewMore from "../screens/ViewMore";
 import { BLACK_COLOR, DARK_GRAY, WHITE_COLOR } from "../colors";
+import TaxiTabs from "./TaxiDetailTabs";
+import Chatting from "../screens/Taxi/Chatting";
 
 const Tab = createBottomTabNavigator();
 
@@ -58,6 +62,27 @@ function HomeBottomTabs() {
       />
 
       <Tab.Screen
+        name="같이 해요"
+        component={TogetherTopTabs}
+        options={{
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          },
+          headerStatusBarHeight: 0,
+          headerTitle: EmptyText,
+          headerShadowVisible: false,
+          // eslint-disable-next-line react/no-unstable-nested-components
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name={focused ? "people-sharp" : "people-outline"}
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
         name="시내 셔틀"
         component={BusTopTabs}
         options={{
@@ -91,6 +116,31 @@ function HomeBottomTabs() {
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? "calendar-sharp" : "calendar-outline"}
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="더 보기"
+        component={Chatting}
+        options={{
+          headerStyle: {
+            backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,
+          },
+          headerStatusBarHeight: 0,
+          headerTitle: EmptyText,
+          headerShadowVisible: false,
+          // eslint-disable-next-line react/no-unstable-nested-components
+          tabBarIcon: ({ focused, color, size }) => (
+            <MaterialCommunityIcons
+              name={
+                focused
+                  ? "dots-horizontal-circle"
+                  : "dots-horizontal-circle-outline"
+              }
               color={color}
               size={size}
             />

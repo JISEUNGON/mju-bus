@@ -7,6 +7,9 @@ import NoticeStack from "./NoticeStack";
 import Login from "../components/Login/Login";
 import Home from "../screens/Home/Home";
 import StudentAuth from "../components/Login/StudentAuth";
+import AddPartyStack from "./AddPartyStack";
+import TaxiStack from "./TaxiStack";
+
 
 const Nav = createNativeStackNavigator();
 
@@ -33,6 +36,8 @@ function Root() {
       />
 
       <Nav.Screen name="NoticeStack" component={NoticeStack} />
+      <Nav.Screen name="AddPartyStack" component={AddPartyStack} />
+      <Nav.Screen name="TaxiStack" component={TaxiStack}/>
     </Nav.Navigator>
   );
 }

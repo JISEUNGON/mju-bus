@@ -1,12 +1,14 @@
 import { useQueries } from "@tanstack/react-query";
 import styled from "styled-components";
 import { busApi } from "./api";
+import React from 'react'
 
 const HighlightTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 20px;
   color: #7974e7;
 `;
+
 
 export function sortTimeTable(a, b) {
   return (
@@ -18,6 +20,11 @@ export function sortTimeTable(a, b) {
 export function highlights(contents) {
   // eslint-disable-next-line react/react-in-jsx-scope
   return <HighlightTitle>{contents}</HighlightTitle>;
+}
+
+export function highlightTaxi(contents){
+  //
+  return <HighlightTaxi>{contents}</HighlightTaxi>;
 }
 
 export function GetTimeTableData(list) {
