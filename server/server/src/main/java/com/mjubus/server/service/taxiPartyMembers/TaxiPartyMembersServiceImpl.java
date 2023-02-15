@@ -9,12 +9,12 @@ import com.mjubus.server.dto.response.TaxiPartyMembersResponse;
 import com.mjubus.server.dto.response.TaxiPartyParticipantResponse;
 import com.mjubus.server.enums.TaxiPartyEnum;
 import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
+import com.mjubus.server.exception.member.MemberNotFoundException;
 import com.mjubus.server.repository.TaxiPartyMembersRepository;
-import org.hibernate.Hibernate;
+import com.mjubus.server.repository.TaxiPartyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,18 +23,28 @@ import java.util.Optional;
 public class TaxiPartyMembersServiceImpl implements TaxiPartyMembersService{
 
     private final TaxiPartyMembersRepository taxiPartyMembersRepository;
+    private final TaxiPartyRepository taxiPartyRepository;
 
     @Autowired
-    public TaxiPartyMembersServiceImpl(TaxiPartyMembersRepository taxiPartyMembersRepository){ this.taxiPartyMembersRepository = taxiPartyMembersRepository; }
+    public TaxiPartyMembersServiceImpl(TaxiPartyMembersRepository taxiPartyMembersRepository, TaxiPartyRepository taxiPartyRepository){ this.taxiPartyMembersRepository = taxiPartyMembersRepository;
+        this.taxiPartyRepository = taxiPartyRepository;
+    }
 
     @Override
     public TaxiPartyMembersListResponse findTaxiPartyMembers(TaxiPartyMembersRequest req) {
         List<TaxiPartyMembers> result = findTaxiPartyMembersByPartyId(req.getId());
+        Long administer = taxiPartyRepository.findAdministerById(req.getId()).get();
         List<TaxiPartyMembersResponse> taxipartyMembersList = new ArrayList<>();
         for (TaxiPartyMembers taxiPartyMembers : result) {
-            taxipartyMembersList.add(TaxiPartyMembersResponse.of(taxiPartyMembers));
+            Member partyMember = taxiPartyMembers.getMember();
+            taxipartyMembersList.add(TaxiPartyMembersResponse.builder()
+                    .id(partyMember.getId())
+                    .name(partyMember.getName())
+                    .profileImageUrl(partyMember.getProfileImageUrl())
+                    .build()
+            );
         }
-        return TaxiPartyMembersListResponse.of(taxipartyMembersList);
+        return TaxiPartyMembersListResponse.of(administer, taxipartyMembersList);
     }
 
     @Override
