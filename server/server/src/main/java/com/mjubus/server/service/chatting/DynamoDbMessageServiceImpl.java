@@ -2,12 +2,16 @@ package com.mjubus.server.service.chatting;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.mjubus.server.dto.request.MessageHistoryRequest;
+import com.mjubus.server.exception.chatting.RoomIdNotFoundExcption;
 import com.mjubus.server.vo.ChattingMessage;
 import com.mjubus.server.vo.MessageHistory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class DynamoDbMessageServiceImpl implements  DynamoDbMessageService{
     private final DynamoDBMapper dynamoDBMapper;
@@ -22,15 +26,19 @@ public class DynamoDbMessageServiceImpl implements  DynamoDbMessageService{
     }
 
     @Override
-    public List<MessageHistory> findMessageHistory(Long id) {
+    public List<MessageHistory> findMessageHistory(MessageHistoryRequest request) {
         MessageHistory target = MessageHistory.builder()
-                .partyId(id)
+                .partyId(request.getRoomId())
                 .build();
 
         DynamoDBQueryExpression<MessageHistory> queryExpression = new DynamoDBQueryExpression<MessageHistory>()
                 .withHashKeyValues(target);
 
         List<MessageHistory> itemList = dynamoDBMapper.query(MessageHistory.class, queryExpression);
+
+        if(itemList.size() == 0) {
+            throw new RoomIdNotFoundExcption(request.getRoomId().toString());
+        }
 
         return itemList;
     }
