@@ -3,10 +3,13 @@ import {TouchableOpacity, Image } from 'react-native';
 import GoogleImage from "../../assets/image/google_login.png"
 import { loginApi } from "../../api";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GoogleLogin = () => {
     const [onLogin, setOnLogin] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
+    const navigation = useNavigation();
 
     useEffect(() => {
         GoogleSignin.configure({
@@ -32,6 +35,7 @@ const GoogleLogin = () => {
                     "serverAuthCode": userInfo.serverAuthCode,
                 }
                 loginApi.google_login({ queryKey: {payload} }).then(res => setUserInfo(res));
+                navigation.navigate("StudentAuth");
             } catch (error) {
                 console.log(error);
                 // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -49,14 +53,13 @@ const GoogleLogin = () => {
                 // }
             }
         };
-
         await signIn();
         setOnLogin(false);
     }
-
+    console.log(userInfo);
     return (
-        <TouchableOpacity onPress={onGoogleButtonPress}>
-            <Image source={GoogleImage}/>
+        <TouchableOpacity onPress={onGoogleButtonPress}> 
+           <Image source={GoogleImage}/>
         </TouchableOpacity>
     )
 };
