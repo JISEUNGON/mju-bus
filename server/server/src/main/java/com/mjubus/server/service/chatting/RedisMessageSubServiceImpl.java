@@ -59,8 +59,6 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
 
         String simpDestination = (String) messageHeaders.get("simpDestination"); // /sub/{roomId}
         String roomId = (simpDestination.split("/"))[2];
-        log.info("dest: " + simpDestination);
-        log.info("roomId: " + roomId);
         String hashName = "room-" + roomId + "-subscription";
 
         redisTemplate.opsForHash().put(hashName, simpSubscriptionId, RedisHashFlag.ON);
