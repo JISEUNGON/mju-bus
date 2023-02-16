@@ -36,14 +36,14 @@ public class RedisMessageServiceImpl implements RedisMessageService {
     @Transactional
     @Override
     public void chattingRoomQuit(Long groupId, Member member) {
-        String sessionMatchingKey = "sub-" + member.getId();
+        String subscriptionId = "sub-" + member.getId();
 
         String hashName = "room-" + groupId + "-subscription";
         if (Boolean.FALSE.equals(redisTemplate.hasKey(hashName))) {
             throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
         }
 
-        redisTemplate.opsForHash().delete(hashName, "sub-" + member.getId());
+        redisTemplate.opsForHash().delete(hashName, subscriptionId);
     }
 
     @Transactional
