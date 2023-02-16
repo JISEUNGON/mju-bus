@@ -148,7 +148,7 @@ public class TaxiPartyController {
     })
     @ResponseBody
     public ResponseEntity<TaxiPartyDeleteResponse> partyDelete(@ApiIgnore Authentication authentication, @PathParam(value = "group-id") TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
-        redisMessageService.chattingRoomAndSessionDelete(taxiPartyDeleteRequest);
+        redisMessageService.chattingRoomDelete(taxiPartyDeleteRequest);
         taxiPartyService.deleteParty(taxiPartyDeleteRequest);
         return ResponseEntity.ok(TaxiPartyDeleteResponse.builder().isDeleted("success").build());
     }

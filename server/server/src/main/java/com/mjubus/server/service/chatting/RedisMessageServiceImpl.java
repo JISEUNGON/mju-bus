@@ -37,28 +37,20 @@ public class RedisMessageServiceImpl implements RedisMessageService {
     @Override
     public void chattingRoomQuit(Long groupId, Member member) {
         String sessionMatchingKey = "sub-" + member.getId();
-        Optional<Object> sessionIdGet = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", sessionMatchingKey));
-        String sessionId = (String) sessionIdGet.orElseThrow(() -> new SessionIdNotFoundExcption("해당하는 hash key가 존재하지 않습니다."));
 
         String hashName = "room-" + groupId + "-subscription";
         if (Boolean.FALSE.equals(redisTemplate.hasKey(hashName))) {
             throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
         }
 
-        redisTemplate.opsForHash().delete(hashName, sessionId);
-        redisTemplate.opsForHash().delete("session-matching", sessionMatchingKey);
+        redisTemplate.opsForHash().delete(hashName, "sub-" + member.getId());
     }
 
     @Transactional
     @Override
-    public void chattingRoomAndSessionDelete(TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
+    public void chattingRoomDelete(TaxiPartyDeleteRequest taxiPartyDeleteRequest) {
         Optional<TaxiParty> taxiParty = taxiPartyRepository.findById(taxiPartyDeleteRequest.getGroupId());
         taxiParty.orElseThrow(() -> new TaxiPartyNotFoundException(taxiPartyDeleteRequest.getGroupId()));
         redisTemplate.delete("room-" + taxiPartyDeleteRequest.getGroupId() + "-subscription");
-
-        List<TaxiPartyMembers> partyMembers = taxiPartyMembersService.findTaxiPartyMembersByPartyId(taxiPartyDeleteRequest.getGroupId());
-        partyMembers.forEach((partyMember -> {
-            redisTemplate.opsForHash().delete("session-matching", "sub-" + partyMember.getMember().getId());
-        }));
     }
 }
