@@ -86,18 +86,41 @@ function StudentAuth({navigation}) {
       }
       setName(name);
     };
+    const [checkBirthday, setCheckBirthday] = useState(false);
     const [birthday, setBirthday] = useState("");
+    
+
+    const birthdayCheck = (birthday) => {
+      const month = Number(birthday.substring(2,4));
+      const day = Number(birthday.substring(4,6));
+
+      if(birthday.length === 6) {
+          if (month < 1 || month > 12) {
+            return false;
+          } else if (day < 1 || day > 31) {
+            return false;
+          } else if ((month==4 || month==6 || month==9 || month==11) && day==31) {
+            return false;   
+          } else {
+            return true;
+          }
+      } else {
+          return false;
+        }
+    };
+
+
     const onChangeBirthday = (birthday) => {
-      if(birthday.length !== 6 || !(0 <= birthday && birthday <= 999999)) {
+      if(!birthdayCheck(birthday)) {
         setCheckBirthday(false);
       }else {
         setCheckBirthday(true);
       }
       setBirthday(birthday);
     };
+
     const [agree, setAgree] = useState(false);
-    const onChangeAgree = () => setAgree(!agree);
-    const [checkBirthday, setCheckBirthday] = useState(false);
+    const onChangeAgree = () => setAgree(!agree)
     const [checkName, setCheckName] = useState(false);
     return (
         <SafeAreaProvider>
