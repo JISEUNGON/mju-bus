@@ -7,7 +7,7 @@ import styled from "styled-components/native";
 import StudentAuth from './StudentAuth';
 
 const GuestStartView = styled.View`
-  margin-top: 100px;
+  margin-top: -50px;
   margin-bottom: 20px;
   justify-content: center;
   align-items: center;
@@ -42,10 +42,13 @@ function Login({navigation: { navigate }}) {
         <SafeAreaProvider>
             <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
                 <View style={{flex: 1, backgroundColor:"#ffffff", justifyContent: "flex-end"}}>
-                    <Image
-                        style={{ width: '100%' }} 
-                        source={require("../../assets/image/login_logo.png")}>
-                    </Image>
+                    <View style={{justifyContent:"center", alignItems:"center"}}>
+                        <Image
+                            style={{width:"80%", resizeMode: "contain"}} 
+                            source={require("../../assets/image/login_logo_new.png")}>
+                        </Image>
+                    </View>
+                    
 
                     <View>     
                         <TouchableOpacity onPress={() => navigate("Splash")}>
