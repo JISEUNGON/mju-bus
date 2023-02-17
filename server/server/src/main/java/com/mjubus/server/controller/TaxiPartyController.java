@@ -3,11 +3,10 @@ package com.mjubus.server.controller;
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.*;
-import com.mjubus.server.service.chatting.RedisMessageLogService;
-import com.mjubus.server.service.chatting.RedisMessageService;
-import com.mjubus.server.service.chatting.RedisMessageSubService;
+import com.mjubus.server.service.chatting.*;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
+import com.mjubus.server.vo.MessageHistory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,15 +34,17 @@ public class TaxiPartyController {
     private final RedisMessageService redisMessageService;
     private final RedisMessageLogService redisMessageLogService;
     private final RedisMessageSubService redisMessageSubService;
+    private final DynamoDbMessageService dynamoDbMessageService;
 
 
     @Autowired
-    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, RedisMessageLogService redisMessageLogService, RedisMessageSubService redisMessageSubService) {
+    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, RedisMessageLogService redisMessageLogService, RedisMessageSubService redisMessageSubService, DynamoDbMessageService dynamoDbMessageService) {
         this.taxiPartyService = taxiPartyService;
         this.taxiPartyMembersService = taxiPartyMembersService;
         this.redisMessageService = redisMessageService;
         this.redisMessageLogService = redisMessageLogService;
         this.redisMessageSubService = redisMessageSubService;
+        this.dynamoDbMessageService = dynamoDbMessageService;
     }
 
     @GetMapping("/list")
@@ -161,8 +162,8 @@ public class TaxiPartyController {
             @ApiResponse(responseCode = "404", description = "Room ID가 정상적이지 않은 경우")
     })
     @ResponseBody
-    public ResponseEntity<List<MessageLogResponse>> findMessageHistory(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") MessageLogRequest req) {
-        return ResponseEntity.ok(redisMessageLogService.findMessageLog(req));
+    public ResponseEntity<List<MessageHistoryResponse>> findMessageHistory(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") MessageHistoryRequest req) {
+        return ResponseEntity.ok(MessageHistoryResponse.of(dynamoDbMessageService.findMessageHistory(req)));
     }
 
     @PatchMapping("/{group-id}/chatting/status")
