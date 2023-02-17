@@ -3,6 +3,7 @@ package com.mjubus.server.service.chatting;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mjubus.server.dto.request.UpdateChattingSessionHashRequest;
+import com.mjubus.server.exception.chatting.IllegalHeaderArgumentsException;
 import com.mjubus.server.exception.chatting.RoomIdNotFoundExcption;
 import com.mjubus.server.exception.chatting.SessionIdNotFoundExcption;
 import com.mjubus.server.vo.ChattingMessage;
@@ -18,6 +19,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -58,6 +60,10 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         String simpSubscriptionId = (String) messageHeaders.get("simpSubscriptionId"); // sub-{memberId}
 
         String simpDestination = (String) messageHeaders.get("simpDestination"); // /sub/{roomId}
+
+        if (!Pattern.matches(simpSubscriptionId, "^(sub-)[0-9]+$")) {
+            throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpSubscriptionId);
+        }
         String roomId = (simpDestination.split("/"))[2];
         String hashName = "room-" + roomId + "-subscription";
 
@@ -69,6 +75,11 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         MessageHeaders messageHeaders = unsubscribeEvent.getMessage().getHeaders();
 
         String simpDestination = (String) messageHeaders.get("simpSubscriptionId"); // {roomId}/sub-{memberId}
+        if (!Pattern.matches(simpDestination, "[0-9]*(\\/sub-)[0-9]+")) {
+            throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpDestination);
+        }
+
+
         String roomId = (simpDestination.split("/"))[0];
         String memberId = (((simpDestination.split("/"))[1]).split("-"))[1];
         String hashName = "room-" + roomId + "-subscription";
