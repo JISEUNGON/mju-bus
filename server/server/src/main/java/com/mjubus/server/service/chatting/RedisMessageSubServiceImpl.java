@@ -61,8 +61,8 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
 
         String simpDestination = (String) messageHeaders.get("simpDestination"); // /sub/{roomId}
 
-        if (!Pattern.matches(simpDestination, "^(sub-)[0-9]*$")) {
-            throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpDestination);
+        if (!Pattern.matches(simpSubscriptionId, "^(sub-)[0-9]*$")) {
+            throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpSubscriptionId);
         }
         String roomId = (simpDestination.split("/"))[2];
         String hashName = "room-" + roomId + "-subscription";

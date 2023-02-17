@@ -48,6 +48,7 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
         entries.forEach((key, value) -> {
             String flag = (String) value;
             String simpSubscriptionId = (String) key; // sub-{memberId}
+            if (simpSubscriptionId.equals("init")) return;
             String memberId = (simpSubscriptionId.split("-"))[1];
             if (flag.equals(RedisMessageSubServiceImpl.RedisHashFlag.OFF)) {
                 log.info("member " + memberId  +": false"); // FCM 개발 시 삭제
