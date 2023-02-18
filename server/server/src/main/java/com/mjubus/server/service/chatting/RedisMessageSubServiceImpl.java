@@ -61,7 +61,7 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
 
         String simpDestination = (String) messageHeaders.get("simpDestination"); // /sub/{roomId}
 
-        if (!Pattern.matches(simpSubscriptionId, "^(sub-)[0-9]+$")) {
+        if (!Pattern.matches("^(sub-)[0-9]+$", simpSubscriptionId)) {
             throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpSubscriptionId);
         }
         String roomId = (simpDestination.split("/"))[2];
@@ -75,7 +75,7 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         MessageHeaders messageHeaders = unsubscribeEvent.getMessage().getHeaders();
 
         String simpDestination = (String) messageHeaders.get("simpSubscriptionId"); // {roomId}/sub-{memberId}
-        if (!Pattern.matches(simpDestination, "[0-9]*(\\/sub-)[0-9]+")) {
+        if (!Pattern.matches("^[0-9]*(\\/sub-)[0-9]+$", simpDestination)) {
             throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpDestination);
         }
 
