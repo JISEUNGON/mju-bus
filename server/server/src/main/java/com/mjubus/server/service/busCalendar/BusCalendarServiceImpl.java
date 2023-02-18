@@ -25,7 +25,7 @@ public class BusCalendarServiceImpl implements BusCalendarService {
      * @return BusCalendar
      */
     @Override
-    public BusCalendar findByDate(LocalDateTime date) {
+    public BusCalendar findBusCalendarByDate(LocalDateTime date) {
         Optional<BusCalendar> optionalBusCalendar = busCalendarRepository.findBusCalendarByDate(date.toLocalDate(), date.toLocalTime(), DateHandler.getDayOfWeek(date));
         return optionalBusCalendar.orElseThrow(() -> new BusCalenderNotFoundException(date));
     }
@@ -36,7 +36,7 @@ public class BusCalendarServiceImpl implements BusCalendarService {
      */
     @Override
     public BusCalendarResponse findBusCalendar() {
-        return BusCalendarResponse.of(findByDate(DateHandler.getToday()));
+        return BusCalendarResponse.of(findBusCalendarByDate(DateHandler.getToday()));
     }
 
     /**

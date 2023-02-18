@@ -47,8 +47,8 @@ public class BusController {
             @ApiResponse(responseCode = "404", description = "요청한 type이 다른 경우")
     })
     @ResponseBody
-    public List<BusList> busTimeTable() {
-        return busService.getBusListByDate(DateHandler.getToday());
+    public ResponseEntity<BusListResponse> busTimeTable() {
+        return ResponseEntity.ok(busService.getBusListByDate(DateHandler.getToday()));
     }
 
     @GetMapping("/{busID}/timeTable")
