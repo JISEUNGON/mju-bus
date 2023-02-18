@@ -3,6 +3,7 @@ package com.mjubus.server.service.bus;
 import com.mjubus.server.domain.*;
 import com.mjubus.server.dto.busListDto.BusList;
 import com.mjubus.server.dto.busRoute.RouteOrderDto;
+import com.mjubus.server.dto.response.BusListResponse;
 import com.mjubus.server.dto.response.BusResponse;
 import com.mjubus.server.dto.response.BusRouteResponse;
 import com.mjubus.server.dto.response.BusStatusResponse;
@@ -10,10 +11,12 @@ import com.mjubus.server.dto.request.BusTimeTableRequest;
 import com.mjubus.server.enums.BusEnum;
 import com.mjubus.server.exception.Bus.BusNotFoundException;
 import com.mjubus.server.repository.BusRepository;
+import com.mjubus.server.repository.BusTimeTableRepository;
 import com.mjubus.server.service.busCalendar.BusCalendarService;
 import com.mjubus.server.service.busTimeTable.BusTimeTableService;
 import com.mjubus.server.service.route.RouteService;
 import com.mjubus.server.util.DateHandler;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -22,21 +25,25 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BusServiceImpl implements BusService {
 
-    private final BusCalendarService busCalendarService;
-    private final BusTimeTableService busTimeTableService;
     private final RouteService routeService;
     private final BusRepository busRepository;
+    private final BusTimeTableRepository busTimeTableRepository;
 
-    @Autowired
-    public BusServiceImpl(@Lazy BusRepository busRepository, @Lazy BusCalendarService busCalendarService, @Lazy BusTimeTableService busTimeTableService, @Lazy RouteService routeService) {
-        this.busRepository = busRepository;
-        this.busCalendarService = busCalendarService;
-        this.busTimeTableService = busTimeTableService;
+    private final BusTimeTableService busTimeTableService;
+
+    private final BusCalendarService busCalendarService;
+
+    public BusServiceImpl(RouteService routeService, BusRepository busRepository, BusTimeTableRepository busTimeTableRepository, @Lazy BusTimeTableService busTimeTableService, BusCalendarService busCalendarService) {
         this.routeService = routeService;
+        this.busRepository = busRepository;
+        this.busTimeTableRepository = busTimeTableRepository;
+        this.busTimeTableService = busTimeTableService;
+        this.busCalendarService = busCalendarService;
     }
 
     /**
@@ -59,6 +66,18 @@ public class BusServiceImpl implements BusService {
     public Bus findBusByBusId(Long id) {
         Optional<Bus> bus = busRepository.findById(id);
         return  bus.orElseThrow(() -> new BusNotFoundException(id));
+    }
+
+    /**
+     * 날짜로 운행중인 버스 리스트를 찾는 메소드
+     * @param date 날짜
+     * @return List<Bus>
+     */
+    @Override
+    public List<Bus> findBusListByDate(LocalDateTime date) {
+        BusCalendar busCalendar = busCalendarService.findBusCalendarByDate(date);
+        List<BusTimeTable> busTimeTableList = busTimeTableRepository.findBusTimeTablesByBusCalendar_Id(busCalendar.getId()).orElseThrow(() -> new BusNotFoundException(busCalendar.getId()));
+        return busTimeTableList.stream().map(BusTimeTable::getBus).collect(Collectors.toList());
     }
 
     /**
@@ -140,39 +159,17 @@ public class BusServiceImpl implements BusService {
      * @return BusTimeTableDto : 버스 운행 시간표
      */
     @Override
-    public List<BusList> getBusListByDate(LocalDateTime date) {
+    public BusListResponse getBusListByDate(LocalDateTime date) {
         // 현재 일정으로 운행중인 버스 운행표
-        List<Integer> busIdList = busTimeTableService.findBusListByDate(date);
+        List<Bus> busList = findBusListByDate(date);
 
         // 시내버스
-        BusList busList_IN = new BusList();
-        busList_IN.setType(BusEnum.시내버스.getValue());
-        List<Bus> busListInner = new LinkedList<>();
+        List<Bus> sineBusList = busList.stream().filter(bus -> bus.getId() < 100).collect(Collectors.toList());
 
         // 시외버스
-        BusList busList_OUT = new BusList();
-        busList_OUT.setType(BusEnum.시외버스.getValue());
-        List<Bus> busListOuter = new LinkedList<>();
+        List<Bus> siwaBusList = busList.stream().filter(bus -> bus.getId() >= 100).collect(Collectors.toList());
 
-        // 시내/시외 분류
-        for(Integer busId : busIdList) {
-            Bus bus = findBusByBusId(Long.valueOf(busId));
-            if (bus.getId() < 100) {
-                busListInner.add(bus);
-            } else {
-                busListOuter.add(bus);
-            }
-        }
+        return BusListResponse.of(sineBusList, siwaBusList);
 
-        // 결과 값 생성
-        List<BusList> busLists = new LinkedList<>();
-
-        busList_IN.setBusList(busListInner);
-        busList_OUT.setBusList(busListOuter);
-
-        busLists.add(busList_IN);
-        busLists.add(busList_OUT);
-
-        return busLists;
     }
 }

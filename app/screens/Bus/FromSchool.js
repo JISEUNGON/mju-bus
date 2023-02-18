@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
 import { TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GetRouteTableData, highlights } from "../../utils";
-import { busApi, calendarApi } from "../../api";
+import { highlights } from "../../utils";
 import StationSelect from "./StationSelect";
 import NMap from "./NMap";
 import { stationId } from "../../id";
+import { MBAContext } from "../../navigation/Root";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -73,39 +71,53 @@ const SubmitButton = styled.TouchableOpacity``;
 
 // eslint-disable-next-line react/prop-types
 function FromSchool({ navigation: { navigate } }) {
+  const {
+    sineBusList,
+    siweBusList,
+    mjuCalendar,
+    stationList,
+    busTimeTable,
+  } = React.useContext(MBAContext);
+
+  // 정류장 선택 모달 
   const [modalVisible, setModalVisible] = useState(false);
+
+  // 현재 선택된 정류장
   const [station, setStation] = useState({ name: "정류장을 선택하세요" });
-  const [staredStation, setStaredStation] = useState([]);
 
-  const { isLoading: buslistLoading, data: busListData } = useQuery(
-    ["busList"],
-    busApi.list,
-  );
+  // 운행중인 버스들의 모든 정류장
+  const [allStation, setAllStation] = useState([]);
 
-  const { isLoading: calendarLoading, data: calendarData } = useQuery(
-    ["calendar"],
-    calendarApi.calendar,
-  );
-
-  const loadSelectedRoutes = async STORAG_KEY => {
-    try {
-      const string = await AsyncStorage.getItem(STORAG_KEY);
-      if (string != null) {
-        setStaredStation(JSON.parse(string));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // 로딩
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // eslint-disable-next-line no-use-before-define
-    loadSelectedRoutes(calendarData.description);
-  }, [calendarData, modalVisible]);
+    // "학교에서" 정류장 블랙리스트
+    const blackList = [4, 5, 1, 6, 11, 24];
 
-  const routeData = GetRouteTableData(busListData[0].busList);
+    // 운행중인 버스들의 모든 정류장을 중복을 제거하며 저장
+    const stations = new Set();
 
-  const loading = buslistLoading || calendarLoading;
+    // 모든 버스에 대해서 정류장을 저장
+    stationList.forEach(bus => {
+      bus.stations.forEach(station => {
+        if (!blackList.includes(station.id)) { // 블랙리스트에 없는 정류장만 저장
+          stations.add({
+            id: station.id,
+            name: station.name,
+            latitude: station.latitude,
+            longitude: station.longitude,
+          });
+        }
+      });
+    });
+
+    // 저장
+    setAllStation([...stations]);
+
+    // 로딩 종료
+    setLoading(false);
+  }, []);
 
   const onStart = () => {
     setModalVisible(true);
@@ -118,12 +130,11 @@ function FromSchool({ navigation: { navigate } }) {
     </Loader>
   ) : (
     <Conatiner>
-      {routeData.every(item => item.data !== undefined) ? (
+      {allStation.every(item => item.id !== undefined) ? (
         <NMap
-          routeData={routeData}
-          setStation={setStation}
-          station={station}
-          toSchool={false}
+          routeData={allStation} // 모든 정류장
+          selectedStation={station} // 현재 선택된 정류장
+          setStation={setStation} // 현재 선택된 정류장 변경
         />
       ) : (
         <Loader>
@@ -166,11 +177,9 @@ function FromSchool({ navigation: { navigate } }) {
           </SubmitContainer>
         </SubmitButton>
       ) : null}
-      {modalVisible && routeData.every(item => item.data !== undefined) ? (
+      {modalVisible ? (
         <StationSelect
-          data={routeData}
-          staredStation={staredStation}
-          storageKey={calendarData.description}
+          stations={allStation}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           setStation={setStation}

@@ -2,6 +2,7 @@ package com.mjubus.server.service.bus;
 
 import com.mjubus.server.domain.Bus;
 import com.mjubus.server.dto.busListDto.BusList;
+import com.mjubus.server.dto.response.BusListResponse;
 import com.mjubus.server.dto.response.BusResponse;
 import com.mjubus.server.dto.response.BusRouteResponse;
 import com.mjubus.server.dto.response.BusStatusResponse;
@@ -23,6 +24,8 @@ public interface BusService {
 
 
     Bus findBusByBusId(Long id);
-    List<BusList> getBusListByDate(LocalDateTime date);
+    BusListResponse getBusListByDate(LocalDateTime date);
+
+    List<Bus> findBusListByDate(LocalDateTime date);
 
 }

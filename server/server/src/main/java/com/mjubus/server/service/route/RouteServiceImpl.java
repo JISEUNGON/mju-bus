@@ -39,7 +39,7 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public Route findByBus(Bus bus) {
         LocalDateTime now = DateHandler.getToday();
-        BusCalendar busCalendar =  busCalendarService.findByDate(now);
+        BusCalendar busCalendar =  busCalendarService.findBusCalendarByDate(now);
         Optional<Route> routeOptional = routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
         return  routeOptional.orElseThrow(() -> new RouteNotFoundException(bus, null, busCalendar));
     }
@@ -52,7 +52,7 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public Route findByRouteInfo(RouteInfo routeInfo) {
         LocalDateTime now = DateHandler.getToday();
-        BusCalendar busCalendar =  busCalendarService.findByDate(now);
+        BusCalendar busCalendar =  busCalendarService.findBusCalendarByDate(now);
         Optional<Route> routeOptional = routeRepository.findRouteByRouteInfo_IdAndBus_Id(routeInfo.getId(), busCalendar.getId());
         return  routeOptional.orElseThrow(() -> new RouteNotFoundException(null, routeInfo, busCalendar));
     }
@@ -75,7 +75,7 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public List<StationDTO> findStationsByBus(Bus bus) {
-        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday());
+        BusCalendar busCalendar = busCalendarService.findBusCalendarByDate(DateHandler.getToday());
 
         Optional<Route> optionalRoute = routeRepository.findRouteByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
         Route route = optionalRoute.orElseThrow(() -> new RouteNotFoundException(bus, null, busCalendar));

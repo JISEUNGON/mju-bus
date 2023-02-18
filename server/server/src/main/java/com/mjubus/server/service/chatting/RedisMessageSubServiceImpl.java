@@ -51,7 +51,7 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         } catch (JsonProcessingException e) {
             log.error("[Redis Pub/Sub] | Json Convert Error. publishMessage: [" + publishMessage + "]");
             log.error(e.getMessage());
-        }
+        }   
     }
 
     @Override

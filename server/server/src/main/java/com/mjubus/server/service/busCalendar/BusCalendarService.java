@@ -1,6 +1,8 @@
 package com.mjubus.server.service.busCalendar;
 
+import com.mjubus.server.domain.Bus;
 import com.mjubus.server.domain.BusCalendar;
+import com.mjubus.server.domain.BusTimeTable;
 import com.mjubus.server.dto.request.BusCalendarSetDateRequest;
 import com.mjubus.server.dto.response.BusCalendarGetDateResponse;
 import com.mjubus.server.dto.response.BusCalendarResponse;
@@ -15,9 +17,6 @@ public interface BusCalendarService {
     BusCalendarGetDateResponse getDate();
     BusCalendarGetDateResponse resetDate();
 
-
-    // Service 에서 사용되는 메소드
-    BusCalendar findByDate(LocalDateTime date);
-
+    BusCalendar findBusCalendarByDate(LocalDateTime date);
 
 }

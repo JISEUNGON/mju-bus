@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Dimensions, useColorScheme } from "react-native";
 import styled from "styled-components";
-import { useQuery } from "@tanstack/react-query";
 import SwitchSelector from "react-native-switch-selector";
-import { busApi, calendarApi } from "../../api";
 import TimeTable from "../../components/TimeTable";
 import RouteTable from "../../components/RouteTable";
-import { GetRouteTableData, GetTimeTableData, highlights } from "../../utils";
+import { highlights } from "../../utils";
 import { BLACK_BUTTON_COLOR, DARK_GRAY, WHITE_COLOR } from "../../colors";
+import { MBAContext } from "../../navigation/Root";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -77,34 +76,30 @@ const SwitchContatiner = styled.View`
   width: 180px;
 `;
 function SineShuttle() {
+  const {
+    sineBusList,
+    siweBusList,
+    mjuCalendar,
+    stationList,
+    busTimeTable,
+  } = React.useContext(MBAContext);
+
   const isDark = useColorScheme() === "dark";
 
+  // 선택한 노선도
   const [selectedRoute, setSelectedRoute] = useState(0);
+
+  // 노선도 옵션
   const options = [
     { label: "시내", value: 0 },
     { label: "기흥역", value: 1 },
   ];
-  const { isLoading: buslistLoading, data: busListData } = useQuery(
-    ["busList"],
-    busApi.list,
-  );
-  const { isLoading: calendarLoading, data: calendarData } = useQuery(
-    ["calendar"],
-    calendarApi.calendar,
-  );
 
-  const loading = buslistLoading || calendarLoading;
-
-  return loading ? (
-    // 운행중인 버스 && 현재 일정표 데이터를 얻는 동안 로딩 출력
-    <Loader>
-      <ActivityIndicator />
-    </Loader>
-  ) : (
+  return (
     <>
       {/* 일정표 */}
       <HeaderContainer>
-        <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
+        <Title>현재는 {highlights(mjuCalendar.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
         <Hr style={{ borderBottomWidth: 2 }} />
       </HeaderContainer>
@@ -129,7 +124,7 @@ function SineShuttle() {
           </SwitchContatiner>
         </TimmTableTitleContainer>
         <TimeTable
-          data={GetTimeTableData(busListData[0]?.busList)}
+          busTimeTable={busTimeTable}
           value={selectedRoute}
         />
         {/* 노선도 */}
@@ -137,7 +132,7 @@ function SineShuttle() {
           <ContentsTitle>노선도</ContentsTitle>
         </RouteTableTitleContainer>
         <RouteTable
-          data={GetRouteTableData(busListData[0]?.busList)}
+          stationList={stationList}
           value={selectedRoute}
         />
       </ContentsContainer>
