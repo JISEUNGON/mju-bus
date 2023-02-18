@@ -4,9 +4,9 @@ import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.*;
 import com.mjubus.server.service.chatting.*;
+import com.mjubus.server.service.station.radiusDetection.StationRadiusDetectionService;
 import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
-import com.mjubus.server.vo.MessageHistory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,16 +35,18 @@ public class TaxiPartyController {
     private final RedisMessageLogService redisMessageLogService;
     private final RedisMessageSubService redisMessageSubService;
     private final DynamoDbMessageService dynamoDbMessageService;
+    private final StationRadiusDetectionService stationRadiusDetectionService;
 
 
     @Autowired
-    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, RedisMessageLogService redisMessageLogService, RedisMessageSubService redisMessageSubService, DynamoDbMessageService dynamoDbMessageService) {
+    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, RedisMessageLogService redisMessageLogService, RedisMessageSubService redisMessageSubService, DynamoDbMessageService dynamoDbMessageService, StationRadiusDetectionService stationRadiusDetectionService) {
         this.taxiPartyService = taxiPartyService;
         this.taxiPartyMembersService = taxiPartyMembersService;
         this.redisMessageService = redisMessageService;
         this.redisMessageLogService = redisMessageLogService;
         this.redisMessageSubService = redisMessageSubService;
         this.dynamoDbMessageService = dynamoDbMessageService;
+        this.stationRadiusDetectionService = stationRadiusDetectionService;
     }
 
     @GetMapping("/list")
@@ -176,4 +178,16 @@ public class TaxiPartyController {
     public ResponseEntity<String> updateSessionHashStatus(@ApiIgnore Authentication authentication, @RequestBody UpdateChattingSessionHashRequest updateChattingSessionHashRequest) {
         return ResponseEntity.ok(redisMessageSubService.updateSessionHash(updateChattingSessionHashRequest));
     }
+
+    @GetMapping("/{group-id}/location")
+    @ApiOperation(value = "택시 파티가 가진 위도경도의 장소명을 반환한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 응답"),
+            @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
+            @ApiResponse(responseCode = "404", description = "해당하는 파티가 존재하지 않음")
+    })
+    public ResponseEntity<StationRadiusDetectedNameResponse> getLocationName(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") StationRadiusDetectedNameRequest request) {
+        return ResponseEntity.ok(stationRadiusDetectionService.detectAndGetName(request));
+    }
+
 }
