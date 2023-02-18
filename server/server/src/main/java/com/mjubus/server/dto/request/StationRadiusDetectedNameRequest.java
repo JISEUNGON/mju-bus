@@ -1,5 +1,6 @@
 package com.mjubus.server.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Getter
@@ -7,10 +8,9 @@ import lombok.*;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StationRadiusDetectedNameRequest {
-    private Double latitude;
-    private Double longitude;
+    private Long groupId;
 
-    public static StationRadiusDetectedNameRequest of(Double latitude, Double longitude) {
-        return new StationRadiusDetectedNameRequest(latitude, longitude);
+    public static StationRadiusDetectedNameRequest of(String groupId) {
+        return new StationRadiusDetectedNameRequest(Long.parseLong(groupId));
     }
 }
