@@ -15,6 +15,7 @@ import BusInfoList from "../../components/BusResult/BusInfo";
 import { stationApi } from "../../api";
 import { CalculatorTime, DeleteSecond } from "../../utils";
 import XIcon from "../../components/XIcon";
+import { MBAContext } from "../../navigation/Root";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -61,10 +62,24 @@ function CustomNavButton(navigation) {
 
 // eslint-disable-next-line react/prop-types
 function BusList({ navigation, route: { params } }) {
+  const {
+    sineBusList,
+    siweBusList,
+    mjuCalendar,
+    stationList,
+    busTimeTable,
+  } = React.useContext(MBAContext);
+
   const queryClient = useQueryClient();
 
-  // PARMAS
-  const { src, dest, redBus, toSchool } = params;
+  const { 
+    src,  // 출발지
+    dest, // 목적지
+    redBus, // 빨간버스 여부
+    toSchool // 학교행 여부
+  } = params;
+
+  // Refreshing 상태
   const [refreshing, setRefreshing] = useState(false);
 
   const [start, setStart] = useState("");
@@ -78,7 +93,7 @@ function BusList({ navigation, route: { params } }) {
     return dest.id;
   };
 
-  // Remain 데이터 불러오기
+  // 도착하는 버스 데이터 불러오기
   const {
     isLoading: busRemainLoading,
     isRefetching,
@@ -104,6 +119,7 @@ function BusList({ navigation, route: { params } }) {
     };
   }, [queryClient]);
 
+  // 로딩중인 경우, 로딩화면 띄우기
   const onRefresh = async () => {
     setRefreshing(true);
     await queryClient.refetchQueries(["remain"]);
@@ -117,10 +133,11 @@ function BusList({ navigation, route: { params } }) {
       setStart(src.name);
       setEnd("명지대학교");
       return `${src.name}   →   명지대학교`;
+    } else {
+      setStart("명지대학교");
+      setEnd(dest.name);
+      return `명지대학교   →   ${dest.name}`;
     }
-    setStart(src.name);
-    setEnd(dest.name);
-    return `${src.name}   →  ${dest.name}`;
   }
 
   useLayoutEffect(() => {
@@ -132,9 +149,8 @@ function BusList({ navigation, route: { params } }) {
 
   // 총 소요시간 계산
   // eslint-disable-next-line no-shadow
-
   function renderBusList() {
-    if (busRemainData.busList.length === 0) {
+    if (busRemainData.busList === null || busRemainData.busList.length === 0) {
       return (
         <Board>
           <NoContents>운행 중인 버스가 없습니다</NoContents>

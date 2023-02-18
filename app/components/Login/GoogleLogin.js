@@ -26,7 +26,6 @@ const GoogleLogin = () => {
 
         signIn = async () => {
             try {
-                
                 await GoogleSignin.hasPlayServices();
                 const userInfo = await GoogleSignin.signIn();
 
@@ -43,7 +42,6 @@ const GoogleLogin = () => {
         await signIn();
         setOnLogin(false);
     }
-    console.log(userInfo);
     return (
         <TouchableOpacity onPress={onGoogleButtonPress}> 
            <Image source={GoogleImage}/>

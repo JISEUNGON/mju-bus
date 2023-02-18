@@ -31,8 +31,8 @@ const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
   height: 20%;
-  //height: 140px;
-  //flex:0.4;
+  // height: 140px;
+  flex:0.4;
   justify-content: center;
   background-color: ${props => props.theme.scheduleBgColor};
 `;

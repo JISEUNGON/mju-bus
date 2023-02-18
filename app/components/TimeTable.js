@@ -68,36 +68,27 @@ function SineTableList({ list }) {
   useEffect(() => {
     // 시내 노선 1개일 때
     if (list.length === 1) {
-      list[0]?.data?.stations[0]?.timeList.map(
-        item => (item.name = list[0].data.name),
-      );
-      setDataList(list[0]?.data?.stations[0]?.timeList);
+      const { id, name, timeTable } = list[0];
+      setDataList(timeTable[0]);
     }
     // 시내 노선 2개일 때 (명지대, 용인시내) : 시간순으로 SORT
     if (list.length === 2) {
-      list[0]?.data?.stations[0]?.timeList.map(
-        item => (item.name = list[0].data.name),
-      );
-      list[1]?.data?.stations[0]?.timeList.map(
-        item => (item.name = list[1].data.name),
-      );
       setDataList(
         [
-          ...list[0].data.stations[0].timeList,
-          ...list[1].data.stations[0].timeList,
+          list[0].timeTable[0],
+          list[1].timeTable[0]
         ].sort(sortTimeTable),
       );
     }
   }, [list]);
 
   let counter = 0;
-
   // 시내 데이터는 항상 1개 이상 이므로 로딩 출력
   return dataList.length === 0 ? (
     <Loader>
-      <ActivityIndicator />
-    </Loader>
-  ) : (
+      <ActivityIndicator size="large" color="#0000ff" />
+    </Loader>)
+     :  (
     <Container nestedScrollEnabled>
       <TableHeader>
         <Header style={{ flex: 1 }}>순번</Header>
@@ -105,14 +96,14 @@ function SineTableList({ list }) {
         <Header style={{ flex: 2 }}>출발시각</Header>
         <Header style={{ flex: 2 }}>진입로 경유</Header>
       </TableHeader>
-      {dataList?.map(data => {
+      {dataList.timeList.map(data => {
         counter += 1;
         return (
           <TableContents key={data.depart_at}>
             {/* 1. 순번 */}
             <Contents style={{ flex: 1 }}>{counter}</Contents>
             {/* 구분 (명지대역 / 시내) */}
-            <Contents style={{ flex: 2 }}>{data.name}</Contents>
+            <Contents style={{ flex: 2 }}>{dataList.name}</Contents>
             {/* 출발 시각 */}
             <Contents style={{ flex: 2 }}>
               {data.depart_at.substr(0, 5)}
@@ -172,20 +163,22 @@ function KiheungStaionTableList({ list }) {
 }
 
 // 시간표 출력 함수
-function TimeTable({ data, value }) {
+function TimeTable({
+    busTimeTable, // 버스 시간표
+    value // 시내, 기흥역 탭
+  }) {
+
   const [sineList, setSineList] = useState([]);
   const [khList, setKHList] = useState([]);
+
   useEffect(() => {
-    setSineList(
-      data.filter(item => item?.data?.id === 20 || item?.data?.id === 10),
-    );
-    setKHList(data.filter(item => item?.data?.id === 30));
-  }, [data]);
+    setSineList(busTimeTable.filter(bus => bus.id === 20 || bus.id === 10));
+    setKHList(busTimeTable.filter(bus => bus.id === 30));
+  }, []);
 
   if (value === 0) {
     return <SineTableList list={sineList} />;
   }
-
   return <KiheungStaionTableList list={khList} />;
 }
 

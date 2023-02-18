@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { Dimensions } from "react-native";
+import { ActivityIndicator, Dimensions } from "react-native";
 import styled from "styled-components";
 import StationIcon from "./StationIcon";
 import XIcon from "./XIcon";
@@ -9,6 +9,13 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ROUTE_WIDTH = (SCREEN_WIDTH - 40) * 0.9 - 75;
 const ROUTE_END_POINT = (SCREEN_WIDTH - 40) * 0.9 - 9;
 const ROUTE_ROUND_POINT = ROUTE_WIDTH + (ROUTE_END_POINT - ROUTE_WIDTH) * 0.4;
+
+
+const Loader = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Absolute = styled.View`
   position: absolute;
@@ -99,8 +106,15 @@ const RouteNameContainer = styled.View`
 `;
 
 function StationImages({ list }) {
-  const count = list[0].data.stations.length;
-  const data = list[0].data.stations;
+  if (list === undefined || list.length === 0) {
+    return (
+      <Loader>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </Loader>
+    );
+  }
+  const count = list.length;
+  const data = list.map((item) => item.name);
 
   const points =
     count < 4 ? parseInt(count / 2, 10) : parseInt((count - 2) / 2, 10);
@@ -192,11 +206,11 @@ function StationImages({ list }) {
         return (
           // 정류장명 출력
           <StaionNameContainer
-            key={station.route_order}
+            key={index}
             value={margin}
             level={level}
           >
-            <StationName>{station.name}</StationName>
+            <StationName>{station}</StationName>
           </StaionNameContainer>
         );
       })}
@@ -231,24 +245,26 @@ function SineRouteList({ list }) {
     <>
       <RouteNameContainer>
         {/* 시내 or 명지대 or 기흥역 */}
-        <RouteName>{list[0].data.name} 노선</RouteName>
+        <RouteName>{list.name} 노선</RouteName>
       </RouteNameContainer>
-      <StationImages list={list} />
+      <StationImages list={list[0].stations} />
     </>
   );
 }
 
 // 노선도 출력 함수
-function RouteTable({ data, value }) {
+function RouteTable({ stationList, value }) {
   const [sineList, setSineList] = useState([]);
   const [khList, setKHList] = useState([]);
   const [mjList, setMJList] = useState([]);
+
   // ID 값에 따른 데이터 세팅
   useEffect(() => {
-    setMJList(data.filter(item => item?.data?.id === 10));
-    setSineList(data.filter(item => item?.data?.id === 20));
-    setKHList(data.filter(item => item?.data?.id === 30));
-  }, [data]);
+    setMJList(stationList.filter(item => item.id === 10));
+    setSineList(stationList.filter(item => item.id === 20));
+    setKHList(stationList.filter(item => item.id === 30));
+  }, [stationList]);
+
 
   // SWITCH VALUE : 0 -> 시내 노선도
   if (value === 0) {
