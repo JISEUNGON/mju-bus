@@ -3,6 +3,7 @@ package com.mjubus.server.service.station.radiusDetection;
 import com.mjubus.server.domain.StationLocation;
 import com.mjubus.server.dto.request.StationRadiusDetectedNameRequest;
 import com.mjubus.server.dto.response.StationRadiusDetectedNameResponse;
+import com.mjubus.server.exception.Station.StationLocationNotFound;
 import com.mjubus.server.repository.StationLocationRepository;
 import com.mjubus.server.util.HaversineUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class StationRadiusDetecionServiceImpl implements StationRadiusDetectionS
                 .sorted(Comparator.comparing(StationLocation::getPriority))
                 .findFirst();
 
-        StationLocation matchLocation = matchs.orElseThrow(() -> new IllegalStateException("없는 장소"));
+        StationLocation matchLocation = matchs.orElseThrow(() -> new StationLocationNotFound("해당 위도경도와 알맞는 정류장(장소)가 없습니다."));
 
         return StationRadiusDetectedNameResponse.builder()
                 .name(matchLocation.getName())
