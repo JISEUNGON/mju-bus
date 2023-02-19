@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Animated, BackHandler, Dimensions } from "react-native";
@@ -6,7 +6,7 @@ import * as Font from "expo-font";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import { busApi, calendarApi } from "../api";
-
+import { MBAContext } from "../navigation/Root";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Circle = styled.View`
@@ -49,21 +49,97 @@ const customFonts = {
   "SpoqaHanSansNeo-Medium": require("../assets/fonts/SpoqaHanSansNeo-Medium.ttf"),
 };
 
-// eslint-disable-next-line react/prop-types
-function Splash({ navigation: { navigate } }) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
 
+function Splash({ navigation: { navigate } }) {
+  const {
+    sineBusList,
+    siweBusList,
+    mjuCalendar,
+    stationList,
+    busTimeTable,
+    setSineBusList,
+    setSiweBusList,
+    setMjuCalendar,
+    setStationList, 
+    setBusTimeTable
+  } = React.useContext(MBAContext);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   const [appIsReady, setAppIsReady] = useState(false);
 
+  // 버스 리스트
   const { isLoading: buslistLoading, data: busListData } = useQuery(
     ["busList"],
     busApi.list,
   );
+
+  // 학사일정
   const { isLoading: calendarLoading, data: calendarData } = useQuery(
     ["calendar"],
     calendarApi.calendar,
   );
-  const loading = buslistLoading || calendarLoading;
+
+  // 전체 정류장 목록
+  const loading = buslistLoading || calendarLoading || stationList.length === 0;
+
+  useEffect(() => {
+    const getStationList = async (bus) => {
+      const res = await busApi.route({"queryKey" :["", bus.id]});
+      const stations = res.stations;
+      setStationList([
+        ...stationList,
+        {
+          id: bus.id,
+          name: bus.name,
+          stations,
+        }
+      ]);
+    };
+
+    if (!buslistLoading) { // 버스 리스트 로딩이 완료되면
+      // 버스 리스트를 저장한다.
+      setSineBusList(busListData.sine_bus_list);
+      setSiweBusList(busListData.siwe_bus_list);
+
+      // 버스별 정류장 목록을 가져온다.
+      busListData.sine_bus_list.forEach(async (bus) => {
+        await getStationList(bus);
+      });
+
+      // [시내]버스별 시간표를 가져온다.
+      busListData.sine_bus_list.forEach(async (bus) => {
+        const res = await busApi.timeTable({"queryKey" :["", bus.id]});
+        setBusTimeTable([
+          ...busTimeTable,
+          {
+            id: bus.id,
+            name: bus.name,
+            timeTable: res.stations,
+          }
+        ]);
+      });
+
+      // [시외]버스별 시간표를 가져온다.
+      busListData.siwe_bus_list.forEach(async (bus) => {
+        const res = await busApi.timeTable({"queryKey" :["", bus.id]});
+        setBusTimeTable([
+          ...busTimeTable,
+          {
+            id: bus.id,
+            name: bus.name,
+            timeTable: res.stations,
+          }
+        ]);
+      });
+    }
+  }, [buslistLoading]);
+
+  // 학사일정 가져오기
+  useEffect(() => {
+    if (!calendarLoading) {
+      setMjuCalendar(calendarData);
+    }
+  }, [calendarLoading]);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -105,27 +181,22 @@ function Splash({ navigation: { navigate } }) {
       // performed layout.
       navigate("HomeBottomTabs", {
         screen: "홈",
-        params: {
-          calendarData,
-          busListData,
-        },
       });
     }
-  }, [appIsReady, busListData, calendarData, loading, navigate]);
+  }, [appIsReady, busListData, calendarData, loading, navigate, stationList]);
 
   return (
-    <Container>
-      <IconContainer>
-        <Animated.View style={{ opacity: fadeAnim }}>
-          <Circle>
-            <Board />
-
-            <Ionicons name="ios-bus" size={50} color="#7974E7" />
-          </Circle>
-        </Animated.View>
-      </IconContainer>
-      <TextContainer />
-    </Container>
+      <Container>
+        <IconContainer>
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <Circle>
+              <Board />
+              <Ionicons name="ios-bus" size={50} color="#7974E7" />
+            </Circle>
+          </Animated.View>
+        </IconContainer>
+        <TextContainer />
+      </Container>
   );
 }
 

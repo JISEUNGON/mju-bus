@@ -9,11 +9,14 @@ import { darkTheme, lightTheme } from "./styled";
 import useCodePush from "./hooks";
 import SyncProgressView from "./screens/SyncProgressView";
 
+
 const queryClient = new QueryClient();
+
 
 function App() {
   const isDark = useColorScheme() === "dark";
   const [isUpdating, syncProgress] = useCodePush();
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>

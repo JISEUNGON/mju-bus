@@ -3,11 +3,13 @@ import {TouchableOpacity, Image } from 'react-native';
 import AppleImage from "../../assets/image/apple_login.png"
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { loginApi } from "../../api";
+import { useNavigation } from '@react-navigation/native';
 
 export default function AppleLogin () {
     const [onLogin, setOnLogin] = useState(false);
     const [user, setUser] = useState(null);
     const supported = appleAuth.isSupported;
+    const navigation = useNavigation();
 
     const onAppleButtonPress = async () => {
         if (onLogin) return;
@@ -32,7 +34,8 @@ export default function AppleLogin () {
                 'user': appleAuthRequestResponse.user,
             }
 
-            loginApi.apple_login({ queryKey: {payload} }).then(res =>  setUser(res));   
+            loginApi.apple_login({ queryKey: {payload} }).then(res =>  setUser(res));  
+            navigation.navigate("StudentAuth"); 
         }
 
         setOnLogin(false);

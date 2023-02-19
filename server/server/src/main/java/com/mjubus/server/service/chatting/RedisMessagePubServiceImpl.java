@@ -47,9 +47,11 @@ public class RedisMessagePubServiceImpl implements RedisMessagePubService {
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(hashName);
         entries.forEach((key, value) -> {
             String flag = (String) value;
-            String session = (String) key;
+            String simpSubscriptionId = (String) key; // sub-{memberId}
+            if (simpSubscriptionId.equals("init")) return;
+            String memberId = (simpSubscriptionId.split("-"))[1];
             if (flag.equals(RedisMessageSubServiceImpl.RedisHashFlag.OFF)) {
-                log.info("session " + session  +": false");
+                log.info("member " + memberId  +": false"); // FCM 개발 시 삭제
                 //TODO: FCM Actions
             }
         });

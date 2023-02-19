@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,6 +31,27 @@ public class SecurityConfig {
     }
 
     @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return new WebSecurityCustomizer() {
+            @Override
+            public void customize(WebSecurity web) {
+                web.ignoring().antMatchers(
+                        "/",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/chat",
+                        "/login/**",
+                        "/post/**",
+                        "/bus/**",
+                        "/calendar/**",
+                        "/station/**");
+            }
+        };
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic().disable()
@@ -36,7 +59,7 @@ public class SecurityConfig {
                 .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(new JwtMemberFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("**").permitAll().and().build();
+                .authorizeRequests().antMatchers("/taxi/**", "/member/**").permitAll().and().build();
 //                .authorizeRequests()
 //                .antMatchers("/login/**").permitAll()
 //                .antMatchers("/taxi/**/delete").hasAnyAuthority("ROLE_ADMIN", "GROUP_ADMIN")

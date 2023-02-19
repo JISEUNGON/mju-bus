@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import { View, Dimensions, Modal, StyleSheet } from "react-native";
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RemoveDuplicateStation, RemoveHiddenStation } from "../../utils";
+import { KEY_FAVORITE_STATION } from "../StorageKey";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -84,48 +84,63 @@ const ListCheckBox = styled.View`
 
 function StationSelect(props) {
   const {
-    data,
-    staredStation,
-    storageKey,
+    stations,
     modalVisible,
     setModalVisible,
     setStation,
-    toSchool,
   } = props;
 
-  const [checkedStation, setCheckedStation] = useState(staredStation);
+  const [staredStation, setStaredStation] = useState([]);
+  const [unstaredStation, setUnstaredStation] = useState([]);
+  const [nextStaredStation, setNextStaredStation] = useState([]);
 
-  const unSelectedStations = (stationList, staredStationList) => {
-    let restStationList = [];
-    // eslint-disable-next-line array-callback-return
-    stationList?.map(station => {
-      const { id } = station;
-      const result = staredStationList.findIndex(item => id === item?.id);
-      if (result === -1) {
-        restStationList = [...restStationList, station];
+  // 즐겨찾기에 저장한 정류장 리스트를 가져온다.
+  useEffect(() => {
+    const loadSelectedRoutes = async () => {
+      try {
+        const favoriteStation = JSON.parse(await AsyncStorage.getItem(KEY_FAVORITE_STATION));
+        if (favoriteStation !== null) {
+          setStaredStation(stations.filter(station => favoriteStation.includes(station.id))); // 즐겨찾기에 저장한 정류장 리스트
+          setNextStaredStation(stations.filter(station => favoriteStation.includes(station.id))); // 즐겨찾기에 저장할 정류장 리스트
+          setUnstaredStation(stations.filter(station => !favoriteStation.includes(station.id))); // 즐겨찾기에 저장하지 않은 정류장 리스트
+        }
+      } catch (error) {
+        console.log(error);
       }
-    });
-    return restStationList;
+    }
+
+    loadSelectedRoutes();
+  }, []);
+
+  // 즐겨찾기에 정류장을 추가한다.
+  const starStaion = station => {
+    setNextStaredStation([...nextStaredStation, station]);
   };
 
-  const addStation = item => {
-    setCheckedStation([...checkedStation, item]);
+  // 즐겨찾기에서 정류장을 삭제한다.
+  const unstarStation = station => {
+    setNextStaredStation(nextStaredStation.filter(stared => stared.id !== station.id));
   };
 
-  const deletStation = item => {
-    const newCheckItems = [...checkedStation];
-    setCheckedStation(newCheckItems.filter(checked => checked.id !== item.id));
-  };
+  // 즐겨찾기에 정류장을 추가하거나 삭제한다.
+  const handleStar = (station) => {
+    if (nextStaredStation.includes(station)) {
+      unstarStation(station);
+    } else {
+      starStaion(station);
+    }
+  }
 
-  const preStationList = RemoveDuplicateStation(data);
-  const stationList = RemoveHiddenStation(preStationList, toSchool);
   return (
     <Modal animationType="slide" transparent visible={modalVisible}>
       <ScreenContainer>
         <View
           // eslint-disable-next-line no-use-before-define
           style={styles.blankSpace}
-          onTouchEnd={() => setModalVisible(false)} // 모달 빈 공간을 누르면 창 닫기
+          onTouchEnd={async () => {
+            await AsyncStorage.setItem(KEY_FAVORITE_STATION, JSON.stringify(nextStaredStation.map(station => station.id)));
+            setModalVisible(false)
+          }} // 모달 빈 공간을 누르면 창 닫기
         />
         <Container>
           <TitleContainer>
@@ -135,19 +150,16 @@ function StationSelect(props) {
           <SelectionContainer>
             <ListContainer>
               <ListTitle>즐겨찾는 정류장</ListTitle>
-              {staredStation?.map(item => (
-                <ListItem key={item?.id}>
+              {staredStation?.map(station => (
+                <ListItem key={station.id}>
                   <ListContents
-                    onPress={async () => {
-                      await AsyncStorage.setItem(
-                        storageKey,
-                        JSON.stringify(checkedStation),
-                      );
+                    onPress={async () => { // 정류장을 선택한 경우
+                      await AsyncStorage.setItem(KEY_FAVORITE_STATION, JSON.stringify(nextStaredStation.map(station => station.id)));
                       setModalVisible(false);
-                      setStation(item);
+                      setStation(station);
                     }}
                   >
-                    <Contnets>{item?.name}</Contnets>
+                    <Contnets>{station.name}</Contnets>
                   </ListContents>
                   <ListCheckBox>
                     <BouncyCheckbox
@@ -162,13 +174,7 @@ function StationSelect(props) {
                       iconComponent={
                         <FontAwesome name="star" size={16} color="#FFEDCB" />
                       }
-                      onPress={isChecked => {
-                        if (isChecked) {
-                          addStation(item);
-                        } else if (!isChecked) {
-                          deletStation(item);
-                        }
-                      }}
+                      onPress={() => handleStar(station)} // 즐겨찾기 버튼 클릭한 경우
                     />
                   </ListCheckBox>
                 </ListItem>
@@ -176,19 +182,16 @@ function StationSelect(props) {
             </ListContainer>
             <ListContainer>
               <ListTitle>그 외 정류장</ListTitle>
-              {unSelectedStations(stationList, staredStation)?.map(item => (
-                <ListItem key={item?.id}>
+              {unstaredStation?.map(station => (
+                <ListItem key={station.id}>
                   <ListContents
-                    onPress={async () => {
-                      await AsyncStorage.setItem(
-                        storageKey,
-                        JSON.stringify(checkedStation),
-                      );
+                    onPress={async () => { // 정류장을 선택한 경우
+                      await AsyncStorage.setItem(KEY_FAVORITE_STATION, JSON.stringify(nextStaredStation.map(station => station.id)));
                       setModalVisible(false);
-                      setStation(item);
+                      setStation(station);
                     }}
                   >
-                    <Contnets>{item?.name}</Contnets>
+                    <Contnets>{station.name}</Contnets>
                   </ListContents>
                   <ListCheckBox>
                     <BouncyCheckbox
@@ -200,15 +203,9 @@ function StationSelect(props) {
                       }}
                       icon
                       iconComponent={
-                        <FontAwesome name="star" size={20} color="#FFEDCB" />
+                        <FontAwesome name="star" size={16} color="#FFEDCB" />
                       }
-                      onPress={isChecked => {
-                        if (isChecked) {
-                          addStation(item);
-                        } else if (!isChecked) {
-                          deletStation(item);
-                        }
-                      }}
+                      onPress={() => handleStar(station)} // 즐겨찾기 버튼 클릭한 경우
                     />
                   </ListCheckBox>
                 </ListItem>

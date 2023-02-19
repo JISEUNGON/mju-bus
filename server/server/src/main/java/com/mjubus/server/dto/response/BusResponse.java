@@ -4,8 +4,12 @@ import com.mjubus.server.domain.Bus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Builder
+@ToString
 public class BusResponse {
     @ApiModelProperty(example = "1", value = "고유 식별 ID")
     private Long id;
@@ -16,7 +20,6 @@ public class BusResponse {
     @ApiModelProperty(example = "3500", value = "요금")
     private Long charge;
 
-    // static method of
     public static BusResponse of(Long id, String name, Long charge) {
         return new BusResponse(id, name, charge);
     }
@@ -25,13 +28,10 @@ public class BusResponse {
         return new BusResponse(bus.getId(), bus.getName(), bus.getCharge());
     }
 
-    // toString
-    @Override
-    public String toString() {
-        return "BusResponse{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", charge=" + charge +
-            '}';
+    public static List<BusResponse> of(List<Bus> busList) {
+        return busList.stream()
+                .map(BusResponse::of)
+                .collect(Collectors.toList());
     }
 }
+

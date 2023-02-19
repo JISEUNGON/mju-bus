@@ -9,7 +9,6 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 public interface RedisMessageSubService extends MessageListener {
     @Override
     void onMessage(Message message, byte[] pattern);
-    public void sessionMatching(SessionSubscribeEvent subscribeEvent);
     public void updateSessionHash(SessionSubscribeEvent subscribeEvent);
     public void updateSessionHash(SessionUnsubscribeEvent unsubscribeEvent);
     public String updateSessionHash(UpdateChattingSessionHashRequest updateChattingSessionHashRequest);

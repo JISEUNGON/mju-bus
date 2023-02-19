@@ -50,4 +50,12 @@ external:
     secret: ${JWT_SECRET}
 logging:
   config: classpath:logback-spring.xml
+amazon:
+  dynamodb:
+    endpoint: ${DYNAMODB_ENDPOINT}
+    region: ${DYNAMODB_REGION}
+  aws:
+    accesskey: ${AWS_ACCESSKEY}
+    secretkey: ${AWS_SECRETKEY}
+
 

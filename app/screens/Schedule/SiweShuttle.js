@@ -1,10 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions } from "react-native";
 import styled from "styled-components";
-import { busApi, calendarApi } from "../../api";
 import RouteTimeTable from "../../components/RouteTimeTable";
-import { GetBusInfoData, GetTimeTableData, highlights } from "../../utils";
+import { highlights } from "../../utils";
+import { MBAContext } from "../../navigation/Root";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -66,30 +65,24 @@ const ContentsTitle = styled.Text`
 `;
 
 function SiweShuttle() {
-  const { isLoading: buslistLoading, data: busListData } = useQuery(
-    ["busList"],
-    busApi.list,
-  );
-  const { isLoading: calendarLoading, data: calendarData } = useQuery(
-    ["calendar"],
-    calendarApi.calendar,
-  );
-  const [isToSchool, setIsToSchool] = useState(true);
+  const {
+    sineBusList,
+    siweBusList,
+    mjuCalendar,
+    stationList,
+    busTimeTable,
+  } = React.useContext(MBAContext);
 
-  const loading = buslistLoading || calendarLoading;
+  const [isToSchool, setIsToSchool] = useState(true);
 
   useEffect(() => {
     setIsToSchool(new Date().getHours() < 12);
   }, []);
 
-  return loading ? (
-    <Loader>
-      <ActivityIndicator />
-    </Loader>
-  ) : (
+  return (
     <>
       <HeaderContainer>
-        <Title>현재는 {highlights(calendarData.name)} 이에요 !</Title>
+        <Title>현재는 {highlights(mjuCalendar.name)} 이에요 !</Title>
         <SubTitle>운행 중인 노선도와 시간표를 확인하세요</SubTitle>
         <Hr style={{ borderBottomWidth: 2 }} />
       </HeaderContainer>
@@ -99,8 +92,8 @@ function SiweShuttle() {
         </ContentsTitleContainer>
         <RouteTimeTable
           isToSchool={isToSchool}
-          timeList={GetTimeTableData(busListData[1]?.busList)}
-          busInfo={GetBusInfoData(busListData[1]?.busList)}
+          timeList={[]}
+          busInfo={[]}
         />
       </ContentsContainer>
     </>

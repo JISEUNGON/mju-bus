@@ -3,10 +3,13 @@ import {TouchableOpacity, Image } from 'react-native';
 import GoogleImage from "../../assets/image/google_login.png"
 import { loginApi } from "../../api";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GoogleLogin = () => {
     const [onLogin, setOnLogin] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
+    const navigation = useNavigation();
 
     useEffect(() => {
         GoogleSignin.configure({
@@ -23,7 +26,6 @@ const GoogleLogin = () => {
 
         signIn = async () => {
             try {
-                
                 await GoogleSignin.hasPlayServices();
                 const userInfo = await GoogleSignin.signIn();
 
@@ -32,31 +34,17 @@ const GoogleLogin = () => {
                     "serverAuthCode": userInfo.serverAuthCode,
                 }
                 loginApi.google_login({ queryKey: {payload} }).then(res => setUserInfo(res));
+                navigation.navigate("StudentAuth");
             } catch (error) {
                 console.log(error);
-                // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                //     // user cancelled the login flow
-                //     console.log('user cancelled the login flow');
-                // } else if (error.code === statusCodes.IN_PROGRESS) {
-                //     // operation (e.g. sign in) is in progress already
-                //     console.log('operation (e.g. sign in) is in progress already');
-                // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-                //     // play services not available or outdated
-                //     console.log('play services not available or outdated');
-                // } else {
-                //     // some other error happened
-                //     console.log('some other error happened');
-                // }
             }
         };
-
         await signIn();
         setOnLogin(false);
     }
-
     return (
-        <TouchableOpacity onPress={onGoogleButtonPress}>
-            <Image source={GoogleImage}/>
+        <TouchableOpacity onPress={onGoogleButtonPress}> 
+           <Image source={GoogleImage}/>
         </TouchableOpacity>
     )
 };

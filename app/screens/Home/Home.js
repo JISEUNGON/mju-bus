@@ -19,11 +19,8 @@ import { busApi, stationApi } from "../../api";
 import RunningRedBus from "../../components/RunningRedBus";
 import RouteSelect from "./RouteSelect";
 import { stationId } from "../../id";
-import KakaoLogin from "../../components/Login/KakaoLogin";
-import AppleLogin from "../../components/Login/AppleLogin";
-import GoogleLogin from "../../components/Login/GoogleLogin";
-
-const STORAGE_KEY = "@routes";
+import { MBAContext } from "../../navigation/Root";
+import { KEY_FAVORITE_SIWE_BUS } from "../StorageKey";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -99,10 +96,21 @@ const SubTitle = styled.Text`
 
 // eslint-disable-next-line react/prop-types
 function Home({ route: { params }, navigation: { navigate } }) {
+  const {
+    sineBusList,
+    siweBusList,
+    mjuCalendar,
+    stationList,
+    busTimeTable,
+  } = React.useContext(MBAContext);
+
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedRoutes, setSelectedRoutes] = useState([]);
+
+  // 즐겨찾기한 시외버스 노선
+  const [favoriteSiweBus, setFavoriteSiweBus] = useState([]);
+
   // 앱이 백그라운드에서 돌아왔을 때 강제 refetch 진행
   const appState = useRef(AppState.currentState);
   useEffect(() => {
@@ -121,16 +129,19 @@ function Home({ route: { params }, navigation: { navigate } }) {
     };
   }, [queryClient]);
 
+  // 즐겨찾기한 시외버스 노선 불러오기
   const loadSelectedRoutes = async () => {
     try {
-      const string = await AsyncStorage.getItem(STORAGE_KEY);
-      if (string != null) {
-        setSelectedRoutes(JSON.parse(string));
+      const storageSiweBus = await AsyncStorage.getItem(KEY_FAVORITE_SIWE_BUS);
+      if (storageSiweBus != null) {
+        setFavoriteSiweBus(JSON.parse(storageSiweBus));
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // 새로고침
   const onRefresh = async () => {
     setRefreshing(true);
     await queryClient.invalidateQueries();
@@ -142,6 +153,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
     setModalVisible(true);
   };
 
+  // 빨간버스 진입로/용인터미널 남은 시간
   const redBusRemain = useQueries({
     queries: [
       {
@@ -161,19 +173,27 @@ function Home({ route: { params }, navigation: { navigate } }) {
     ],
   });
 
+  // 시외버스 운행정보 (운행 전|운행 중|운행 종료)
+  // 아마 NotFound 에러 때문에 timeTable API 참조하는 거 같음? 
+  // 시외버스 정보를 ContextAPI를 통해 불러오기 때문에 필요 없다고 생각됨.
+  // staleTime 5분으로 설정함으로써 API 호출을 줄임
   const SiweStatus = useQueries({
     // eslint-disable-next-line react/prop-types
-    queries: params?.busListData[1]?.busList.map(data => ({
+    queries: siweBusList.map(data => ({
       queryKey: ["timeTable", data.id],
       queryFn: busApi.timeTable,
+      staleTime: 5 * 60 * 1000,
     })),
   });
 
+  // 시내버스 운행정보 (운행 전|운행 중|운행 종료)
+  // 3분마다 캐시 시간 갱신
   const SineStatus = useQueries({
     // eslint-disable-next-line react/prop-types
-    queries: params?.busListData[0]?.busList?.map(data => ({
+    queries: sineBusList.map(data => ({
       queryKey: ["status", data.id],
       queryFn: busApi.status,
+      staleTime: 3 * 60 * 1000,
     })),
   });
 
@@ -226,11 +246,11 @@ function Home({ route: { params }, navigation: { navigate } }) {
                   <Title>운행중인 버스</Title>
                 </TitleContainer>
                 <RunningBus bustype="sine" data={SineStatus} />
-                {SiweStatus.length === 0 ? (
+                {siweBusList.length === 0 ? (
                   <NoSiweList />
                 ) : (
                   <TouchableOpacity onPress={onStart}>
-                    <RunningBus bustype="siwe" data={selectedRoutes} />
+                    <RunningBus bustype="siwe" data={favoriteSiweBus} />
                   </TouchableOpacity>
                 )}
                 {modalVisible ? (
@@ -238,7 +258,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
                     data={SiweStatus}
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
-                    selectedRoutes={selectedRoutes}
+                    selectedRoutes={favoriteSiweBus}
                   />
                 ) : null}
               </RunningBusContainer>
@@ -252,9 +272,6 @@ function Home({ route: { params }, navigation: { navigate } }) {
                 </TitleContainer>
                 <RunningRedBus data={redBusRemain} />
               </RedBusComingContainer>
-              <KakaoLogin />
-              <AppleLogin />
-              <GoogleLogin />
             </>
           }
         />

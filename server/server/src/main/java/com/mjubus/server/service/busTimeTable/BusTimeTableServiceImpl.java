@@ -44,7 +44,7 @@ public class BusTimeTableServiceImpl implements BusTimeTableService {
 
     @Override
     public BusTimeTable findBusTimeTableByBus(Bus bus) {
-        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday());
+        BusCalendar busCalendar = busCalendarService.findBusCalendarByDate(DateHandler.getToday());
 
         Optional<BusTimeTable> optionalBusTimeTable = busTimeTableRepository.findBusTimeTableByBus_IdAndBusCalendar_Id(bus.getId(), busCalendar.getId());
 
@@ -53,7 +53,7 @@ public class BusTimeTableServiceImpl implements BusTimeTableService {
 
     @Override
     public BusTimeTable findBusTimeTableByBusTimeTableInfo(BusTimeTableInfo busTimeTableInfo) {
-        BusCalendar busCalendar = busCalendarService.findByDate(DateHandler.getToday());
+        BusCalendar busCalendar = busCalendarService.findBusCalendarByDate(DateHandler.getToday());
 
         Optional<BusTimeTable> optionalBusTimeTable = busTimeTableRepository.findBusTimeTableByBusTimeTableInfo_IdAndBusCalendar_Id(busTimeTableInfo.getId(), busCalendar.getId());
 
@@ -161,7 +161,7 @@ public class BusTimeTableServiceImpl implements BusTimeTableService {
 
     @Override
     public List<Integer> findBusListByDate(LocalDateTime date) {
-        BusCalendar busCalendar = busCalendarService.findByDate(date);
+        BusCalendar busCalendar = busCalendarService.findBusCalendarByDate(date);
 
         Optional<List<Integer>> optionalBusList = busTimeTableRepository.findDistinctBusByBusCalendar_Id(busCalendar.getId());
         return optionalBusList.orElseThrow(() -> new BusCalenderNotFoundException(date));

@@ -9,9 +9,10 @@ import java.util.List;
 @Builder
 public class TaxiPartyMembersListResponse {
 
+    private Long administer;
     private List<TaxiPartyMembersResponse> taxiPartyMembersList;
 
-    public static TaxiPartyMembersListResponse of(List<TaxiPartyMembersResponse> taxiPartyMembersList){
-        return new TaxiPartyMembersListResponse(taxiPartyMembersList);
+    public static TaxiPartyMembersListResponse of(Long administer, List<TaxiPartyMembersResponse> taxiPartyMembersList){
+        return new TaxiPartyMembersListResponse(administer, taxiPartyMembersList);
     }
 }

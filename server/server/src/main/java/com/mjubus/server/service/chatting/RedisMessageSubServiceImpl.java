@@ -3,6 +3,7 @@ package com.mjubus.server.service.chatting;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mjubus.server.dto.request.UpdateChattingSessionHashRequest;
+import com.mjubus.server.exception.chatting.IllegalHeaderArgumentsException;
 import com.mjubus.server.exception.chatting.RoomIdNotFoundExcption;
 import com.mjubus.server.exception.chatting.SessionIdNotFoundExcption;
 import com.mjubus.server.vo.ChattingMessage;
@@ -18,6 +19,7 @@ import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -49,38 +51,40 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         } catch (JsonProcessingException e) {
             log.error("[Redis Pub/Sub] | Json Convert Error. publishMessage: [" + publishMessage + "]");
             log.error(e.getMessage());
-        }
-    }
-
-    @Override
-    public void sessionMatching(SessionSubscribeEvent subscribeEvent) {
-        MessageHeaders messageHeaders = subscribeEvent.getMessage().getHeaders();
-        String simpSubscriptionId = (String) messageHeaders.get("simpSubscriptionId");
-        String simpSessionId = (String) messageHeaders.get("simpSessionId");
-        redisTemplate.opsForHash().putIfAbsent("session-matching", simpSubscriptionId, simpSessionId);
+        }   
     }
 
     @Override
     public void updateSessionHash(SessionSubscribeEvent subscribeEvent) {
         MessageHeaders messageHeaders = subscribeEvent.getMessage().getHeaders();
-        String simpSessionId = (String) messageHeaders.get("simpSessionId");
+        String simpSubscriptionId = (String) messageHeaders.get("simpSubscriptionId"); // sub-{memberId}
 
-        String simpDestination = (String) messageHeaders.get("simpDestination");
-        String hashName = "room-" + (simpDestination.split("/"))[2] + "-subscription";
+        String simpDestination = (String) messageHeaders.get("simpDestination"); // /sub/{roomId}
 
-        redisTemplate.opsForHash().put(hashName, simpSessionId, RedisHashFlag.ON);
+        if (!Pattern.matches("^(sub-)[0-9]+$", simpSubscriptionId)) {
+            throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpSubscriptionId);
+        }
+        String roomId = (simpDestination.split("/"))[2];
+        String hashName = "room-" + roomId + "-subscription";
+
+        redisTemplate.opsForHash().put(hashName, simpSubscriptionId, RedisHashFlag.ON);
     }
 
     @Override
     public void updateSessionHash(SessionUnsubscribeEvent unsubscribeEvent) {
         MessageHeaders messageHeaders = unsubscribeEvent.getMessage().getHeaders();
-        String simpSessionId = (String) messageHeaders.get("simpSessionId");
 
-        //sub dest를 id로 받아와 판단
-        String simpDestination = (String) messageHeaders.get("simpSubscriptionId");
-        String hashName = "room-" + (simpDestination.split("/"))[2] + "-subscription";
+        String simpDestination = (String) messageHeaders.get("simpSubscriptionId"); // {roomId}/sub-{memberId}
+        if (!Pattern.matches("^[0-9]*(\\/sub-)[0-9]+$", simpDestination)) {
+            throw new IllegalHeaderArgumentsException("올바르지 않은 형식을 가진 STOMP header 값입니다. id: " + simpDestination);
+        }
 
-        redisTemplate.opsForHash().put(hashName, simpSessionId, RedisHashFlag.OFF);
+
+        String roomId = (simpDestination.split("/"))[0];
+        String memberId = (((simpDestination.split("/"))[1]).split("-"))[1];
+        String hashName = "room-" + roomId + "-subscription";
+
+        redisTemplate.opsForHash().put(hashName, "sub-" + memberId, RedisHashFlag.OFF);
     }
 
     @Override
@@ -88,14 +92,11 @@ public class RedisMessageSubServiceImpl implements RedisMessageSubService {
         String hashName = "room-" + updateChattingSessionHashRequest.getRoomId() + "-subscription";
         if (!redisTemplate.hasKey(hashName)) throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
 
-        Optional<Object> sessionIdGet = Optional.ofNullable(redisTemplate.opsForHash().get("session-matching", updateChattingSessionHashRequest.getSimpSubscriptionId()));
-        if (sessionIdGet.isEmpty()) throw new SessionIdNotFoundExcption("해당하는 세션이 존재하지 않습니다.");
-
-        String sessinoId = (String) sessionIdGet.get();
+        String simpSubscriptionId = "sub-" + updateChattingSessionHashRequest.getMemberId();
         if (updateChattingSessionHashRequest.isUpdateFlag()) {
-            redisTemplate.opsForHash().put(hashName, sessinoId, RedisHashFlag.ON);
+            redisTemplate.opsForHash().put(hashName, simpSubscriptionId, RedisHashFlag.ON);
         } else {
-            redisTemplate.opsForHash().put(hashName, sessinoId, RedisHashFlag.OFF);
+            redisTemplate.opsForHash().put(hashName, simpSubscriptionId, RedisHashFlag.OFF);
         }
 
         return "success";
