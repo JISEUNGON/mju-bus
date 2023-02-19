@@ -6,6 +6,15 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('GoogleAccessToken', JSON.stringify(value));
+      console.log('token saved successfully');
+    } catch (e) {
+      console.log('token saved error : Asynce Storage');
+    }
+};
+
 const GoogleLogin = () => {
     const [onLogin, setOnLogin] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
@@ -34,7 +43,10 @@ const GoogleLogin = () => {
                     "id": userInfo.user.id,
                     "serverAuthCode": userInfo.serverAuthCode,
                 }
-                loginApi.google_login({ queryKey: {payload} }).then(res => setUserInfo(res));
+                loginApi.google_login({ queryKey: {payload} }).then(res => {
+                    setUserInfo(res);
+                    storeData(res);
+                });
                 navigation.navigate("StudentAuth");
             } catch (error) {
                 console.log(error);
@@ -53,10 +65,13 @@ const GoogleLogin = () => {
                 // }
             }
         };
+        AsyncStorage.getItem('GoogleAccessToken').then(res =>
+            console.log('Storage Token : ', res),
+        );
         await signIn();
         setOnLogin(false);
     }
-    console.log(userInfo);
+    // console.log(userInfo);
     return (
         <TouchableOpacity onPress={onGoogleButtonPress}> 
            <Image source={GoogleImage}/>

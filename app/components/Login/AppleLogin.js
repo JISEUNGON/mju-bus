@@ -5,6 +5,15 @@ import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { loginApi } from "../../api";
 import { useNavigation } from '@react-navigation/native';
 
+const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('AppleAccessToken', JSON.stringify(value));
+      console.log('token saved successfully');
+    } catch (e) {
+      console.log('token saved error : Asynce Storage');
+    }
+};
+
 export default function AppleLogin () {
     const [onLogin, setOnLogin] = useState(false);
     const [user, setUser] = useState(null);
@@ -34,10 +43,15 @@ export default function AppleLogin () {
                 'user': appleAuthRequestResponse.user,
             }
 
-            loginApi.apple_login({ queryKey: {payload} }).then(res =>  setUser(res));  
+            loginApi.apple_login({ queryKey: {payload} }).then(res =>  {
+                setUser(res);
+                storeData(res);
+            });  
             navigation.navigate("StudentAuth"); 
         }
-
+        AsyncStorage.getItem('AppleAccessToken').then(res =>
+            console.log('Storage Token : ', res),
+        );
         setOnLogin(false);
     }
     return (
