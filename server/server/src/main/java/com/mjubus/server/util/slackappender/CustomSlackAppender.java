@@ -6,7 +6,7 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.LayoutBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.maricn.logback.SlackAppender;
-import com.mjubus.server.util.slackappender.filter.SlackAppenderJWTTokenBeginFilter;
+import com.mjubus.server.util.slackappender.filter.SlackAppenderAttackFilter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class CustomSlackAppender extends SlackAppender {
 
     public CustomSlackAppender() {
         this.filterChain = new CustomSlackAppenderChain();
-        filterChain.addFilter(new SlackAppenderJWTTokenBeginFilter());
+        filterChain.addFilter(new SlackAppenderAttackFilter());
     }
 
     private static Layout<ILoggingEvent> defaultLayout = new LayoutBase<ILoggingEvent>() {
