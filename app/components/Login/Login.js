@@ -5,19 +5,8 @@ import GoogleLogin from './GoogleLogin';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import StudentAuth from './StudentAuth';
+import GuestLogin from "./GuestLogin";
 
-const GuestStartView = styled.View`
-  margin-top: -50px;
-  margin-bottom: 20px;
-  justify-content: center;
-  align-items: center;
-`;
-const GuestStartText = styled.Text`
-  font-size: 16px;
-  color: #838181;
-  text-decoration: underline solid #8e8e93;
-  font-weight: 600;
-`;
 const SimpleLoginTextView = styled.View`
   justify-content: center;
   align-items: center;
@@ -51,11 +40,7 @@ function Login({navigation: { navigate }}) {
                     
 
                     <View>     
-                        <TouchableOpacity onPress={() => navigate("Splash")}>
-                            <GuestStartView>
-                                <GuestStartText>게스트로 시작하기</GuestStartText>
-                            </GuestStartView>      
-                        </TouchableOpacity>
+                        <GuestLogin/>
 
                         <SimpleLoginTextView>
                             <SimpleLoginText>────────  간편 로그인  ────────</SimpleLoginText>
