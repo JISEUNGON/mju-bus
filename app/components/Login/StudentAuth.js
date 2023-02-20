@@ -16,7 +16,7 @@ const InputText = styled.Text`
   margin-left: 40px;
   margin-top: 20px;
   margin-bottom: 10px;
-  color: #AAB2BB;
+  color: #aab2bb;
   font-size: 15px;
   font-weight: 500;
 `;
@@ -24,7 +24,7 @@ const InputText = styled.Text`
 const InputBox = styled.TextInput`
   margin-left: 40px;
   margin-right: 40px;
-  background-color: #F5F6F8;
+  background-color: #f5f6f8;
   font-size: 15px;
   font-weight: 500;
   padding-vertical: 15px;
@@ -49,7 +49,7 @@ const AgreeView = styled.View`
 
 const AgreeText = styled.Text`
   margin-left: 5px;
-  color: #58606D;
+  color: #58606d;
   font-weight: 500;
   font-size: 15px;
 `;
@@ -71,68 +71,108 @@ const NextBtn = styled.View`
 `;
 
 const NextText = styled.Text`
-  color: #FBFBFB;
+  color: #fbfbfb;
   font-weight: 700;
   font-size: 16px;
 `;
 
-function StudentAuth({navigation}) {
-    const [name, setName] = useState("");
-    const onChangeName = (name) => {
-      if(name === "") {
-        setCheckName(false);
-      }else {
-        setCheckName(true);
-      }
-      setName(name);
-    };
-    const [birthday, setBirthday] = useState("");
-    const onChangeBirthday = (birthday) => {
-      if(birthday.length !== 6 || !(0 <= birthday && birthday <= 999999)) {
-        setCheckBirthday(false);
-      }else {
-        setCheckBirthday(true);
-      }
-      setBirthday(birthday);
-    };
-    const [agree, setAgree] = useState(false);
-    const onChangeAgree = () => setAgree(!agree);
-    const [checkBirthday, setCheckBirthday] = useState(false);
-    const [checkName, setCheckName] = useState(false);
-    return (
-        <SafeAreaProvider>
-            <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-                <View style={{flex: 1, backgroundColor:"#ffffff"}}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Entypo name="chevron-left" size={30} color="gray" style={{marginTop:20, marginLeft:10}}/>
-                    </TouchableOpacity>
-                    <Title>재학생 인증</Title>
-                    <InputText>이름</InputText>
-                    <InputBox placeholder="이름을 입력하세요" placeholderTextColor={'#AAB2BB'} onChangeText={onChangeName} value={name}/>
-                    <InputText>생년월일</InputText>
-                    <InputBox placeholder="생년월일을 입력하세요 ex)980901" placeholderTextColor={'#AAB2BB'} onChangeText={onChangeBirthday} value={birthday}/>
-                    {(checkBirthday)? null: birthday.length === 0 ? null : <CheckText>형식에 맞게 입력하세요</CheckText>}
-                    <AgreeView>
-                        <Checkbox value={agree} onValueChange={onChangeAgree} color={agree ? '#4630EB' : undefined}/>
-                        <View>
-                          <AgreeText>명지 메이트의 서비스를 이용하는데 필요한 
-                            <TouchableOpacity onPress={() => Linking.openURL('https://www.notion.so/mju-bus/608f331746544e49ae5f352a856ac3c2')}>
-                              <LinkText>
-                                개인정보처리방침
-                              </LinkText>
-                            </TouchableOpacity>
-                            에 동의합니다.
-                          </AgreeText>            
-                        </View>         
-                    </AgreeView>
-                    <TouchableOpacity disabled={!checkBirthday || !agree || !checkName} onPress={() => navigation.navigate("Splash")}>
-                        <NextBtn style={{backgroundColor: checkBirthday && agree && checkName ? "#7974E7": "grey"}}>
-                            <NextText>다음</NextText>
-                        </NextBtn>
-                    </TouchableOpacity>
-                </View>   
-            </SafeAreaView>
-        </SafeAreaProvider>
-    );
+function StudentAuth({ navigation }) {
+  const [name, setName] = useState("");
+  const onChangeName = name => {
+    if (name === "") {
+      setCheckName(false);
+    } else {
+      setCheckName(true);
+    }
+    setName(name);
+  };
+  const [birthday, setBirthday] = useState("");
+  const onChangeBirthday = birthday => {
+    if (birthday.length !== 6 || !(0 <= birthday && birthday <= 999999)) {
+      setCheckBirthday(false);
+    } else {
+      setCheckBirthday(true);
+    }
+    setBirthday(birthday);
+  };
+  const [agree, setAgree] = useState(false);
+  const onChangeAgree = () => setAgree(!agree);
+  const [checkBirthday, setCheckBirthday] = useState(false);
+  const [checkName, setCheckName] = useState(false);
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Entypo
+              name="chevron-left"
+              size={30}
+              color="gray"
+              style={{ marginTop: 20, marginLeft: 10 }}
+            />
+          </TouchableOpacity>
+          <Title>재학생 인증</Title>
+          <InputText>이름</InputText>
+          <InputBox
+            placeholder="이름을 입력하세요"
+            placeholderTextColor={"#AAB2BB"}
+            onChangeText={onChangeName}
+            value={name}
+          />
+          <InputText>생년월일</InputText>
+          <InputBox
+            placeholder="생년월일을 입력하세요 ex)980901"
+            placeholderTextColor={"#AAB2BB"}
+            onChangeText={onChangeBirthday}
+            value={birthday}
+          />
+          {checkBirthday ? null : birthday.length === 0 ? null : (
+            <CheckText>형식에 맞게 입력하세요</CheckText>
+          )}
+          <AgreeView>
+            <Checkbox
+              value={agree}
+              onValueChange={onChangeAgree}
+              color={agree ? "#4630EB" : undefined}
+            />
+            <View>
+              <AgreeText>
+                명지 메이트의 서비스를 이용하는데 필요한
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://www.notion.so/mju-bus/608f331746544e49ae5f352a856ac3c2",
+                    )
+                  }
+                >
+                  <LinkText>개인정보처리방침</LinkText>
+                </TouchableOpacity>
+                에 동의합니다.
+              </AgreeText>
+            </View>
+          </AgreeView>
+          <TouchableOpacity
+            disabled={!checkBirthday || !agree || !checkName}
+            onPress={() =>
+              // TODO:
+              // 1) 재학생 검증 후 성공 시 홈으로
+              // 2) 실패 시 토큰 삭제 후, 로그인으로
+              // 3) 뒤로가기 시 토큰 삭제
+              navigation.navigate("HomeBottomTabs", { screen: "Home" })
+            }
+          >
+            <NextBtn
+              style={{
+                backgroundColor:
+                  checkBirthday && agree && checkName ? "#7974E7" : "grey",
+              }}
+            >
+              <NextText>다음</NextText>
+            </NextBtn>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }
 export default StudentAuth;

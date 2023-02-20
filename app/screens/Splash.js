@@ -1,5 +1,4 @@
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Animated, BackHandler, Dimensions } from "react-native";
 import * as Font from "expo-font";
@@ -7,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import { busApi, calendarApi } from "../api";
 import { MBAContext } from "../navigation/Root";
+import AuthContext from "../components/AuthContext";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Circle = styled.View`
@@ -49,7 +49,6 @@ const customFonts = {
   "SpoqaHanSansNeo-Medium": require("../assets/fonts/SpoqaHanSansNeo-Medium.ttf"),
 };
 
-
 function Splash({ navigation: { navigate } }) {
   const {
     sineBusList,
@@ -60,9 +59,11 @@ function Splash({ navigation: { navigate } }) {
     setSineBusList,
     setSiweBusList,
     setMjuCalendar,
-    setStationList, 
-    setBusTimeTable
+    setStationList,
+    setBusTimeTable,
   } = React.useContext(MBAContext);
+
+  const { checkValidateToken, user } = useContext(AuthContext);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [appIsReady, setAppIsReady] = useState(false);
@@ -83,8 +84,8 @@ function Splash({ navigation: { navigate } }) {
   const loading = buslistLoading || calendarLoading || stationList.length === 0;
 
   useEffect(() => {
-    const getStationList = async (bus) => {
-      const res = await busApi.route({"queryKey" :["", bus.id]});
+    const getStationList = async bus => {
+      const res = await busApi.route({ queryKey: ["", bus.id] });
       const stations = res.stations;
       setStationList([
         ...stationList,
@@ -92,43 +93,44 @@ function Splash({ navigation: { navigate } }) {
           id: bus.id,
           name: bus.name,
           stations,
-        }
+        },
       ]);
     };
 
-    if (!buslistLoading) { // 버스 리스트 로딩이 완료되면
+    if (!buslistLoading) {
+      // 버스 리스트 로딩이 완료되면
       // 버스 리스트를 저장한다.
-      setSineBusList(busListData.sine_bus_list);
-      setSiweBusList(busListData.siwe_bus_list);
+      setSineBusList(busListData?.sine_bus_list);
+      setSiweBusList(busListData?.siwe_bus_list);
 
       // 버스별 정류장 목록을 가져온다.
-      busListData.sine_bus_list.forEach(async (bus) => {
+      busListData.sine_bus_list.forEach(async bus => {
         await getStationList(bus);
       });
 
       // [시내]버스별 시간표를 가져온다.
-      busListData.sine_bus_list.forEach(async (bus) => {
-        const res = await busApi.timeTable({"queryKey" :["", bus.id]});
+      busListData.sine_bus_list.forEach(async bus => {
+        const res = await busApi.timeTable({ queryKey: ["", bus.id] });
         setBusTimeTable([
           ...busTimeTable,
           {
             id: bus.id,
             name: bus.name,
             timeTable: res.stations,
-          }
+          },
         ]);
       });
 
       // [시외]버스별 시간표를 가져온다.
-      busListData.siwe_bus_list.forEach(async (bus) => {
-        const res = await busApi.timeTable({"queryKey" :["", bus.id]});
+      busListData.siwe_bus_list.forEach(async bus => {
+        const res = await busApi.timeTable({ queryKey: ["", bus.id] });
         setBusTimeTable([
           ...busTimeTable,
           {
             id: bus.id,
             name: bus.name,
             timeTable: res.stations,
-          }
+          },
         ]);
       });
     }
@@ -154,6 +156,9 @@ function Splash({ navigation: { navigate } }) {
       try {
         // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync(customFonts);
+
+        await checkValidateToken();
+
         // Splash Screen 1초 보여주기
         // eslint-disable-next-line no-promise-executor-return
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -179,24 +184,28 @@ function Splash({ navigation: { navigate } }) {
       // loading its initial state and rendering its first pixels. So instead,
       // we hide the splash screen once we know the root view has already
       // performed layout.
-      navigate("HomeBottomTabs", {
-        screen: "홈",
-      });
+      if (user != null) {
+        navigate("HomeBottomTabs", {
+          screen: "Home",
+        });
+      } else {
+        navigate("Login");
+      }
     }
   }, [appIsReady, busListData, calendarData, loading, navigate, stationList]);
 
   return (
-      <Container>
-        <IconContainer>
-          <Animated.View style={{ opacity: fadeAnim }}>
-            <Circle>
-              <Board />
-              <Ionicons name="ios-bus" size={50} color="#7974E7" />
-            </Circle>
-          </Animated.View>
-        </IconContainer>
-        <TextContainer />
-      </Container>
+    <Container>
+      <IconContainer>
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <Circle>
+            <Board />
+            <Ionicons name="ios-bus" size={50} color="#7974E7" />
+          </Circle>
+        </Animated.View>
+      </IconContainer>
+      <TextContainer />
+    </Container>
   );
 }
 

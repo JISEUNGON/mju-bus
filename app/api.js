@@ -1,4 +1,4 @@
-const URL = "http://localhost:8080";
+const URL = "http://staging-api.mju-bus.com";
 
 export const busApi = {
   bus: ({ queryKey }) => {
@@ -53,50 +53,42 @@ export const pathApi = {
 };
 
 export const loginApi = {
-  apple_login : ({ queryKey }) => {
+  apple_login: ({ queryKey }) => {
     const { payload } = queryKey;
-    return fetch(
-      `${URL}/login/apple`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }
-    ).then(res => res.json());
+    return fetch(`${URL}/login/apple`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }).then(res => res.json());
   },
 
-  kakao_login : ({ queryKey }) => {
+  kakao_login: ({ queryKey }) => {
     const { payload } = queryKey;
-    return fetch(
-      `${URL}/login/kakao`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }
-    ).then(res => res.json());
+    return fetch(`${URL}/login/kakao`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }).then(res => res.json());
   },
 
-  google_login : ({ queryKey }) => {
+  google_login: ({ queryKey }) => {
     const { payload } = queryKey;
-    return fetch(
-      `${URL}/login/google`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }
-    ).then(res => res.json());
+    return fetch(`${URL}/login/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }).then(res => res.json());
   },
 
-  guest_login : () => {
-    return fetch(
-      `${URL}/login/`, {
-        method: 'POST',
-      }
-    ).then(res => res.json());
-  }
-}
+  guest_login: () => {
+    return fetch(`${URL}/login/`, {
+      method: "POST",
+    }).then(res => res.json());
+  },
+};
