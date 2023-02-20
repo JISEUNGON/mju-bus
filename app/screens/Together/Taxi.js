@@ -1,21 +1,31 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
   Platform,
   View,
-  SectionList,
   Text,
+  ActivityIndicator,
+  Circle,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+} from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import styled from "styled-components";
-import DATA from "../Taxi/Data";
 import {
   Fontisto,
   MaterialIcons,
@@ -23,18 +33,20 @@ import {
   Octicons,
 } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/AntDesign";
-import Profile from "../../components/Profile";
-
+import { taxiApi } from "../../api";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import UserAvatar from "react-native-user-avatar";
+import Loader from "../../components/Loader";
+import HList from "../../components/HList";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
-  height: 20%;
-  //height: 140px;
-  //flex:0.4;
+  //height: 60%;
+  height: 140px;
   justify-content: center;
-  background-color: ${props => props.theme.scheduleBgColor};
+  //background-color: ${props => props.theme.scheduleBgColor};
 `;
 
 const HighlightTaxi = styled.Text`
@@ -64,49 +76,42 @@ const Hr = styled.View`
   border-bottom-width: 2px;
 `;
 
-const SubHeading = styled.Text`
-  font-family: "SpoqaHanSansNeo-Medium";
-  font-size: 13px;
-  color: #505866;
-  margin-left: 15px;
-`;
-
-const Heading = styled(Title)`
-  margin-left: 15px;
-`;
 const Content = styled.View`
   flex-direction: column;
   margin-bottom: 25px;
-  margin-left: 15px;
+  //background-color: beige;
 `;
 const Board = styled.View`
   width: 140px;
-  height: 120px;
+  height: 125px;
   background-color: ${props => props.theme.taxiPartyColor};
   padding: 20px 20px;
   border-radius: 20px;
   flex-direction: column;
   margin-bottom: 10px;
+  margin-top: 5px;
 `;
 const Row = styled.View`
   flex-direction: row;
-  justify-content: flex-end;
   align-items: baseline;
+  justify-content: flex-end;
 `;
 
 const ProfileContent = styled.View`
-  top: -23px;
+  width: 60px;
+  top: -15px;
+  align-items: flex-start;
 `;
 
 const NumOfPerson = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 15px;
-  color: gray;
+  color: #737882;
   margin-left: 3px;
 `;
 
 const Column = styled.View`
-  margin-top: 15px;
+  margin-top: 27px;
 `;
 const ContentTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
@@ -127,11 +132,12 @@ const RemainingTime = styled.Text`
   color: #dd5257;
   margin-left: 5px;
   margin-top: 5px;
+  margin-bottom: 15px;
 `;
 
-const BodyContainer = styled.View`
-  height: 80%;
-  //background-color: beige;
+const separator = styled.View`
+  //argin-right: 10px;
+  width: 15px;
 `;
 
 const ModalContainer = styled.View`
@@ -146,7 +152,7 @@ const ModalContainer = styled.View`
 const ModalTitle = styled.Text`
   font-family: "SpoqaHanSansNeo-Bold";
   font-size: 18px;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
 `;
 
 const ModalRow = styled.View`
@@ -171,7 +177,7 @@ const Styles = StyleSheet.create({
     backgroundColor: "white",
   },
   circle: {
-    backgroundColor: "#EFEFEF",
+    backgroundColor: "#979797",
     position: "absolute",
     width: 40,
     height: 40,
@@ -189,6 +195,7 @@ const Styles = StyleSheet.create({
       },
     }),
   },
+
   highlight: {
     color: "#46437D",
   },
@@ -196,7 +203,7 @@ const Styles = StyleSheet.create({
     backgroundColor: "#767586",
   },
   red: {
-    color: "#783235",
+    color: "#773134",
   },
   background: {
     backgroundColor: "#888888",
@@ -220,39 +227,134 @@ export function highlightTaxi(contents, isOpen) {
   );
 }
 
-function ListItem({ item, isOpen }) {
+export function TaxiTimer({ item , isOpen}) {
+  const time = item.end_at.substring(11, 19);
+  const endTime = time.split(":");
+  const timerId = useRef(null);
+
+  const [hour, setHour] = useState("");
+  const [min, setMin] = useState("");
+  const [sec, setSec] = useState("");
+  const [remain, setRemain] = useState("");
+  //let remain = 0;
+  const [present, setPresent] = useState("");
+  const date = new Date();
+
+  useEffect(() => {
+    timerId.current = setInterval(() => {
+      setPresent(
+        date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds(),
+      );
+      setRemain(endTime[0] * 3600 + endTime[1] * 60 + endTime[2] * 1 - present);
+      setHour(Math.floor(remain / 3600));
+      setMin(Math.floor((remain % 3600) / 60));
+      setSec(Math.floor((remain % 3600) % 60));
+    }, 1000);
+    return () => clearInterval(timerId.current);
+  }, [hour, min, sec]);
   return (
-    <Content>
-      <Board style={[isOpen ? Styles.purple : null]}>
-        <Row>
-          <Octicons
-            name="person-fill"
-            size={15}
-            color="gray"
-            style={[isOpen ? Styles.gray : null]}
-          />
-          <NumOfPerson style={[isOpen ? Styles.gray : null]}>
-            {item.numOfPerson}/{item.MaxPerson}
-          </NumOfPerson>
-        </Row>
-        <ProfileContent>
-          <Profile />
-        </ProfileContent>
-        <Column>
-          <ContentTitle style={[isOpen ? Styles.title : null]}>
-            {item.start}에서
-          </ContentTitle>
-          <ContentTitle style={[isOpen ? Styles.title : null]}>
-            {item.dest}로
-          </ContentTitle>
-        </Column>
-      </Board>
-      <PartyTitle>{item.nickname}의 파티</PartyTitle>
-      <RemainingTime style={[isOpen ? Styles.red : null]}>
-        {item.time}
-      </RemainingTime>
-    </Content>
+    <RemainingTime style={[isOpen ? Styles.red : null]}>
+      {hour}시간 {min}분 {sec}초 남음
+    </RemainingTime>
   );
+}
+
+export function RealTimePerson({ item, isOpen }) {
+  const [maxMember, setMaxMember] = useState("");
+  const [currMember, setCurrMember] = useState("");
+  const personId = useRef(null);
+
+  useEffect(() => {
+    personId.current = setInterval(() => {
+      setMaxMember(item.max_member);
+      setCurrMember(item.curr_member);
+    }, 1000);
+    return () => clearInterval(personId.current);
+  }, [maxMember, currMember]);
+
+  return (
+    <NumOfPerson style={[isOpen ? Styles.gray : null]}>
+      {currMember}/{maxMember}
+    </NumOfPerson>
+  );
+}
+
+function ListItem({ item, isOpen, num }) {
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://staging-api.mju-bus.com/taxi/${item.id}/location`)
+      .then(res => res.json())
+      .then(data => setLocation(data.name));
+  }, []);
+
+  if (num == 1) {
+    if (location == "구갈동" || location == "기흥역") {
+      return (
+        <Content>
+          <Board style={[isOpen ? Styles.purple : null]}>
+            <Row>
+              <Octicons name="person-fill" size={15} color="#737882" />
+              <RealTimePerson item={item} isOpen={isOpen} />
+            </Row>
+            <ProfileContent>
+              <UserAvatar
+                size={20}
+                src={item.administer.profile}
+                bgColor={"#00ff0000"}
+                style={[isOpen ? Styles.gray : null]}
+              />
+            </ProfileContent>
+            <Column>
+              <ContentTitle style={[isOpen ? Styles.title : null]}>
+                {location}에서
+              </ContentTitle>
+              <ContentTitle style={[isOpen ? Styles.title : null]}>
+                학교로
+              </ContentTitle>
+            </Column>
+          </Board>
+          <PartyTitle>{item.administer.name}의 파티</PartyTitle>
+          <TaxiTimer item={item} isOpen={isOpen}/>
+        </Content>
+      );
+    } else {
+      return null;
+    }
+  } else {
+    if (location !== "구갈동" && location !== "기흥역") {
+      return (
+        <Content>
+          <Board style={[isOpen ? Styles.purple : null]}>
+            <Row>
+              <Octicons name="person-fill" size={15} color="#737882" />
+              <RealTimePerson item={item} isOpen={isOpen} />
+            </Row>
+            <ProfileContent>
+              <UserAvatar
+                size={20}
+                src={item.administer.profile}
+                bgColor={"#00ff0000"}
+                style={[isOpen ? Styles.gray : null]}
+              />
+            </ProfileContent>
+            <Column>
+              <ContentTitle style={[isOpen ? Styles.title : null]}>
+                {location}에서
+              </ContentTitle>
+              <ContentTitle style={[isOpen ? Styles.title : null]}>
+                학교로
+              </ContentTitle>
+            </Column>
+          </Board>
+          <PartyTitle>{item.administer.name}의 파티</PartyTitle>
+          <TaxiTimer item={item} />
+        </Content>
+      );
+    } else {
+      return null;
+    }
+  }
 }
 
 function Taxi({ navigation: { navigate } }) {
@@ -260,52 +362,74 @@ function Taxi({ navigation: { navigate } }) {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const snapPoints = useMemo(() => [Platform.OS === "ios" ? "25%" : "30%"], []);
+  const snapPoints = useMemo(() => [Platform.OS === "ios" ? "18%" : "30%"], []);
 
   const handlePresentModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
     setIsOpen(true);
   }, []);
 
-  return (
+  const queryClient = useQueryClient();
+
+  const {
+    isLoading: taxiListLoading,
+    data: taxiListData,
+    isRefetching: isRefetchingTaxiList,
+  } = useQuery(["taxi", "taxiList"], taxiApi.taxiList);
+
+  const onRefresh = async () => {
+    queryClient.refetchQueries(["taxi"]);
+  };
+
+  const loading = taxiListLoading;
+  const refreshing = isRefetchingTaxiList;
+
+  return loading ? (
+    <Loader />
+  ) : (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-        <View style={[isOpen ? Styles.background : Styles.container]}>
+        <ScrollView
+          style={Styles.container}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          contentContainerStyle={{}}
+        >
           <HeaderContainer style={[isOpen ? Styles.background : null]}>
-            <Title>
-              같이 {highlightTaxi("택시", isOpen)} 시킬 사람 구해요!
-            </Title>
+            <Title>같이 {highlightTaxi("택시", isOpen)} 탈 사람 구해요!</Title>
             <SubTitle style={[isOpen ? Styles.gray : null]}>
               택시 파티를 모집 하거나 참여 해보세요
             </SubTitle>
             <Hr style={[isOpen ? Styles.hr : null]} />
           </HeaderContainer>
-          <BodyContainer>
-            <SectionList
-              //contentContainerStyle={{ paddingHorizontal: 20}}
-              stickySectionHeadersEnabled={false}
-              sections={DATA}
-              renderSectionHeader={({ section }) => (
-                <>
-                  <SubHeading>{section.subTitle}</SubHeading>
-                  <Heading>{section.title}</Heading>
-                  <FlatList
-                    horizontal
-                    data={section.data}
-                    renderItem={({ item }) => (
-                      <ListItem item={item} isOpen={isOpen} />
-                    )}
-                    showsHorizontalScrollIndicator={false}
-                  />
-                </>
-              )}
-              renderItem={({ item, section }) => {
-                return null;
-              }}
-            />
-          </BodyContainer>
+          <HList title="기흥 파티" subtitle="지각생 다 모여!" isOpen={isOpen}/>
+          <FlatList
+            style={[isOpen ? Styles.background : null]}
+            horizontal
+            data={taxiListData.taxiPartyList}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            ItemSeparatorComponent={separator}
+            renderItem={({ item }) => (
+              <ListItem item={item} isOpen={isOpen} num={1} />
+            )}
+          />
+          <HList title="기흥 외 파티" subtitle="머니까 같이!" isOpen={isOpen}/>
+          <FlatList
+          style={[isOpen ? Styles.background : null]}
+            horizontal
+            data={taxiListData.taxiPartyList}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            ItemSeparatorComponent={separator}
+            renderItem={({ item }) => (
+              <ListItem item={item} isOpen={isOpen} num={2} />
+            )}
+          />
+
           <TouchableOpacity style={Styles.circle} onPress={handlePresentModal}>
-            <Icon name="plus" size={18} color="#788898" active />
+            <Icon name="plus" size={18} color="white" active />
           </TouchableOpacity>
 
           <BottomSheetModal
@@ -330,12 +454,21 @@ function Taxi({ navigation: { navigate } }) {
                   });
                 }}
               >
-                <Row>
+                <ModalRow>
                   <Fontisto name="taxi" size={15} color="rgb(255,211,26)" />
                   <ModalText>택시</ModalText>
-                </Row>
+                </ModalRow>
               </TouchableOpacity>
-              <TouchableOpacity
+            </ModalContainer>
+          </BottomSheetModal>
+        </ScrollView>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
+  );
+}
+export default Taxi;
+
+              {/* <TouchableOpacity
                 onPress={() => {
                   navigate("AddPartyStack", {
                     screen: "AddDelivery",
@@ -362,13 +495,9 @@ function Taxi({ navigation: { navigate } }) {
                   <Ionicons name="thumbs-up" size={20} color="rgb(48,52,63)" />
                   <ModalText>카풀</ModalText>
                 </Row>
-              </TouchableOpacity>
+              </TouchableOpacity> 
             </ModalContainer>
           </BottomSheetModal>
-        </View>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
-  );
+        </View> 
+*/
 }
-export default Taxi;
-

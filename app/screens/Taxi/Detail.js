@@ -25,6 +25,7 @@ const ContextTitle = styled.Text`
   margin-left: 20px;
   font-size: 16px;
   font-weight: 600;
+  font-family: "SpoqaHanSansNeo-Bold";
 `;
 
 const ContextInsideContainer = styled.View`
