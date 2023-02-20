@@ -30,8 +30,9 @@ public class SlackAppenderAttackFilter implements CustomSlackAppenderFilter {
 
     @Override
     public boolean isPass(String message) {
+        if (!message.contains(PREFIX)) return false;
         for (String keyWord : blackListKeyword) {
-            if (message.contains(PREFIX) && message.contains(keyWord)) return true;
+            if (message.contains(keyWord)) return true;
         }
         return false;
     }
