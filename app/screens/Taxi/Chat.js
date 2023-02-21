@@ -1,10 +1,5 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useSyncExternalStore,
-} from "react";
-import { Text, TouchableOpacity, Dimensions } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Text, TouchableOpacity, Dimensions, AsyncStorage } from "react-native";
 import styled from "styled-components/native";
 import UserAvatar from "react-native-user-avatar";
 import { TaxiChatContext } from "./Taxicontext";
@@ -55,6 +50,7 @@ const BottomClearView = styled.View`
 `;
 
 function Chat() {
+  // 가상의 데이터 (api 연동후 삭제예정)
   const memberData = [
     {
       id: 1,
@@ -79,23 +75,21 @@ function Chat() {
     },
   ];
 
-  const timeData = [
-    {
-      moring: true,
-      hours: 11,
-      mins: 50,
-    },
-    {
-      hours: 9,
-      mins: 40,
-    },
-  ];
-  const { goChat, setGoChat, join, setJoin } = useContext(TaxiChatContext);
+  // Context 변수 선언
+  const { join, setJoin, out, setOut } = useContext(TaxiChatContext);
   const windowHeight = Dimensions.get("window").height;
   const ChattingOnOff = () => {
-    return setGoChat(!goChat), setJoin(!join);
+    setOut(!out);
+    timeoutId = setTimeout(() => {
+      setJoin(!join);
+    }, 100);
+
+    // AsyncStorage에 join 및 out 변수 값을 저장한다.
+    AsyncStorage.setItem("join", (!join).toString());
+    AsyncStorage.setItem("out", (!out).toString());
   };
 
+  // api 호출부분
   const [data, setData] = useState(null);
   const [diffHours, setDiffHours] = useState(null);
   const [diffMinutes, setDiffMinutes] = useState(null);
@@ -104,6 +98,7 @@ function Chat() {
       .then(res => res.json())
       .then(data => setData(data));
   }, []);
+  // timedata 가공 부분
   useEffect(() => {
     if (data !== null) {
       let dateStr = data.end_at;
@@ -117,58 +112,74 @@ function Chat() {
     }
   }, [data]);
 
+  // 참가후 메시지 보내기 버튼 asyncstorage부분
+  useEffect(() => {
+    AsyncStorage.getItem("join").then(value => {
+      if (value !== null) {
+        setJoin(value === "true");
+      }
+    });
+    AsyncStorage.getItem("out").then(value => {
+      if (value !== null) {
+        setOut(value === "true");
+      }
+    });
+  }, []);
+
   return (
-    <Container>
-      <TopClearView></TopClearView>
-      <ProfileView>
-        <UserAvatar
-          size={windowHeight > 700 ? 60 : 50}
-          src={memberData[0].memberImage}
-          bgColor="white"
-        />
-      </ProfileView>
-      <MainTextView>
-        <MainText>{memberData[0].memberName}님의</MainText>
-        <MainText> 택시 파티에 참여하시겠어요?</MainText>
-      </MainTextView>
-      <TimeTextView>
-        <Text
-          style={{
-            color: "#929292",
-            textAlign: "center",
-            fontSize: 16,
-            fontFamily: "SpoqaHanSansNeo-Medium",
-          }}
-        >
-          모집 마감 까지 {diffHours}시간 {diffMinutes}분 남았어요!
-        </Text>
-      </TimeTextView>
-      <ButtonView>
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#E8F3E6",
-            width: 300,
-            height: 60,
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 20,
-          }}
-          onPress={ChattingOnOff}
-        >
+    <>
+      <Container>
+        <TopClearView></TopClearView>
+        <ProfileView>
+          <UserAvatar
+            size={windowHeight > 700 ? 60 : 50}
+            src={memberData[0].memberImage}
+            bgColor="white"
+          />
+        </ProfileView>
+        <MainTextView>
+          <MainText>{memberData[0].memberName}님의</MainText>
+          <MainText> 택시 파티에 참여하시겠어요?</MainText>
+        </MainTextView>
+        <TimeTextView>
           <Text
             style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              color: "#4F8645",
-              fontFamily: "SpoqaHanSansNeo-Bold",
+              color: "#929292",
+              textAlign: "center",
+              fontSize: 16,
+              fontFamily: "SpoqaHanSansNeo-Medium",
             }}
           >
-            참가 후 메시지 보내기
+            모집 마감 까지 {diffHours}시간 {diffMinutes}분 남았어요!
           </Text>
-        </TouchableOpacity>
-      </ButtonView>
-      <BottomClearView></BottomClearView>
-    </Container>
+        </TimeTextView>
+        <ButtonView>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#E8F3E6",
+              width: 300,
+              height: 60,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 20,
+            }}
+            onPress={ChattingOnOff}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                color: "#4F8645",
+                fontFamily: "SpoqaHanSansNeo-Bold",
+              }}
+            >
+              참가 후 메시지 보내기
+            </Text>
+          </TouchableOpacity>
+        </ButtonView>
+        <BottomClearView></BottomClearView>
+      </Container>
+    </>
   );
 }
 

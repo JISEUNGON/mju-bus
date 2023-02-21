@@ -8,6 +8,8 @@ import Root from "./navigation/Root";
 import { darkTheme, lightTheme } from "./styled";
 import useCodePush from "./hooks";
 import SyncProgressView from "./screens/SyncProgressView";
+import TaxiTabs from "./navigation/TaxiDetailTabs";
+import { TaxiChatProvider } from "./screens/Taxi/Taxicontext";
 
 const queryClient = new QueryClient();
 
@@ -15,17 +17,19 @@ function App() {
   const isDark = useColorScheme() === "dark";
   const [isUpdating, syncProgress] = useCodePush();
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        {isUpdating ? (
-          <SyncProgressView syncProgress={syncProgress} />
-        ) : (
-          <NavigationContainer>
-            <Root />
-          </NavigationContainer>
-        )}
-      </ThemeProvider>
-    </QueryClientProvider>
+    <TaxiChatProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+          {isUpdating ? (
+            <SyncProgressView syncProgress={syncProgress} />
+          ) : (
+            <NavigationContainer>
+              <TaxiTabs />
+            </NavigationContainer>
+          )}
+        </ThemeProvider>
+      </QueryClientProvider>
+    </TaxiChatProvider>
   );
 }
 

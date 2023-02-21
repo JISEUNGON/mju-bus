@@ -14,8 +14,7 @@ import {
   isSameUser,
 } from "react-native-gifted-chat";
 import { Client } from "@stomp/stompjs";
-import { Base64 } from "js-base64";
-import { View, Text } from "react-native";
+import { View, Text, AppState, ActivityIndicator } from "react-native";
 import styled from "styled-components/native";
 import { Keyboard } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -23,15 +22,18 @@ import uuid from "react-native-uuid";
 import { TaxiChatContext } from "./Taxicontext";
 import { useIsFocused } from "@react-navigation/native";
 
+// 아이폰에서 채팅입력창부분 가려지는것을 방지하기 위한 View
 const BottomView = styled.View`
   height: 25px;
   background-color: white;
 `;
-const Chatting = () => {
+const Chatting = props => {
   const [keyboardStatus, setKeyboardStatus] = useState("");
-  const { focused, setFocused } = useContext(TaxiChatContext);
+  const { focused, setFocused, out, setOut, join, setJoin } =
+    useContext(TaxiChatContext);
   setFocused(useIsFocused());
 
+  // 키보드 렌더여부 체크
   const showSubscription = Keyboard.addListener("keyboardWillShow", () => {
     setKeyboardStatus(true);
   });
@@ -41,42 +43,11 @@ const Chatting = () => {
 
   const [messages, setMessages] = useState([]);
 
-  let client = useRef({});
+  const [client, setClient] = useState(new Client());
 
   let textDecoder = useRef({});
+
   const [subscription, setSubscription] = useState(null);
-
-  const subscribe = () => {
-    setSubscription(
-      client.subscribe(
-        "/sub/9",
-        message => {
-          let nav = JSON.parse(textDecoder.decode(message._binaryBody));
-          const chattingLog = {
-            _id: uuid.v4(),
-            text: Base64.decode(nav.message),
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              avatar: nav.imgUrl,
-              name: Base64.decode(nav.sender),
-            },
-          };
-
-          if (chattingLog.user.name !== "멋쟁이라이언") {
-            setMessages(previousMessages =>
-              GiftedChat.append(previousMessages, chattingLog),
-            );
-          }
-        },
-        { id: "sub-" + 1 },
-      ),
-    );
-  };
-
-  const unsubscribe = room_id => {
-    subscription.unsubscribe({ id: "/sub/" + room_id });
-  };
 
   const onSend = useCallback(msg => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, msg));
@@ -91,16 +62,26 @@ const Chatting = () => {
     };
     publish(chattingDto);
   }, []);
+
+  // client 초기세팅
   useEffect(() => {
     textDecoder = new TextDecoder();
-    client = new Client();
     client.configure({
       brokerURL: "ws://staging-api.mju-bus.com:80/chat",
       forceBinaryWSFrames: true,
       appendMissingNULLonIncoming: true,
       onConnect: str => {
-        console.log("onConnect : ", str);
+        if (background === false && focused === true) {
+          console.log("onConnect : ", str);
+          subscribe();
+          console.log("onConnect 될때 실행되는 subscribe");
+        } else {
+          console.log("onConnect이지만 focused가 false이므로 subscribe 안됨");
+        }
       },
+      heartbeatIncoming: 400,
+      heartbeatOutgoing: 400,
+      reconnectDelay: 1,
       debug: str => {
         console.log("debug: ", new Date(), str);
       },
@@ -108,16 +89,53 @@ const Chatting = () => {
         console.log("onWebSocketClose : ", str);
       },
     });
+  }, [background, focused]);
+
+  // 최초 접속시 client active
+  useEffect(() => {
     client.activate();
   }, []);
-  //건들지말고 그대로 써라.
-  const publish = message => {
+
+  const subscribe = () => {
+    setSubscription(
+      client.subscribe(
+        "/sub/9",
+        message => {
+          let nav = JSON.parse(textDecoder.decode(message._binaryBody));
+          const chattingLog = {
+            _id: uuid.v4() + nav.name,
+            // text: Base64.decode(nav.message),
+            text: nav.message,
+            createdAt: new Date(),
+            user: {
+              _id: nav._id,
+              avatar: nav.imgUrl,
+              // avatar: message.imgUrl,
+              // name: Base64.decode(nav.sender),
+              name: nav.sender,
+            },
+          };
+
+          if (chattingLog.user.name !== "멋쟁이라이언") {
+            setMessages(previousMessages =>
+              GiftedChat.append(previousMessages, chattingLog),
+            );
+          }
+        },
+        { id: "sub-" + 1 },
+      ),
+    );
+  };
+
+  // publish
+  function publish(message) {
     client.publish({
       destination: "/pub/chatting-service",
       body: JSON.stringify(message),
     });
-  };
+  }
 
+  // 보내기 버튼 설정
   function SendButton(props) {
     return (
       <Send {...props}>
@@ -138,6 +156,7 @@ const Chatting = () => {
     return <InputToolbar {...props} containerStyle={{ paddingLeft: 10 }} />;
   }
 
+  // 말풍선 설정
   function renderBubble(props) {
     if (
       isSameUser(props.currentMessage, props.previousMessage) &&
@@ -199,31 +218,86 @@ const Chatting = () => {
         </View>
       );
   }
-  if (focused == false) {
-    unsubscribe(9);
-  } else {
-    subscribe;
-  }
+  const [background, setBackGround] = useState(false);
+
+  // background의 여부에 따라 subscribe & unsubscribe 결정
+  useEffect(() => {
+    const handleAppStateChange = nextAppState => {
+      if (
+        nextAppState === "background" &&
+        subscription !== null &&
+        client.connected === true
+      ) {
+        subscription.unsubscribe({ id: "9/sub-1" });
+        setBackGround(true);
+        console.log("백그라운드에서 실행되는 unsubscribe");
+      }
+      if (nextAppState === "active") {
+        setBackGround(false);
+      }
+    };
+
+    AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+    };
+  }, [focused, client.connected]);
+
+  //focus 의 여부에 따라 subscribe & unsubsribe 결정
+  useEffect(() => {
+    if (focused === true && background === false) {
+      if (client.connected === true) {
+        subscribe();
+        console.log("focused에서 실행되는 subscribe");
+      }
+    } else if (focused === false && subscription !== null) {
+      subscription.unsubscribe({ id: "9/sub-1" });
+      console.log("focused 에서 실행되는 unsubscribe");
+    }
+  }, [focused, background]);
+
+  // 파티나가기 했을때 client deactive 설정
+  useEffect(() => {
+    if (out === true && client.connected === true) client.deactivate();
+    console.log("파티나가기 버튼 동작으로 disconnect");
+  }, [out]);
+
   return (
     <>
-      <GiftedChat
-        messages={messages}
-        showAvatarForEveryMessage={false}
-        onSend={onSend}
-        wrapInSafeArea={false}
-        alwaysShowSend={true}
-        renderSend={SendButton}
-        renderBubble={renderBubble}
-        placeholder="메시지 입력"
-        renderInputToolbar={renderInputToolbar}
-        user={{
-          _id: 1,
-          avatar:
-            "https://d2v80xjmx68n4w.cloudfront.net/gigs/JaqkS1637331647.jpg",
-          name: "멋쟁이라이언",
-        }}
-      />
-      {keyboardStatus ? <></> : <BottomView></BottomView>}
+      {client.connected ? (
+        <>
+          <GiftedChat
+            messages={messages}
+            showAvatarForEveryMessage={false}
+            onSend={onSend}
+            wrapInSafeArea={false}
+            alwaysShowSend={true}
+            renderSend={SendButton}
+            renderBubble={renderBubble}
+            placeholder="메시지 입력"
+            renderInputToolbar={renderInputToolbar}
+            user={{
+              _id: 1,
+              avatar:
+                "https://d2v80xjmx68n4w.cloudfront.net/gigs/JaqkS1637331647.jpg",
+              name: "멋쟁이라이언",
+            }}
+          />
+          {keyboardStatus ? <></> : <BottomView></BottomView>}
+        </>
+      ) : (
+        <View
+          style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
+        >
+          <ActivityIndicator style={{ marginBottom: 10 }} />
+          <Text
+            style={{ fontFamily: "SpoqaHanSansNeo-Regular", color: "#959595" }}
+          >
+            잠시만 기다려주세요
+          </Text>
+        </View>
+      )}
     </>
   );
 };

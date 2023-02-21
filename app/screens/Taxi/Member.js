@@ -6,11 +6,11 @@ import {
   Dimensions,
   View,
   ActivityIndicator,
+  AsyncStorage,
 } from "react-native";
 import styled from "styled-components/native";
 import UserAvatar from "react-native-user-avatar";
 import { TaxiChatContext } from "./Taxicontext";
-import TextTicker from "react-native-text-ticker";
 
 // 전체를 감싸는 컨테이너
 const JoinMemberContainer = styled.View`
@@ -150,17 +150,6 @@ const MemberTitleText = styled.View`
   flex: 0.15;
 `;
 
-// 모집중인 프로필의 글씨색 변경
-const Nomember = styled.Text`
-  color: #c4c4c4;
-`;
-
-const CaptainIcon = styled.View`
-  background-color: #aadcc4;
-  width: 10px;
-  height: 3px;
-`;
-
 const CapIconView = styled.View`
   flex: 1;
   background-color: #aadcc4;
@@ -213,8 +202,9 @@ const Me = () => (
 
 function Member() {
   const [MemberBasicsData, setMemberBasicsData] = useState(null);
-  const [minMember2, setMinMember2] = useState(null);
+  const [minMember, setminMember] = useState(null);
 
+  // api 호출 부분
   useEffect(() => {
     fetch("http://staging-api.mju-bus.com:80/taxi/21/members")
       .then(res => res.json())
@@ -226,7 +216,7 @@ function Member() {
         return res.json();
       })
       .then(data => {
-        setMinMember2(data);
+        setminMember(data);
       });
   }, []);
 
@@ -236,19 +226,17 @@ function Member() {
       setMemberLength(MemberBasicsData.taxiPartyMembersList.length);
     }
   }, [MemberBasicsData]);
-  const cruitingMember = 4;
-  const MemberList = [];
-  const totalMember = [];
+
+  // 화면 크기에따른 프로필 사진크기 변화를 위해 사용
   const windowHeight = Dimensions.get("window").height;
-  // 유저 profile 하나를 component화 시킴
+
+  // 유저 profile 하나하나를 component화 시킴
   function Profile(props) {
     const Capfuntion = () => {
-      if (props.cap && props.id === 2) {
+      if (MemberBasicsData.administer === props.id) {
         return <Cap />;
       } else if (props.id === 2) {
         return <Me />;
-      } else if (props.cap && props.id !== 2) {
-        return <Cap />;
       } else {
         return <></>;
       }
@@ -287,25 +275,63 @@ function Member() {
     );
   }
 
-  (() => {
-    for (let i = 1; i <= cruitingMember - MemberLength; i++) {
-      MemberList.push(1);
+  // 모집중프로필과 투명한프로필을 위한 변수
+  const [MemberList, setMemberList] = useState([]);
+  const [totalMember, setTotalMember] = useState([]);
+
+  // 모집중 멤버 프로필 개수생성
+  useEffect(() => {
+    if (minMember !== null) {
+      const newMemberList = [];
+      for (let i = 1; i <= minMember.max_member - MemberLength; i++) {
+        newMemberList.push(1);
+      }
+      setMemberList(newMemberList);
     }
-  })();
+  }, [minMember]);
 
-  (() => {
-    for (let i = 1; i <= 4 - cruitingMember; i++) {
-      totalMember.push(1);
+  // 투명한 프로필 개수생성
+  useEffect(() => {
+    if (minMember !== null) {
+      const newTotalMember = [];
+      for (let i = 1; i <= 4 - minMember.max_member; i++) {
+        newTotalMember.push(1);
+      }
+      setTotalMember(newTotalMember);
     }
-  })();
+  }, [minMember]);
 
-  const { goChat, setGoChat, join, setJoin } = useContext(TaxiChatContext);
+  // 참가하기, 파티나가기 등을 위한 useContext
+  const { join, setJoin, out, setOut } = useContext(TaxiChatContext);
 
+  // 참가중일때와 아닐때의 상태를 저장하기 위한 AsyncStorage부분
+  useEffect(() => {
+    AsyncStorage.getItem("join").then(value => {
+      if (value !== null) {
+        setJoin(value === "true");
+      }
+    });
+    AsyncStorage.getItem("out").then(value => {
+      if (value !== null) {
+        setOut(value === "true");
+      }
+    });
+  }, []);
+
+  // 참가하기/파티나가기 버튼의 실행함수
   const PressJoinButton = function () {
-    setJoin(!join);
+    setOut(!out);
+    timeoutId = setTimeout(() => {
+      setJoin(!join);
+    }, 500);
+
+    // AsyncStorage에 join 및 out 변수 값을 저장한다.
+    AsyncStorage.setItem("join", (!join).toString());
+    AsyncStorage.setItem("out", (!out).toString());
   };
 
-  if (minMember2 !== null) {
+  // 최소인원 부분
+  if (minMember !== null) {
     function MinMember() {
       return (
         <DetailIconTextContainer>
@@ -313,8 +339,8 @@ function Member() {
           <Text style={{ fontSize: 16, fontFamily: "SpoqaHanSansNeo-Regular" }}>
             택시 최소 인원까지{" "}
             <Text style={{ fontSize: 16, fontFamily: "SpoqaHanSansNeo-Bold" }}>
-              {minMember2.min_member - MemberLength > 0
-                ? minMember2.min_member - MemberLength
+              {minMember.min_member - MemberLength > 0
+                ? minMember.min_member - MemberLength
                 : 0}
               명
             </Text>
@@ -322,6 +348,7 @@ function Member() {
         </DetailIconTextContainer>
       );
     }
+    // 최대인원 부분
     function MaxMember() {
       return (
         <DetailIconTextContainer>
@@ -329,12 +356,13 @@ function Member() {
           <Text style={{ fontSize: 16, fontFamily: "SpoqaHanSansNeo-Regular" }}>
             택시 최대 인원까지
             <Text style={{ fontSize: 16, fontFamily: "SpoqaHanSansNeo-Bold" }}>
-              {4 - MemberLength}명
+              {minMember.max_member - MemberLength}명
             </Text>
           </Text>
         </DetailIconTextContainer>
       );
     }
+    // 현재 인원 부분
     function RecentMember() {
       return (
         <DetailIconTextContainer>
@@ -346,11 +374,13 @@ function Member() {
       );
     }
   }
-
   //보여지는 화면부분
   return (
     <>
-      {MemberBasicsData !== null && minMember2 !== null ? (
+      {MemberBasicsData !== null &&
+      minMember !== null &&
+      MemberList !== null &&
+      totalMember !== null ? (
         <JoinMemberContainer>
           <DetailContainer>
             <DetailTextContainer>
@@ -399,7 +429,7 @@ function Member() {
                   fontFamily: "SpoqaHanSansNeo-Bold",
                 }}
               >
-                모집중({MemberLength}/4)
+                모집중({MemberLength}/{minMember.max_member})
               </Text>
             </MemberTitleText>
             <MemberProfileContainer>
@@ -437,7 +467,7 @@ function Member() {
                     fontFamily: "SpoqaHanSansNeo-Bold",
                   }}
                 >
-                  {join ? "파티나가기" : "참가하기"}
+                  {!out ? "파티나가기" : "참가하기"}
                 </Text>
               </TouchableOpacity>
             </MemberButtonContainer>

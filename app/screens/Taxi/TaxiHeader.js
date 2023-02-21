@@ -57,6 +57,7 @@ const EndIcon = styled.View`
 `;
 
 function TaxiHeader() {
+  // api 호출 부분
   const [DetailData, setDetailData] = useState(null);
   useEffect(() => {
     fetch("http://staging-api.mju-bus.com:80/taxi/21/")
@@ -83,9 +84,8 @@ function TaxiHeader() {
       );
     }
   }, [DetailData]);
-  // let dateStr = DetailData.end_at;
-  // let date = new Date(dateStr);
 
+  // 가상 데이터 (api 연동후 삭제예정)
   const TaxiDetailData = {
     basicsData: {
       recruitingMemberNumber: 4,

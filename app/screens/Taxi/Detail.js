@@ -1,4 +1,4 @@
-import { Linking, View, Text, ActivityIndicator } from "react-native";
+import { Linking, View, ActivityIndicator } from "react-native";
 import styled from "styled-components/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import NaverMapView, { Marker } from "react-native-nmap";
@@ -134,36 +134,6 @@ const IconTextContainer = styled.View`
 `;
 
 function Detail() {
-  const TaxiDetailData = {
-    basicsData: {
-      recruitingMemberNumber: 4,
-      startingPoint: "기흥역",
-      endingPoint: "학교",
-      minMemberNumber: 3,
-    },
-    date: {
-      year: 2023,
-      month: 1,
-      days: 7,
-      day: "토",
-    },
-    time: {
-      moring: true,
-      hours: 11,
-      mins: 50,
-    },
-    startingAddress: {
-      address: "기흥역 3번 출구",
-      detailAddress: "경기 용인시 기흥구 구갈동 660-1",
-    },
-    coordinate: {
-      latitude: 37.275296997802755,
-      longitude: 127.11623345523063,
-      // latitude: 37.4979502,
-      // longitude: 127.0276368,
-    },
-  };
-
   function MyMap() {
     const p0 = {
       latitude: data.meeting_latitude,
@@ -174,7 +144,6 @@ function Detail() {
       <NaverMapView
         style={{ width: "100%", height: "100%" }}
         center={{ ...p0, zoom: 16 }}
-        showsMyLocationButton={true}
       >
         <Marker coordinate={p0} />
       </NaverMapView>
@@ -186,17 +155,6 @@ function Detail() {
     return num === 1 ? 0 : "";
   }
 
-  // function gotoWebPage() {
-  //   return Linking.openURL(
-  //     // site&pinId=${your_site_id}
-  //     // `https://m.map.naver.com/map.naver?lat=${TaxiDetailData.coordinate.latitude}&lng=${TaxiDetailData.coordinate.longitude}&query=${TaxiDetailData.startingAddress.address}&dlevel=12&mapMode=0&traffic=`,
-  //     // `https://m.map.naver.com/map.naver?&query=${TaxiDetailData.coordinate.latitude},${TaxiDetailData.coordinate.longitude}&dlevel=12&mapMode=0&traffic=`,
-  //     // `https://map.naver.com/index.nhn?pinType=&lat=37.275296997802755&lng=127.11623345523063&dlevel=10&enc=b64
-  //     // `,
-  //     "nmap://place?lat=37.275296997802755&lng=127.11623345523063&name=모임장소&appname=com.mjubus.mbus",
-  //     // `navermap://?pinType=place&pinId=2080133&x=127.1052141&y=37.3596061`,
-  //   );
-  // }
   async function gotoWebPage() {
     const isIOS = Platform.OS === "ios";
     const canOpenNaverMap = await Linking.canOpenURL("nmap://");
@@ -238,6 +196,7 @@ function Detail() {
       .then(data => setData(data));
   }, []);
 
+  // timedata 가공
   const [formattedDate, setFormattedDate] = useState(null);
   const [formattedDay, setFormattedDay] = useState(null);
   const [day, setDay] = useState(null);
@@ -274,9 +233,7 @@ function Detail() {
             <ContextInsideContainer>
               <ContextMiniContainer>
                 <ContextTexts>탑승지</ContextTexts>
-                <ContextApiText>
-                  {TaxiDetailData.basicsData.startingPoint}
-                </ContextApiText>
+                <ContextApiText>기흥역</ContextApiText>
               </ContextMiniContainer>
               <ContextMiniContainer>
                 <ContextTexts>하차지</ContextTexts>
@@ -289,8 +246,7 @@ function Detail() {
               <ContextMiniContainer>
                 <ContextTexts>모집인원</ContextTexts>
                 <ContextApiText>
-                  {TaxiDetailData.basicsData.recruitingMemberNumber}명 (최소{" "}
-                  {data.min_member}명)
+                  {data.max_member}명(최소 {data.min_member}명)
                 </ContextApiText>
               </ContextMiniContainer>
               <ContextMiniContainer>

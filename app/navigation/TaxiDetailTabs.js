@@ -11,7 +11,8 @@ const Tab = createMaterialTopTabNavigator();
 
 const SafeContainer = styled.SafeAreaView``;
 
-function TaxiTabs() {
+function TaxiTabs(props) {
+  // chat / chatting 컴포넌트의 분할 렌더링을 위해 사용
   const { join } = useContext(TaxiChatContext);
 
   return (
@@ -24,7 +25,7 @@ function TaxiTabs() {
       <TaxiHeader />
 
       <Tab.Navigator
-        initialRouteName="상세 정보"
+        initialRouteName="참석 인원"
         initialLayout={{ height: 190 }}
         screenOptions={{
           tabBarLabelStyle: {
