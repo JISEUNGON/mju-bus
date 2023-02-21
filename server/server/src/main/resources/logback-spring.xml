@@ -36,7 +36,7 @@
     <!-- // SYSLOG -->
 
     <springProfile name="server">
-        <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
+        <appender name="SLACK" class="com.mjubus.server.util.slackappender.CustomSlackAppender">
             <webhookUri>${WEBHOOK_URI}</webhookUri>
             <layout class="ch.qos.logback.classic.PatternLayout">
                 <Pattern>
