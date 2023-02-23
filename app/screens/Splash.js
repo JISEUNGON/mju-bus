@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { busApi, calendarApi } from "../api";
 import { MBAContext } from "../navigation/Root";
 import AuthContext from "../components/AuthContext";
+import usePushNotification from "../hooks/usePushNotification";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Circle = styled.View`
@@ -50,6 +51,7 @@ const customFonts = {
 };
 
 function Splash({ navigation: { navigate } }) {
+  usePushNotification();
   const {
     sineBusList,
     siweBusList,

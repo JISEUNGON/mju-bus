@@ -8,6 +8,7 @@ const AuthContext = createContext({
   processingSignin: false,
   checkValidateToken: async () => {},
   guestSignin: async () => {},
+  addFcmToken: async () => {},
 });
 
 export default AuthContext;
