@@ -58,4 +58,16 @@ amazon:
     accesskey: ${AWS_ACCESSKEY}
     secretkey: ${AWS_SECRETKEY}
 
-
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health
+    health:
+      show-details: always
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0 # 전송할 트랜잭션의 양 0~1 (1 == 100%)
+  logging:
+    minimum-event-level: error # 최소 이벤트 레벨
+    minimum-breadcrumb-level: error # 최소 브래드크럼 레벨

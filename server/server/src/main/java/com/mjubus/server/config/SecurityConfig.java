@@ -59,7 +59,9 @@ public class SecurityConfig {
                 .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilterBefore(new JwtMemberFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/taxi/**", "/member/**").permitAll().and().build();
+                .authorizeRequests().antMatchers("/taxi/**", "/member/**").permitAll()
+                .antMatchers("/actuator/**").hasAuthority("ROLE_ADMIN")
+                .and().build();
 //                .authorizeRequests()
 //                .antMatchers("/login/**").permitAll()
 //                .antMatchers("/taxi/**/delete").hasAnyAuthority("ROLE_ADMIN", "GROUP_ADMIN")
