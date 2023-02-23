@@ -19,6 +19,7 @@ function KakaoLogin() {
       if (e.message === "E_CANCELLED_OPERATION") {
         // 그대로
         console.log("kako login 취소");
+        return;
       }
     }
   }, []);

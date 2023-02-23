@@ -5,6 +5,8 @@ const { createContext } = require("react");
 const AuthContext = createContext({
   user: null,
   kakoSignin: async () => {},
+  googleSignin: async () => {},
+  appleSignin: async () => {},
   processingSignin: false,
   checkValidateToken: async () => {},
   guestSignin: async () => {},
