@@ -200,18 +200,20 @@ const Me = () => (
 
 //------------------------------- 실행부 ----------------------------
 
-function Member() {
+function Member({ route }) {
   const [MemberBasicsData, setMemberBasicsData] = useState(null);
   const [minMember, setminMember] = useState(null);
 
+  const item = route.params.item;
+
   // api 호출 부분
   useEffect(() => {
-    fetch("http://staging-api.mju-bus.com:80/taxi/21/members")
+    fetch(`http://staging-api.mju-bus.com:80/taxi/${item.id}/members`)
       .then(res => res.json())
       .then(data => setMemberBasicsData(data));
   }, []);
   useEffect(() => {
-    fetch("http://staging-api.mju-bus.com:80/taxi/21")
+    fetch(`http://staging-api.mju-bus.com:80/taxi/${item.id}`)
       .then(res => {
         return res.json();
       })
@@ -220,7 +222,7 @@ function Member() {
       });
   }, []);
 
-  const [MemberLength, setMemberLength] = useState();
+  const [MemberLength, setMemberLength] = useState(null);
   useEffect(() => {
     if (MemberBasicsData !== null) {
       setMemberLength(MemberBasicsData.taxiPartyMembersList.length);
@@ -276,46 +278,53 @@ function Member() {
   }
 
   // 모집중프로필과 투명한프로필을 위한 변수
-  const [MemberList, setMemberList] = useState([]);
-  const [totalMember, setTotalMember] = useState([]);
+  const [MemberList, setMemberList] = useState(null);
+  const [totalMember, setTotalMember] = useState(null);
 
   // 모집중 멤버 프로필 개수생성
   useEffect(() => {
-    if (minMember !== null) {
+    if (minMember !== null && MemberLength !== null) {
       const newMemberList = [];
       for (let i = 1; i <= minMember.max_member - MemberLength; i++) {
         newMemberList.push(1);
       }
       setMemberList(newMemberList);
     }
-  }, [minMember]);
+  }, [minMember, MemberLength]);
 
   // 투명한 프로필 개수생성
   useEffect(() => {
-    if (minMember !== null) {
+    if (minMember !== null && MemberLength !== null) {
       const newTotalMember = [];
       for (let i = 1; i <= 4 - minMember.max_member; i++) {
         newTotalMember.push(1);
       }
       setTotalMember(newTotalMember);
     }
-  }, [minMember]);
+  }, [minMember, MemberLength]);
 
   // 참가하기, 파티나가기 등을 위한 useContext
   const { join, setJoin, out, setOut } = useContext(TaxiChatContext);
 
   // 참가중일때와 아닐때의 상태를 저장하기 위한 AsyncStorage부분
   useEffect(() => {
-    AsyncStorage.getItem("join").then(value => {
-      if (value !== null) {
-        setJoin(value === "true");
+    AsyncStorage.getItem(`room${item.id}`).then(value => {
+      if (value === null) {
+        setJoin(false);
+        setOut(false);
+      } else {
+        setJoin(true);
+        setOut(true);
       }
     });
-    AsyncStorage.getItem("out").then(value => {
-      if (value !== null) {
-        setOut(value === "true");
-      }
-    });
+    // AsyncStorage.getItem("out").then(value => {
+    //   if (value !== null) {
+    //     setOut(value === "true");
+    //   }
+    // });
+  }, []);
+  useEffect(() => {
+    join === true ? setOut(true) : setOut(false);
   }, []);
 
   // 참가하기/파티나가기 버튼의 실행함수
@@ -324,10 +333,13 @@ function Member() {
     timeoutId = setTimeout(() => {
       setJoin(!join);
     }, 500);
-
     // AsyncStorage에 join 및 out 변수 값을 저장한다.
-    AsyncStorage.setItem("join", (!join).toString());
-    AsyncStorage.setItem("out", (!out).toString());
+    // AsyncStorage.setItem("join", (!join).toString());
+    if (join !== true) {
+      AsyncStorage.setItem(`room${item.id}`, true.toString());
+    } else {
+      AsyncStorage.removeItem(`room${item.id}`);
+    }
   };
 
   // 최소인원 부분
@@ -356,7 +368,7 @@ function Member() {
           <Text style={{ fontSize: 16, fontFamily: "SpoqaHanSansNeo-Regular" }}>
             택시 최대 인원까지
             <Text style={{ fontSize: 16, fontFamily: "SpoqaHanSansNeo-Bold" }}>
-              {minMember.max_member - MemberLength}명
+              {item.max_member - MemberLength}명
             </Text>
           </Text>
         </DetailIconTextContainer>
@@ -374,6 +386,7 @@ function Member() {
       );
     }
   }
+
   //보여지는 화면부분
   return (
     <>
@@ -429,7 +442,7 @@ function Member() {
                   fontFamily: "SpoqaHanSansNeo-Bold",
                 }}
               >
-                모집중({MemberLength}/{minMember.max_member})
+                모집중({MemberLength}/{item.max_member})
               </Text>
             </MemberTitleText>
             <MemberProfileContainer>
@@ -467,7 +480,7 @@ function Member() {
                     fontFamily: "SpoqaHanSansNeo-Bold",
                   }}
                 >
-                  {!out ? "파티나가기" : "참가하기"}
+                  {out ? "파티나가기" : "참가하기"}
                 </Text>
               </TouchableOpacity>
             </MemberButtonContainer>

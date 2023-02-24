@@ -27,10 +27,14 @@ const BottomView = styled.View`
   height: 25px;
   background-color: white;
 `;
-const Chatting = props => {
+const Chatting = ({ route }) => {
+  const item = route.params.item;
+
   const [keyboardStatus, setKeyboardStatus] = useState("");
-  const { focused, setFocused, out, setOut, join, setJoin } =
-    useContext(TaxiChatContext);
+  const { focused, setFocused, out } = useContext(TaxiChatContext);
+
+  // 현재 사용자가 Chatting 컴포넌트를 보고 있는지 확인
+
   setFocused(useIsFocused());
 
   // 키보드 렌더여부 체크
@@ -54,7 +58,7 @@ const Chatting = props => {
     console.log(messages.length, ": ", msg);
 
     const chattingDto = {
-      roomId: "9",
+      roomId: `${item.id}`,
       sender: msg[0].user.name,
       message: msg[0].text,
       imgUrl: msg[0].user.avatar,
@@ -79,9 +83,9 @@ const Chatting = props => {
           console.log("onConnect이지만 focused가 false이므로 subscribe 안됨");
         }
       },
-      heartbeatIncoming: 400,
-      heartbeatOutgoing: 400,
-      reconnectDelay: 1,
+      // heartbeatIncoming: 400,
+      // heartbeatOutgoing: 400,
+      reconnectDelay: 10,
       debug: str => {
         console.log("debug: ", new Date(), str);
       },
@@ -99,19 +103,16 @@ const Chatting = props => {
   const subscribe = () => {
     setSubscription(
       client.subscribe(
-        "/sub/9",
+        `/sub/${item.id}`,
         message => {
           let nav = JSON.parse(textDecoder.decode(message._binaryBody));
           const chattingLog = {
             _id: uuid.v4() + nav.name,
-            // text: Base64.decode(nav.message),
             text: nav.message,
             createdAt: new Date(),
             user: {
               _id: nav._id,
               avatar: nav.imgUrl,
-              // avatar: message.imgUrl,
-              // name: Base64.decode(nav.sender),
               name: nav.sender,
             },
           };
@@ -228,7 +229,7 @@ const Chatting = props => {
         subscription !== null &&
         client.connected === true
       ) {
-        subscription.unsubscribe({ id: "9/sub-1" });
+        subscription.unsubscribe({ id: `${item.id}/sub-1` });
         setBackGround(true);
         console.log("백그라운드에서 실행되는 unsubscribe");
       }
@@ -248,19 +249,24 @@ const Chatting = props => {
   useEffect(() => {
     if (focused === true && background === false) {
       if (client.connected === true) {
+        // timeoutId = setTimeout(() => {
         subscribe();
         console.log("focused에서 실행되는 subscribe");
+        // }, 500);
       }
     } else if (focused === false && subscription !== null) {
-      subscription.unsubscribe({ id: "9/sub-1" });
+      subscription.unsubscribe({ id: `${item.id}/sub-1` });
       console.log("focused 에서 실행되는 unsubscribe");
     }
   }, [focused, background]);
 
   // 파티나가기 했을때 client deactive 설정
   useEffect(() => {
-    if (out === true && client.connected === true) client.deactivate();
-    console.log("파티나가기 버튼 동작으로 disconnect");
+    if (out === false && client.connected === true) {
+      client.forceDisconnect();
+      client.deactivate();
+      console.log("파티나가기 버튼 동작으로 disconnect");
+    }
   }, [out]);
 
   return (

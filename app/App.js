@@ -16,6 +16,7 @@ const queryClient = new QueryClient();
 function App() {
   const isDark = useColorScheme() === "dark";
   const [isUpdating, syncProgress] = useCodePush();
+
   return (
     <TaxiChatProvider>
       <QueryClientProvider client={queryClient}>
@@ -24,7 +25,7 @@ function App() {
             <SyncProgressView syncProgress={syncProgress} />
           ) : (
             <NavigationContainer>
-              <TaxiTabs />
+              <Root />
             </NavigationContainer>
           )}
         </ThemeProvider>

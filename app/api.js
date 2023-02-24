@@ -1,5 +1,7 @@
 const URL = "http://api.mju-bus.com";
 
+const URLS = "http://staging-api.mju-bus.com";
+
 export const busApi = {
   bus: ({ queryKey }) => {
     const [, id] = queryKey;
@@ -50,4 +52,26 @@ export const pathApi = {
       `${URL}/bus/${busId}/path?station=${pathTarget}&toSchool=${toSchool}`,
     ).then(res => res.json());
   },
+};
+
+export const taxiApi = {
+  taxi: ({ queryKey }) => {
+    const [, id] = queryKey;
+    return fetch(`${URLS}/taxi/${id}`).then(res => res.json());
+  },
+  // location: ({ queryKey }) => {
+  //   const [, id] = queryKey;
+  //   return fetch(`${URLS}/taxi/list`)
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       const id = data.id;
+  //       return fetch(`${URLS}/taxi/${id}/location`);
+  //     })
+  //     .then(res => res.json());
+  // },
+  // location: ({ queryKey }) => {
+  //   const [, id] = queryKey;
+  //   return fetch(`${URLS}/taxi/${id}/location`).then(res => res.json());
+  // },
+  taxiList: () => fetch(`${URLS}/taxi/list`).then(res => res.json()),
 };

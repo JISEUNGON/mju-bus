@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components/native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { TaxiChatContext } from "./Taxicontext";
 
 const HeaderContainer = styled.View`
   flex: 0.1;
@@ -56,14 +58,22 @@ const EndIcon = styled.View`
   border-radius: 20px;
 `;
 
-function TaxiHeader() {
+function TaxiHeader(props) {
+  // TaxiTabs 내비게이터로 부터 item 받아옴
+  const item = props.item;
+  const location = props.location;
+
+  // useContext 사용부
+  const { focused, setFocused } = useContext(TaxiChatContext);
+
   // api 호출 부분
   const [DetailData, setDetailData] = useState(null);
   useEffect(() => {
-    fetch("http://staging-api.mju-bus.com:80/taxi/21/")
+    fetch(`http://staging-api.mju-bus.com:80/taxi/${item.id}/`)
       .then(res => res.json())
       .then(data => setDetailData(data));
-  }, []);
+  }, [item]);
+
   const [formattedDate, setFormattedDate] = useState(null);
   // 시간 정하는 부분
   useEffect(() => {
@@ -85,34 +95,7 @@ function TaxiHeader() {
     }
   }, [DetailData]);
 
-  // 가상 데이터 (api 연동후 삭제예정)
-  const TaxiDetailData = {
-    basicsData: {
-      recruitingMemberNumber: 4,
-      startingPoint: "기흥역",
-      endingPoint: "학교",
-      minMemberNumber: 3,
-    },
-    date: {
-      year: 2023,
-      month: 1,
-      days: 7,
-      day: "토",
-    },
-    time: {
-      moring: true,
-      hours: 11,
-      mins: 50,
-    },
-    startingAddress: {
-      address: "기흥역 3번 출구",
-      detailAddress: "경기 용인시 기흥구 구갈동 660-1",
-    },
-    coordinate: {
-      latitude: 37.275296997802755,
-      longitude: 127.11623345523063,
-    },
-  };
+  const navigation = useNavigation();
 
   function ZeroFunc(x) {
     x = x.toString();
@@ -120,51 +103,68 @@ function TaxiHeader() {
     return num === 1 ? 0 : "";
   }
 
-  const Ing = true;
-
   return (
-    <HeaderContainer>
-      <DataContainer>
-        <DataTextView>
-          <View style={{ marginLeft: 5 }}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
+    <>
+      {location !== null ? (
+        <HeaderContainer>
+          <DataContainer>
+            <DataTextView>
+              <View style={{ marginLeft: 5 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (focused === true) {
+                      navigation.navigate("참석 인원");
+                    } else {
+                      navigation.goBack();
+                    }
+                  }}
+                >
+                  <AntDesign name="left" size={25} color="black" />
+                </TouchableOpacity>
+              </View>
+              <DataText>{location} → 학교</DataText>
+            </DataTextView>
+            <DataIconView>
+              {item.status === "ON_GOING" ? (
+                <IngIcon>
+                  <Text
+                    style={{
+                      color: "#4F8645",
+                      fontFamily: "SpoqaHanSansNeo-Bold",
+                    }}
+                  >
+                    모집중
+                  </Text>
+                </IngIcon>
+              ) : (
+                <EndIcon>
+                  <Text
+                    style={{
+                      color: "#58606D",
+                      fontFamily: "SpoqaHanSansNeo-Bold",
+                    }}
+                  >
+                    모집 마감
+                  </Text>
+                </EndIcon>
+              )}
+            </DataIconView>
+          </DataContainer>
+          <DataDate>
+            <Text
+              style={{
+                color: "#929292",
+                fontFamily: "SpoqaHanSansNeo-Regular",
               }}
             >
-              <AntDesign name="left" size={25} color="black" />
-            </TouchableOpacity>
-          </View>
-          <DataText>{TaxiDetailData.basicsData.startingPoint} → 학교</DataText>
-        </DataTextView>
-        <DataIconView>
-          {Ing ? (
-            <IngIcon>
-              <Text
-                style={{ color: "#4F8645", fontFamily: "SpoqaHanSansNeo-Bold" }}
-              >
-                모집중
-              </Text>
-            </IngIcon>
-          ) : (
-            <EndIcon>
-              <Text
-                style={{ color: "#58606D", fontFamily: "SpoqaHanSansNeo-Bold" }}
-              >
-                모집 마감
-              </Text>
-            </EndIcon>
-          )}
-        </DataIconView>
-      </DataContainer>
-      <DataDate>
-        <Text
-          style={{ color: "#929292", fontFamily: "SpoqaHanSansNeo-Regular" }}
-        >
-          {formattedDate}
-        </Text>
-      </DataDate>
-    </HeaderContainer>
+              {formattedDate}
+            </Text>
+          </DataDate>
+        </HeaderContainer>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 

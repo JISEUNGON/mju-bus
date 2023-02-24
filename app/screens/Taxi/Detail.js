@@ -133,7 +133,10 @@ const IconTextContainer = styled.View`
   margin-left: 27px;
 `;
 
-function Detail() {
+function Detail({ route }) {
+  const item = route.params.item;
+  const location = route.params.location;
+
   function MyMap() {
     const p0 = {
       latitude: data.meeting_latitude,
@@ -191,7 +194,7 @@ function Detail() {
   // api 호출
   const [data, setData] = useState(null);
   useEffect(() => {
-    fetch("http://staging-api.mju-bus.com:80/taxi/21/")
+    fetch(`http://staging-api.mju-bus.com:80/taxi/${item.id}/`)
       .then(res => res.json())
       .then(data => setData(data));
   }, []);
@@ -226,14 +229,14 @@ function Detail() {
 
   return (
     <>
-      {data !== null && day !== null ? (
+      {data !== null && day !== null && location !== null ? (
         <Container>
           <ContextContainer>
             <ContextTitle>모집 내용</ContextTitle>
             <ContextInsideContainer>
               <ContextMiniContainer>
                 <ContextTexts>탑승지</ContextTexts>
-                <ContextApiText>기흥역</ContextApiText>
+                <ContextApiText>{location}</ContextApiText>
               </ContextMiniContainer>
               <ContextMiniContainer>
                 <ContextTexts>하차지</ContextTexts>

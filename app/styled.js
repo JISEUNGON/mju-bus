@@ -22,6 +22,7 @@ export const SiweRunning = {
 
 export const lightTheme = {
   taxiFrameColor:"#E8F3E6",
+  taxiPartyColor:"#DAD8FB",
   taxiRouteText: "#354938",
   homeBgColor: "#f2f4f6",
   homeCompColor: "white",

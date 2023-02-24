@@ -5,7 +5,7 @@ const TaxiChatContext = React.createContext();
 function TaxiChatProvider({ children }) {
   const [goChat, setGoChat] = useState(false);
   const [join, setJoin] = useState(false);
-  const [focused, setFocused] = useState(true);
+  const [focused, setFocused] = useState(false);
   const [client, setClient] = useState(null);
   const [subscribe, setSubscribe] = useState(null);
   const [subscription, setSubscription] = useState(null);
