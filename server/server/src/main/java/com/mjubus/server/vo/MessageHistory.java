@@ -24,6 +24,10 @@ public class MessageHistory {
     private String message;
     @DynamoDBAttribute(attributeName = "user-id")
     private Long userId;
+    @DynamoDBAttribute(attributeName = "user-name")
+    private String userName;
+    @DynamoDBAttribute(attributeName = "user-url")
+    private String imgUrl;
 
     public static MessageHistory of(ChattingMessage chattingMessage) {
         return MessageHistory.builder()
@@ -32,6 +36,8 @@ public class MessageHistory {
                 .user(chattingMessage.getSender())
                 .userId(Long.parseLong(chattingMessage.getMemberId()))
                 .publishedAt(LocalDateTime.now())
+                .userName(chattingMessage.getSender())
+                .imgUrl(chattingMessage.getImgUrl())
                 .build();
     }
 }

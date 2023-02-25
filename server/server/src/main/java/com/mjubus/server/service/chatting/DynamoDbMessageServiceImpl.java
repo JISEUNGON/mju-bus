@@ -36,7 +36,7 @@ public class DynamoDbMessageServiceImpl implements  DynamoDbMessageService{
 
         List<MessageHistory> itemList = dynamoDBMapper.query(MessageHistory.class, queryExpression);
 
-        if(itemList.size() == 0) {
+        if(itemList.isEmpty()) {
             throw new RoomIdNotFoundExcption(request.getRoomId().toString());
         }
 
