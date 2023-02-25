@@ -26,7 +26,7 @@ public class MessageHistory {
     private Long userId;
     @DynamoDBAttribute(attributeName = "user-name")
     private String userName;
-    @DynamoDBAttribute(attributeName = "user-url")
+    @DynamoDBAttribute(attributeName = "img-url")
     private String imgUrl;
 
     public static MessageHistory of(ChattingMessage chattingMessage) {
