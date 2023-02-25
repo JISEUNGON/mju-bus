@@ -6,7 +6,7 @@ import SearchStack from "./SearchStack";
 import NoticeStack from "./NoticeStack";
 import AddPartyStack from "./AddPartyStack";
 import TaxiStack from "./TaxiStack";
-
+import TaxiTabs from "./TaxiDetailTabs";
 
 const Nav = createNativeStackNavigator();
 
@@ -32,7 +32,8 @@ function Root() {
 
       <Nav.Screen name="NoticeStack" component={NoticeStack} />
       <Nav.Screen name="AddPartyStack" component={AddPartyStack} />
-      <Nav.Screen name="TaxiStack" component={TaxiStack}/>
+      <Nav.Screen name="TaxiStack" component={TaxiStack} />
+      <Nav.Screen name="TaxiTabs" component={TaxiTabs} />
     </Nav.Navigator>
   );
 }

@@ -38,6 +38,9 @@ import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import UserAvatar from "react-native-user-avatar";
 import Loader from "../../components/Loader";
 import HList from "../../components/HList";
+import TaxiTabs from "../../navigation/TaxiDetailTabs";
+import { useNavigation } from "@react-navigation/native";
+
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const HeaderContainer = styled.View`
@@ -227,7 +230,7 @@ export function highlightTaxi(contents, isOpen) {
   );
 }
 
-export function TaxiTimer({ item , isOpen}) {
+export function TaxiTimer({ item, isOpen }) {
   const time = item.end_at.substring(11, 19);
   const endTime = time.split(":");
   const timerId = useRef(null);
@@ -315,7 +318,7 @@ function ListItem({ item, isOpen, num }) {
             </Column>
           </Board>
           <PartyTitle>{item.administer.name}의 파티</PartyTitle>
-          <TaxiTimer item={item} isOpen={isOpen}/>
+          <TaxiTimer item={item} isOpen={isOpen} />
         </Content>
       );
     } else {
@@ -358,6 +361,7 @@ function ListItem({ item, isOpen, num }) {
 }
 
 function Taxi({ navigation: { navigate } }) {
+  const navigation = useNavigation();
   const bottomSheetModalRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -403,7 +407,26 @@ function Taxi({ navigation: { navigate } }) {
             </SubTitle>
             <Hr style={[isOpen ? Styles.hr : null]} />
           </HeaderContainer>
-          <HList title="기흥 파티" subtitle="지각생 다 모여!" isOpen={isOpen}/>
+          <HList title="기흥 파티" subtitle="지각생 다 모여!" isOpen={isOpen} />
+          <FlatList
+            style={[isOpen ? Styles.background : null]}
+            horizontal
+            data={taxiListData.taxiPartyList}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: -20 }}
+            ItemSeparatorComponent={separator}
+            inverted={true}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("TaxiTabs", { item: item });
+                }}
+              >
+                <ListItem item={item} isOpen={isOpen} num={1} />
+              </TouchableOpacity>
+            )}
+          />
+          <HList title="기흥 외 파티" subtitle="머니까 같이!" isOpen={isOpen} />
           <FlatList
             style={[isOpen ? Styles.background : null]}
             horizontal
@@ -412,19 +435,13 @@ function Taxi({ navigation: { navigate } }) {
             contentContainerStyle={{ paddingHorizontal: 20 }}
             ItemSeparatorComponent={separator}
             renderItem={({ item }) => (
-              <ListItem item={item} isOpen={isOpen} num={1} />
-            )}
-          />
-          <HList title="기흥 외 파티" subtitle="머니까 같이!" isOpen={isOpen}/>
-          <FlatList
-          style={[isOpen ? Styles.background : null]}
-            horizontal
-            data={taxiListData.taxiPartyList}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            ItemSeparatorComponent={separator}
-            renderItem={({ item }) => (
-              <ListItem item={item} isOpen={isOpen} num={2} />
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("TaxiTabs", { item: item });
+                }}
+              >
+                <ListItem item={item} isOpen={isOpen} num={2} />
+              </TouchableOpacity>
             )}
           />
 
@@ -468,7 +485,8 @@ function Taxi({ navigation: { navigate } }) {
 }
 export default Taxi;
 
-              {/* <TouchableOpacity
+{
+  /* <TouchableOpacity
                 onPress={() => {
                   navigate("AddPartyStack", {
                     screen: "AddDelivery",

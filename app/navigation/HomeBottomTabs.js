@@ -9,6 +9,7 @@ import TogetherTopTabs from "./TogetherTopTabs";
 import ViewMore from "../screens/ViewMore";
 import { BLACK_COLOR, DARK_GRAY, WHITE_COLOR } from "../colors";
 import TaxiTabs from "./TaxiDetailTabs";
+import Chatting from "../screens/Taxi/Chatting";
 
 const Tab = createBottomTabNavigator();
 
@@ -124,7 +125,7 @@ function HomeBottomTabs() {
 
       <Tab.Screen
         name="더 보기"
-        component={TaxiTabs}
+        component={Chatting}
         options={{
           headerStyle: {
             backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,

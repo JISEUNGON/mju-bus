@@ -20,7 +20,6 @@ import Loader from "../../components/Loader";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-
 const HeaderContainer = styled.View`
   width: ${SCREEN_WIDTH}px;
   padding: 0 20px;
@@ -133,7 +132,7 @@ const NumOfPerson = styled.Text`
 `;
 
 const ProfileContent = styled.View`
-  width:60px;
+  width: 60px;
   top: -23px;
   align-items: flex-start;
 `;
@@ -205,43 +204,46 @@ function ListItem({ item }) {
   );
 }
 
-export function TaxiTimer({item}){
-  const time = (item.end_at).substring(11,19);
+export function TaxiTimer({ item }) {
+  const time = item.end_at.substring(11, 19);
   const endTime = time.split(":");
   const timerId = useRef(null);
 
   const [hour, setHour] = useState("");
   const [min, setMin] = useState("");
   const [sec, setSec] = useState("");
-  const [remain, setRemain] =useState("");
+  const [remain, setRemain] = useState("");
   //let remain = 0;
   const [present, setPresent] = useState("");
   const date = new Date();
 
   useEffect(() => {
-    
     timerId.current = setInterval(() => {
-      setPresent((date.getHours() * 3600) + (date.getMinutes() * 60) + (date.getSeconds()));
-      setRemain(((endTime[0] * 3600) + (endTime[1] * 60) + (endTime[2] * 1)) - present);
-      setHour(Math.floor(remain/3600));
-      setMin(Math.floor((remain%3600) / 60));
-      setSec(Math.floor((remain%3600) %60));
+      setPresent(
+        date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds(),
+      );
+      setRemain(endTime[0] * 3600 + endTime[1] * 60 + endTime[2] * 1 - present);
+      setHour(Math.floor(remain / 3600));
+      setMin(Math.floor((remain % 3600) / 60));
+      setSec(Math.floor((remain % 3600) % 60));
     }, 1000);
     return () => clearInterval(timerId.current);
   }, [hour, min, sec]);
-  return(
+  return (
     <RemainingTime>
-        {hour}시 {min}분 {sec}초 남음
+      {hour}시 {min}분 {sec}초 남음
     </RemainingTime>
   );
 }
 
 function renderItem({ item }) {
-    
-  let text = (item.meeting_place);
-  if(text == "경기 용인시 기흥구 구갈동 660-1" || text == "경기 용인시 기흥구 구갈동 657-3"){
-    text = "기흥역"
-  }else {
+  let text = item.meeting_place;
+  if (
+    text == "경기 용인시 기흥구 구갈동 660-1" ||
+    text == "경기 용인시 기흥구 구갈동 657-3"
+  ) {
+    text = "기흥역";
+  } else {
     text = text.match(/([가-힣]+(읍|동)\s)/g);
     // if(text == null){
     //   text = text.match
@@ -257,12 +259,11 @@ function renderItem({ item }) {
           </NumOfPerson>
         </Row>
         <ProfileContent>
-            <UserAvatar
-              size={20}
-              src={item.administer.profile}
-              bgColor={"#00ff0000"}
-            />
-          
+          <UserAvatar
+            size={20}
+            src={item.administer.profile}
+            bgColor={"#00ff0000"}
+          />
         </ProfileContent>
         <Column>
           <ContentTitle>{text}에서</ContentTitle>
@@ -270,7 +271,7 @@ function renderItem({ item }) {
         </Column>
       </PartyBoard>
       <PartyTitle>{item.administer.name}의 파티</PartyTitle>
-      <TaxiTimer item={item}/>
+      <TaxiTimer item={item} />
     </Content>
   );
 }
@@ -292,7 +293,7 @@ function Participation({ route: { params }, navigation: { navigate } }) {
   const refreshing = isRefetchingTaxiList;
 
   return loading ? (
-    <Loader/>
+    <Loader />
   ) : (
     <View style={Styles.container}>
       <HeaderContainer>
@@ -322,10 +323,8 @@ function Participation({ route: { params }, navigation: { navigate } }) {
           ItemSeparatorComponent={separator}
           renderItem={renderItem}
         />
-        
       </BodyContainer>
     </View>
   );
 }
 export default Participation;
-
