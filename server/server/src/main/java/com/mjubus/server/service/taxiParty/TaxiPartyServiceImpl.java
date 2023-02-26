@@ -127,7 +127,8 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
             taxiPartyMembersService.removeMember(taxiParty, partyMember.getMember());
         }
 
-        taxiPartyRepository.delete(taxiParty);
+        taxiParty.recruitFinish();
+        //taxiPartyRepository.delete(taxiParty);
     }
 
 
