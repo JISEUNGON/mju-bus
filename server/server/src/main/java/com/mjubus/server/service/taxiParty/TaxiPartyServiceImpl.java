@@ -21,6 +21,7 @@ import com.mjubus.server.util.DateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -127,6 +128,19 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         }
 
         taxiPartyRepository.delete(taxiParty);
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    @Transactional
+    @Override
+    public void hidePartyWithSchedule() {
+        Optional<List<TaxiParty>> byEndAtBefore = taxiPartyRepository.findByEndAtBefore(DateHandler.getToday());
+        byEndAtBefore.ifPresent(list -> {
+            list.forEach(party -> {
+                party.recruitFinish();
+            });
+        });
     }
 
     @Override

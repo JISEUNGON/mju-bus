@@ -87,4 +87,8 @@ public class TaxiParty {
                 .status(TaxiPartyEnum.ON_GOING)
                 .build();
     }
+
+    public void recruitFinish() {
+        this.status = TaxiPartyEnum.FINISHED;
+    }
 }

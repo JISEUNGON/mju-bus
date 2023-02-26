@@ -25,4 +25,6 @@ public interface TaxiPartyRepository extends JpaRepository<TaxiParty, Long> {
     Optional<List<TaxiParty>> findTaxiPartiesByStatus(TaxiPartyEnum status);
     Optional<List<TaxiParty>> findByStatusAndEndAtAfter(TaxiPartyEnum status, LocalDateTime now);
 
+    Optional<List<TaxiParty>> findByEndAtBefore(LocalDateTime now);
+
 }
