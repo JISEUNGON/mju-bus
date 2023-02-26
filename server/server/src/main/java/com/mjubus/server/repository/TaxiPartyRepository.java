@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +23,6 @@ public interface TaxiPartyRepository extends JpaRepository<TaxiParty, Long> {
     Optional<Long> findAdministerById(@Param("id") Long id);
 
     Optional<List<TaxiParty>> findTaxiPartiesByStatus(TaxiPartyEnum status);
+    Optional<List<TaxiParty>> findByStatusAndEndAtAfter(TaxiPartyEnum status, LocalDateTime now);
 
 }

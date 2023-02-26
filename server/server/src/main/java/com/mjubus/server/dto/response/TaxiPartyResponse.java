@@ -40,7 +40,7 @@ public class TaxiPartyResponse {
                 .meeting_place(taxiParty.getMeeting_place())
                 .curr_member(curr_member)
                 .max_member(taxiParty.getMax())
-                .end_at(taxiParty.getEnd_at())
+                .end_at(taxiParty.getEndAt())
                 .status(taxiParty.getStatus())
                 .build();
     }

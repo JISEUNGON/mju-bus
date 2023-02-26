@@ -17,6 +17,7 @@ import com.mjubus.server.repository.TaxiPartyRepository;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.service.taxiDestination.TaxiDestinationService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
+import com.mjubus.server.util.DateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -51,7 +52,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Override
     public TaxiPartyListResponse findTaxiPartyList() {
-        List<TaxiParty> taxiPartyList = taxiPartyRepository.findTaxiPartiesByStatus(TaxiPartyEnum.ON_GOING).orElse(new ArrayList<>());
+        List<TaxiParty> taxiPartyList = taxiPartyRepository.findByStatusAndEndAtAfter(TaxiPartyEnum.ON_GOING, DateHandler.getToday()).orElse(new ArrayList<>());
         List<TaxiPartyResponse> taxiPartyResponses = new LinkedList<>();
 
         // taxiPartyList를 순회하면서, 각 taxiParty의 taxiPartyMembers를 가져온다.
