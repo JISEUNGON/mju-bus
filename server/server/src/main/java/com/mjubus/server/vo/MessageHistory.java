@@ -2,6 +2,7 @@ package com.mjubus.server.vo;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.mjubus.server.config.DynamoDBConfig.LocalDateTimeConverter;
+import com.mjubus.server.util.DateHandler;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public class MessageHistory {
                 .message(chattingMessage.getMessage())
                 .user(chattingMessage.getSender())
                 .userId(Long.parseLong(chattingMessage.getMemberId()))
-                .publishedAt(LocalDateTime.now())
+                .publishedAt(DateHandler.getToday())
                 .build();
     }
 }
