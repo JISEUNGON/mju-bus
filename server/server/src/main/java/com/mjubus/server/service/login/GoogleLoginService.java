@@ -52,6 +52,7 @@ public class GoogleLoginService {
             GoogleAuthTokenDto googleAuthTokenDto = GoogleAuthTokenDto.builder()
                     .refreshToken(tokenResponse.getRefreshToken())
                     .userId(googleLoginRequest.getId())
+                    .fcmToken(googleLoginRequest.getFcmToken())
                     .refreshTokenExpiresAt(DateHandler.getToday().plusYears(100))
                     .build();
 

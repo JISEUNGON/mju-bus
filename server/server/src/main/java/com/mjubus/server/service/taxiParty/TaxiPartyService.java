@@ -2,12 +2,10 @@ package com.mjubus.server.service.taxiParty;
 
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.domain.TaxiParty;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.dto.request.TaxiPartyRequest;
 import com.mjubus.server.dto.request.*;
-import com.mjubus.server.dto.response.TaxiPartyCreateResponse;
-import com.mjubus.server.dto.response.TaxiPartyDetailResponse;
-import com.mjubus.server.dto.response.TaxiPartyListResponse;
-import com.mjubus.server.dto.response.TaxiPartyResponse;
+import com.mjubus.server.dto.response.*;
 
 import java.util.Optional;
 
@@ -17,13 +15,16 @@ public interface TaxiPartyService {
 
     TaxiPartyListResponse findTaxiPartyList();
 
-    TaxiPartyCreateResponse createTaxiParty(Member member, TaxiPartyCreateRequest request);
-    void addNewMember(Long groupId, Member member);
-    void removeMember(Long groupId, Member member);
+    TaxiPartyCreateResponse createTaxiParty(MemberPrincipalDto principalDto, TaxiPartyCreateRequest request);
+    TaxiPartyJoinResponse addNewMember(Long groupId, MemberPrincipalDto principalDto);
+
+    TaxiPartyQuitResponse quitParty(MemberPrincipalDto principalDto, Long partyId);
 
     void deleteParty(TaxiPartyDeleteRequest request);
 
     void hidePartyWithSchedule();
+
+    boolean removeMember(Long groupId, Member member);
 
     boolean hasActiveParty(Member member);
 

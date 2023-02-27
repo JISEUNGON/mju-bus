@@ -33,17 +33,23 @@ public class RedisMessageServiceImpl implements RedisMessageService {
         this.taxiPartyMembersService = taxiPartyMembersService;
     }
 
-    @Transactional
     @Override
-    public void chattingRoomQuit(Long groupId, Member member) {
-        String subscriptionId = "sub-" + member.getId();
+    @Transactional
+    public boolean quitChattingRoom(Long groupId, Member member) {
+        try {
+            String subscriptionId = "sub-" + member.getId();
 
-        String hashName = "room-" + groupId + "-subscription";
-        if (Boolean.FALSE.equals(redisTemplate.hasKey(hashName))) {
-            throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
+            String hashName = "room-" + groupId + "-subscription";
+            if (Boolean.FALSE.equals(redisTemplate.hasKey(hashName))) {
+                throw new RoomIdNotFoundExcption("해당하는 roomId가 존재하지 않습니다.");
+            }
+
+            redisTemplate.opsForHash().delete(hashName, subscriptionId);
+            return true;
+        } catch (Exception e) {
+            log.error("RedisMessageServiceImpl.quitChattingRoom() error : {}", e.getMessage());
+            return false;
         }
-
-        redisTemplate.opsForHash().delete(hashName, subscriptionId);
     }
 
     @Transactional

@@ -4,16 +4,15 @@ import com.mjubus.server.domain.Member;
 import com.mjubus.server.domain.TaxiDestination;
 import com.mjubus.server.domain.TaxiParty;
 import com.mjubus.server.domain.TaxiPartyMembers;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.dto.request.*;
-import com.mjubus.server.dto.response.TaxiPartyCreateResponse;
-import com.mjubus.server.dto.response.TaxiPartyDetailResponse;
-import com.mjubus.server.dto.response.TaxiPartyListResponse;
-import com.mjubus.server.dto.response.TaxiPartyResponse;
+import com.mjubus.server.dto.response.*;
 import com.mjubus.server.enums.TaxiPartyEnum;
 import com.mjubus.server.exception.TaxiParty.IllegalPartyMembersStateException;
 import com.mjubus.server.exception.TaxiParty.IllegalPartyStateException;
 import com.mjubus.server.exception.TaxiParty.TaxiPartyNotFoundException;
 import com.mjubus.server.repository.TaxiPartyRepository;
+import com.mjubus.server.service.chatting.RedisMessageService;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.service.taxiDestination.TaxiDestinationService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
@@ -37,13 +36,16 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
     private final TaxiDestinationService taxiDestinationService;
     private final MemberService memberService;
     private final TaxiPartyMembersService taxiPartyMembersService;
+    private final RedisMessageService redisMessageService;
+
 
     @Autowired
-    public TaxiPartyServiceImpl(TaxiPartyRepository taxiPartyRepository, TaxiDestinationService taxiDestinationService, @Lazy MemberService memberService, TaxiPartyMembersService taxiPartyMembersService) {
+    public TaxiPartyServiceImpl(TaxiPartyRepository taxiPartyRepository, TaxiDestinationService taxiDestinationService, @Lazy MemberService memberService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService) {
         this.taxiPartyRepository = taxiPartyRepository;
         this.taxiDestinationService = taxiDestinationService;
         this.memberService = memberService;
         this.taxiPartyMembersService = taxiPartyMembersService;
+        this.redisMessageService = redisMessageService;
     }
     @Override
     public TaxiPartyDetailResponse findTaxiParty(TaxiPartyRequest req) {
@@ -67,7 +69,9 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Transactional
     @Override
-    public TaxiPartyCreateResponse createTaxiParty(Member administer, TaxiPartyCreateRequest request) {
+    public TaxiPartyCreateResponse createTaxiParty(MemberPrincipalDto principalDto, TaxiPartyCreateRequest request) {
+        Member administer = memberService.findMemberById(principalDto.getId());
+
         // 진행중인 택시파티가 있는 경우
         if (hasActiveParty(administer)) {
             throw new IllegalPartyStateException("이미 진행중인 택시파티가 있습니다.");
@@ -81,13 +85,14 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         taxiPartyRepository.save(taxiParty);
 
         // 택시파티 생성 후 생성자를 파티에 참여
-        addNewMember(taxiParty.getId(), administer);
+        addNewMember(taxiParty.getId(), principalDto);
         return TaxiPartyCreateResponse.builder().isCreated("success").build();
     }
 
     @Transactional
     @Override
-    public void addNewMember(Long groupId, Member member) {
+    public TaxiPartyJoinResponse addNewMember(Long groupId, MemberPrincipalDto principalDto) {
+        Member member = memberService.findMemberById(principalDto.getId());
         TaxiParty taxiParty = findTaxiPartyById(groupId);
 
         if (taxiPartyMembersService.isGroupMember(taxiParty.getId(), member)) { // 이미 파티에 참여중인 경우
@@ -102,18 +107,37 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         }
 
         taxiPartyMembersService.addMember(taxiParty, member);
+        return TaxiPartyJoinResponse.builder().isAdded("success").build();
     }
 
-    @Transactional
     @Override
-    public void removeMember(Long groupId, Member member) {
-        TaxiParty taxiParty = findTaxiPartyById(groupId);
+    @Transactional
+    public boolean removeMember(Long groupId, Member member) {
+        try {
+            TaxiParty taxiParty = findTaxiPartyById(groupId);
 
-        if (!taxiPartyMembersService.isGroupMember(taxiParty.getId(), member)) { // 파티에 참여중이지 않은 경우
-            throw new IllegalPartyMembersStateException("참여중이지 않은 택시파티입니다.");
+            if (!taxiPartyMembersService.isGroupMember(taxiParty.getId(), member)) { // 파티에 참여중이지 않은 경우
+                throw new IllegalPartyMembersStateException("참여중이지 않은 택시파티입니다.");
+            }
+
+            taxiPartyMembersService.removeMember(taxiParty, member);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
+    }
 
-        taxiPartyMembersService.removeMember(taxiParty, member);
+    @Override
+    @Transactional
+    public TaxiPartyQuitResponse quitParty(MemberPrincipalDto principalDto, Long partyId) {
+        Member member = memberService.findMemberById(principalDto.getId());
+
+        // RDBMS와 Redis에서 퇴장 처리
+        if (removeMember(partyId, member) && redisMessageService.quitChattingRoom(partyId, member)) {
+            return TaxiPartyQuitResponse.builder().isQuited("success").build();
+        } else {
+            return TaxiPartyQuitResponse.builder().isQuited("fail").build();
+        }
     }
 
     @Transactional

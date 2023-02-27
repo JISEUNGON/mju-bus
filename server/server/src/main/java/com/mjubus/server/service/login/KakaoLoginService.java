@@ -43,6 +43,7 @@ public class KakaoLoginService {
             LocalDateTime expiredAt = LocalDateTime.parse(kakaoLoginRequest.getRefreshTokenExpiresAt(), formatter);
             kaKaoAuthTokenDto.setRefreshToken(kakaoLoginRequest.getRefreshToken());
             kaKaoAuthTokenDto.setRefreshTokenExpiresAt(expiredAt);
+            kaKaoAuthTokenDto.setFcmToken(kakaoLoginRequest.getFcmToken());
 
             // 2. 유저 정보 조회 및 저장
             Member member = memberService.saveOrGetKakaoMember(kaKaoAuthTokenDto);

@@ -13,4 +13,5 @@ public class AppleLoginRequest {
     private String identityToken;
     private String user;
 
+    private String fcmToken;
 }

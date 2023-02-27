@@ -42,6 +42,10 @@ public class Member {
     @Column(name="profile", columnDefinition = "char(120)")
     private String profileImageUrl;
 
+    @Setter
+    @Column(name="fcm_token", columnDefinition = "char(255)")
+    private String fcmToken;
+
     @Column(name="refresh_token", columnDefinition = "char(120)")
     private String refreshToken;
 
@@ -61,9 +65,10 @@ public class Member {
         this.status = true;
     }
     public void upgradeRoleFromGuestToUser() {
-        this.role = MemberRole.USER;
+        // 게스트 -> 유저, ADMIN -> ADMIN
+        if (this.role == MemberRole.GUEST)
+            this.role = MemberRole.USER;
     }
-
     public static Member of(String name) {
         return Member.builder()
                 .name(name)

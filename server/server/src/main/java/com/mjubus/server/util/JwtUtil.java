@@ -1,6 +1,7 @@
 package com.mjubus.server.util;
 
 import com.mjubus.server.domain.Member;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.enums.MemberRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,10 +28,6 @@ public class JwtUtil {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", member.getId());
-        claims.put("name", member.getName());
-        claims.put("role", member.getRole().toString());
-        claims.put("profile", member.getProfileImageUrl());
-        claims.put("status", member.getStatus().toString());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -51,19 +48,15 @@ public class JwtUtil {
         return expiredDate.before(new Date());
     }
 
-    public static Member getMember(String token) {
+    public static MemberPrincipalDto getMemberPrincipal(String token) {
         Map<String, Object> claims = Jwts.parserBuilder()
                 .setSigningKey(JWT_SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Member.builder()
-                .id(Long.parseLong(claims.get("id").toString()))
-                .name((String) claims.get("name"))
-                .role(MemberRole.valueOf((String) claims.get("role")))
-                .profileImageUrl((String) claims.get("profile"))
-                .status(Boolean.valueOf(claims.get("status").toString()))
+        return MemberPrincipalDto.builder()
+                .id((Long) claims.get("id"))
                 .build();
     }
 

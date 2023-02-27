@@ -15,5 +15,7 @@ public class AppleAuthTokenDto {
     private String id_token;
 
     @Setter
+    private String fcm_token;
+    @Setter
     private String user_id;
 }

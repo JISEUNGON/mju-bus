@@ -61,6 +61,7 @@ public class AppleLoginService  {
            // 1. 기본 정보로 JWT 생성 및 refreshToken 발급
            AppleAuthTokenDto appleAuthTokenDto = getAppleAuthTokenDto(appleLoginRequest);
            appleAuthTokenDto.setUser_id(appleLoginRequest.getUser());
+           appleAuthTokenDto.setFcm_token(appleLoginRequest.getFcmToken());
 
            // 2. 멤버 조회 및 저장
            Member member = memberService.saveOrGetAppleMember(appleAuthTokenDto);
