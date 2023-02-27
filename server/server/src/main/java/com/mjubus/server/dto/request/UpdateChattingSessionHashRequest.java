@@ -1,5 +1,6 @@
 package com.mjubus.server.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
@@ -7,8 +8,13 @@ import lombok.*;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateChattingSessionHashRequest {
+
+    @ApiModelProperty(value = "파티 아이디", example = "1")
     private String roomId;
-    private String simpSubscriptionId;
+    @ApiModelProperty(value = "멤버 아이디", example = "1")
+    private String memberId;
+
+    @ApiModelProperty(example = "true")
     private boolean updateFlag;
 
     public static UpdateChattingSessionHashRequest of(String roomId, String simpSubscriptionId, boolean updateFlag) {

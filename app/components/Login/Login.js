@@ -9,7 +9,7 @@ import { useContext, useCallback } from "react";
 import AuthContext from "../AuthContext";
 
 const GuestStartView = styled.View`
-  margin-top: 100px;
+  margin-top: -50px;
   margin-bottom: 20px;
   justify-content: center;
   align-items: center;

@@ -52,7 +52,7 @@ public class TaxiControllerTest {
         Long testId = 2L;
 
         TaxiPartyCreateRequest createRequest = TaxiPartyCreateRequest.builder()
-                .administer(testId)
+                //.administer(testId)
                 .min(1L)
                 .max(4L)
                 .meetingLatitude(1234D)
@@ -84,7 +84,7 @@ public class TaxiControllerTest {
         Long testId = 1L;
 
         TaxiPartyCreateRequest createRequest = TaxiPartyCreateRequest.builder()
-                .administer(testId)
+                //.administer(testId)
                 .min(1L)
                 .max(4L)
                 .meetingLatitude(1234D)
@@ -112,7 +112,7 @@ public class TaxiControllerTest {
         Long taxiDest = 999L;
 
         TaxiPartyCreateRequest createRequest = TaxiPartyCreateRequest.builder()
-                .administer(testId)
+                //.administer(testId)
                 .min(1L)
                 .max(4L)
                 .meetingLatitude(1234D)

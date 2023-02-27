@@ -49,7 +49,7 @@ public class TaxiPartyDetailResponse {
                 .min_member(taxiParty.getMin())
                 .max_member(taxiParty.getMax())
                 .destination(taxiParty.getTaxi_destination_id())
-                .end_at(taxiParty.getEnd_at())
+                .end_at(taxiParty.getEndAt())
                 .build();
     }
 }
