@@ -17,9 +17,11 @@ import com.mjubus.server.repository.TaxiPartyRepository;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.service.taxiDestination.TaxiDestinationService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
+import com.mjubus.server.util.DateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Override
     public TaxiPartyListResponse findTaxiPartyList() {
-        List<TaxiParty> taxiPartyList = taxiPartyRepository.findTaxiPartiesByStatus(TaxiPartyEnum.ON_GOING).orElse(new ArrayList<>());
+        List<TaxiParty> taxiPartyList = taxiPartyRepository.findByStatusAndEndAtAfter(TaxiPartyEnum.ON_GOING, DateHandler.getToday()).orElse(new ArrayList<>());
         List<TaxiPartyResponse> taxiPartyResponses = new LinkedList<>();
 
         // taxiPartyList를 순회하면서, 각 taxiParty의 taxiPartyMembers를 가져온다.
@@ -125,7 +127,21 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
             taxiPartyMembersService.removeMember(taxiParty, partyMember.getMember());
         }
 
-        taxiPartyRepository.delete(taxiParty);
+        taxiParty.recruitFinish();
+        //taxiPartyRepository.delete(taxiParty);
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    @Transactional
+    @Override
+    public void hidePartyWithSchedule() {
+        Optional<List<TaxiParty>> byEndAtBefore = taxiPartyRepository.findByEndAtBefore(DateHandler.getToday());
+        byEndAtBefore.ifPresent(list -> {
+            list.forEach(party -> {
+                party.recruitFinish();
+            });
+        });
     }
 
     @Override

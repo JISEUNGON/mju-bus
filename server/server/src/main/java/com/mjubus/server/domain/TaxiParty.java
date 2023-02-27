@@ -60,7 +60,7 @@ public class TaxiParty {
 
     @Column(name ="end_at", columnDefinition = "datetime")
     @ApiModelProperty(example = "모집 마감 시간")
-    private LocalDateTime end_at;
+    private LocalDateTime endAt;
 
     @Column(name ="created_at", columnDefinition = "datetime")
     @ApiModelProperty(example = "생성일")
@@ -82,9 +82,13 @@ public class TaxiParty {
                 .memo(request.getMemo())
                 .min(request.getMin())
                 .max(request.getMax())
-                .end_at(request.getEndAt())
+                .endAt(request.getEndAt())
                 .created_at(LocalDateTime.now())
                 .status(TaxiPartyEnum.ON_GOING)
                 .build();
+    }
+
+    public void recruitFinish() {
+        this.status = TaxiPartyEnum.FINISHED;
     }
 }

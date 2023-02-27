@@ -20,7 +20,10 @@ public interface TaxiPartyService {
     TaxiPartyCreateResponse createTaxiParty(Member member, TaxiPartyCreateRequest request);
     void addNewMember(Long groupId, Member member);
     void removeMember(Long groupId, Member member);
+
     void deleteParty(TaxiPartyDeleteRequest request);
+
+    void hidePartyWithSchedule();
 
     boolean hasActiveParty(Member member);
 
