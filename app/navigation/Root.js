@@ -23,7 +23,7 @@ function Root() {
   //   "name": "시내",
   // }, ... ]
   const [sineBusList, setSineBusList] = React.useState([]);
-  const [siweBusList, setSiweBusList] = React.useState([]); 
+  const [siweBusList, setSiweBusList] = React.useState([]);
 
   // 학사일정
   // {
@@ -45,7 +45,7 @@ function Root() {
   //         "longitude": 127.1875812,
   //         "name": "채플관 앞",
   //         "route_order": 1,
-  //       } ...] 
+  //       } ...]
   //   } ...]
   const [stationList, setStationList] = React.useState([]);
 
@@ -63,6 +63,7 @@ function Root() {
   //   } ...]
   //
   const [busTimeTable, setBusTimeTable] = React.useState([]);
+
   return (
     <MBAContext.Provider
       value={{
@@ -79,13 +80,13 @@ function Root() {
       }}
     >
       <Nav.Navigator
-        initialRouteName="Login"
+        initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Nav.Screen name="Login" component={Login} />
         <Nav.Screen name="Splash" component={Splash} />
+        <Nav.Screen name="Login" component={Login} />
         <Nav.Screen name="StudentAuth" component={StudentAuth} />
         <Nav.Screen
           name="HomeBottomTabs"
@@ -100,7 +101,7 @@ function Root() {
 
         <Nav.Screen name="NoticeStack" component={NoticeStack} />
         <Nav.Screen name="AddPartyStack" component={AddPartyStack} />
-        <Nav.Screen name="TaxiStack" component={TaxiStack}/>
+        <Nav.Screen name="TaxiStack" component={TaxiStack} />
       </Nav.Navigator>
     </MBAContext.Provider>
   );

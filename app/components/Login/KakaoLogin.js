@@ -1,42 +1,34 @@
-import React, { useState }from "react";
-import {TouchableOpacity, Image } from 'react-native';
-import KakaoImage from "../../assets/image/kakao_login.png"
+import React, { useCallback, useContext, useState } from "react";
+import { TouchableOpacity, Image } from "react-native";
+import KakaoImage from "../../assets/image/kakao_login.png";
 import { loginApi } from "../../api";
-import { login } from '@react-native-seoul/kakao-login';
-import { useNavigation } from '@react-navigation/native';
+import { login } from "@react-native-seoul/kakao-login";
+import { useNavigation } from "@react-navigation/native";
+import AuthContext from "../AuthContext";
 
 function KakaoLogin() {
-    const [onLogin, setOnLogin] = useState(false);
-    const [user, setUser] = useState(null);
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const onKaKaoButtonPress = async () => {
-        if (onLogin) return;
-        setOnLogin(true);
+  const { kakoSignin } = useContext(AuthContext);
 
-        login().then(res => {
-            const payload = {
-                "accessToken": res.accessToken,
-                "accessTokenExpiresAt": res.accessTokenExpiresAt,
-                "refreshToken": res.refreshToken,
-                "refreshTokenExpiresAt": res.refreshTokenExpiresAt,
-            }
-
-            loginApi.kakao_login({ queryKey: {payload} }).then(res => setUser(res));
-            navigation.navigate("StudentAuth");
-        
-        }).catch(err => {
-            console.log("Kakao Auth failed : ", err);
-        });
-        setOnLogin(false);
-    
+  const onPressKakoSigninButton = useCallback(async () => {
+    try {
+      await kakoSignin();
+      navigation.navigate("StudentAuth");
+    } catch (e) {
+      if (e.message === "E_CANCELLED_OPERATION") {
+        // 그대로
+        console.log("kako login 취소");
+        return;
+      }
     }
+  }, []);
 
-    return (
-        <TouchableOpacity onPress={onKaKaoButtonPress}>
-            <Image source={KakaoImage} />
-        </TouchableOpacity>
-    );
+  return (
+    <TouchableOpacity onPress={onPressKakoSigninButton}>
+      <Image source={KakaoImage} />
+    </TouchableOpacity>
+  );
 }
 
 export default KakaoLogin;

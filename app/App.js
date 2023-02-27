@@ -6,17 +6,17 @@ import { useColorScheme } from "react-native";
 import CodePush from "react-native-code-push";
 import Root from "./navigation/Root";
 import { darkTheme, lightTheme } from "./styled";
-import useCodePush from "./hooks";
+import useCodePush from "./hooks/useCodePush";
 import SyncProgressView from "./screens/SyncProgressView";
-
+import AuthProvider from "./components/AuthProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const queryClient = new QueryClient();
-
 
 function App() {
   const isDark = useColorScheme() === "dark";
   const [isUpdating, syncProgress] = useCodePush();
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
@@ -24,7 +24,9 @@ function App() {
           <SyncProgressView syncProgress={syncProgress} />
         ) : (
           <NavigationContainer>
-            <Root />
+            <AuthProvider>
+              <Root />
+            </AuthProvider>
           </NavigationContainer>
         )}
       </ThemeProvider>

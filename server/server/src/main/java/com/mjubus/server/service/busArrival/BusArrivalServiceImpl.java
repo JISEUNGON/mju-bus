@@ -82,11 +82,12 @@ public class BusArrivalServiceImpl implements BusArrivalService {
         srcStation = stationService.findStationById(req.getId());
         if (remainReq.getDest() != null) destStation = stationService.findStationById(remainReq.getDest());
         else destStation = null;
-        if (remainReq.getToSchool() != null) toSchool = remainReq.getRedBus();
+        if (remainReq.getToSchool() != null) toSchool = remainReq.getToSchool();
         else toSchool = false;
         if (remainReq.getRedBus() != null) redBus = remainReq.getRedBus();
         else redBus = false;
         return findBusArrivalRemainByStation(srcStation, destStation, toSchool, redBus);
+
     }
 
     /**

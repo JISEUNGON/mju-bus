@@ -68,7 +68,7 @@ function HomeBottomTabs() {
         }}
       />
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="같이 해요"
         component={TogetherTopTabs}
         options={{
@@ -87,7 +87,7 @@ function HomeBottomTabs() {
             />
           ),
         }}
-      />
+      /> */}
 
       <Tab.Screen
         name="시내 셔틀"

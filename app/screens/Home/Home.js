@@ -96,13 +96,8 @@ const SubTitle = styled.Text`
 
 // eslint-disable-next-line react/prop-types
 function Home({ route: { params }, navigation: { navigate } }) {
-  const {
-    sineBusList,
-    siweBusList,
-    mjuCalendar,
-    stationList,
-    busTimeTable,
-  } = React.useContext(MBAContext);
+  const { sineBusList, siweBusList, mjuCalendar, stationList, busTimeTable } =
+    React.useContext(MBAContext);
 
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
@@ -174,7 +169,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
   });
 
   // 시외버스 운행정보 (운행 전|운행 중|운행 종료)
-  // 아마 NotFound 에러 때문에 timeTable API 참조하는 거 같음? 
+  // 아마 NotFound 에러 때문에 timeTable API 참조하는 거 같음?
   // 시외버스 정보를 ContextAPI를 통해 불러오기 때문에 필요 없다고 생각됨.
   // staleTime 5분으로 설정함으로써 API 호출을 줄임
   const SiweStatus = useQueries({
@@ -240,7 +235,7 @@ function Home({ route: { params }, navigation: { navigate } }) {
               <LinkContainer>
                 <LinkScreen screenName="시간표" />
               </LinkContainer>
-                  
+
               <RunningBusContainer>
                 <TitleContainer>
                   <Title>운행중인 버스</Title>
