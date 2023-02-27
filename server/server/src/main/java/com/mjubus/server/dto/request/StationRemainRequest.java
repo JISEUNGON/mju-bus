@@ -3,11 +3,15 @@ package com.mjubus.server.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
+@Setter
 @Builder
 @ToString
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StationRemainRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class StationRemainRequest implements Serializable {
 
     @ApiModelProperty(value = "도착 정류장 식별번호", example = "1", required = false)
     private Long dest;
