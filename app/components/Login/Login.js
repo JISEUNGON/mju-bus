@@ -29,8 +29,11 @@ const SimpleLoginTextView = styled.View`
 const SimpleLoginView = styled.View`
   justify-content: center;
   align-items: center;
-  flexdirection: row;
+  flex-direction: row;
   margin-bottom: 40px;
+`;
+const LoginMarginView = styled.View`
+  margin-left: 8px;
 `;
 const SimpleLoginText = styled.Text`
   color: #aab2bb;
@@ -77,12 +80,13 @@ function Login({ navigation: { navigate } }) {
             </SimpleLoginTextView>
 
             <SimpleLoginView>
-              <GoogleLogin />
-              <AppleLogin />
-              <KakaoLogin />
-              <TouchableOpacity onPress={() => navigate("StudentAuth")}>
-                <Text>테스트재학생인증</Text>
-              </TouchableOpacity>
+                <GoogleLogin />
+              <LoginMarginView>
+                <AppleLogin />
+              </LoginMarginView>
+              <LoginMarginView>
+                <KakaoLogin />
+              </LoginMarginView>
             </SimpleLoginView>
           </View>
         </View>
