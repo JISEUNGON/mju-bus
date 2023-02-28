@@ -2,12 +2,10 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Animated, BackHandler, Dimensions } from "react-native";
 import * as Font from "expo-font";
-import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
-import { busApi, calendarApi } from "../api";
-import { MBAContext } from "../navigation/Root";
 import AuthContext from "../components/AuthContext";
 import usePushNotification from "../hooks/usePushNotification";
+import AppContext from "../components/AppContext";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Circle = styled.View`
@@ -52,98 +50,14 @@ const customFonts = {
 
 function Splash({ navigation: { navigate } }) {
   usePushNotification();
-  const {
-    sineBusList,
-    siweBusList,
-    mjuCalendar,
-    stationList,
-    busTimeTable,
-    setSineBusList,
-    setSiweBusList,
-    setMjuCalendar,
-    setStationList,
-    setBusTimeTable,
-  } = React.useContext(MBAContext);
+  const {} = React.useContext(AppContext);
 
   const { checkValidateToken, user } = useContext(AuthContext);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [appIsReady, setAppIsReady] = useState(false);
 
-  // 버스 리스트
-  const { isLoading: buslistLoading, data: busListData } = useQuery(
-    ["busList"],
-    busApi.list,
-  );
 
-  // 학사일정
-  const { isLoading: calendarLoading, data: calendarData } = useQuery(
-    ["calendar"],
-    calendarApi.calendar,
-  );
-
-  // 전체 정류장 목록
-  const loading = buslistLoading || calendarLoading || stationList.length === 0;
-
-  useEffect(() => {
-    const getStationList = async bus => {
-      const res = await busApi.route({ queryKey: ["", bus.id] });
-      const stations = res.stations;
-      setStationList([
-        ...stationList,
-        {
-          id: bus.id,
-          name: bus.name,
-          stations,
-        },
-      ]);
-    };
-
-    if (!buslistLoading) {
-      // 버스 리스트 로딩이 완료되면
-      // 버스 리스트를 저장한다.
-      setSineBusList(busListData?.sine_bus_list);
-      setSiweBusList(busListData?.siwe_bus_list);
-
-      // 버스별 정류장 목록을 가져온다.
-      busListData.sine_bus_list.forEach(async bus => {
-        await getStationList(bus);
-      });
-
-      // [시내]버스별 시간표를 가져온다.
-      busListData.sine_bus_list.forEach(async bus => {
-        const res = await busApi.timeTable({ queryKey: ["", bus.id] });
-        setBusTimeTable([
-          ...busTimeTable,
-          {
-            id: bus.id,
-            name: bus.name,
-            timeTable: res.stations,
-          },
-        ]);
-      });
-
-      // [시외]버스별 시간표를 가져온다.
-      busListData.siwe_bus_list.forEach(async bus => {
-        const res = await busApi.timeTable({ queryKey: ["", bus.id] });
-        setBusTimeTable([
-          ...busTimeTable,
-          {
-            id: bus.id,
-            name: bus.name,
-            timeTable: res.stations,
-          },
-        ]);
-      });
-    }
-  }, [buslistLoading]);
-
-  // 학사일정 가져오기
-  useEffect(() => {
-    if (!calendarLoading) {
-      setMjuCalendar(calendarData);
-    }
-  }, [calendarLoading]);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -160,6 +74,9 @@ function Splash({ navigation: { navigate } }) {
         await Font.loadAsync(customFonts);
 
         await checkValidateToken();
+
+        // AppData 로드 
+        // await loadAppData();
 
         // Splash Screen 1초 보여주기
         // eslint-disable-next-line no-promise-executor-return
@@ -180,7 +97,7 @@ function Splash({ navigation: { navigate } }) {
 
     BackHandler.addEventListener("hardwareBackPress", backAction);
 
-    if (appIsReady && !loading) {
+    if (appIsReady) {
       // This tells the splash screen to hide immediately! If we call this after
       // `setAppIsReady`, then we may see a blank screen while the app is
       // loading its initial state and rendering its first pixels. So instead,
@@ -194,7 +111,7 @@ function Splash({ navigation: { navigate } }) {
         navigate("Login");
       }
     }
-  }, [appIsReady, busListData, calendarData, loading, navigate, stationList]);
+  }, [appIsReady]);
 
   return (
     <Container>

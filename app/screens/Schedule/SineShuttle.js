@@ -6,7 +6,7 @@ import TimeTable from "../../components/TimeTable";
 import RouteTable from "../../components/RouteTable";
 import { highlights } from "../../utils";
 import { BLACK_BUTTON_COLOR, DARK_GRAY, WHITE_COLOR } from "../../colors";
-import { MBAContext } from "../../navigation/Root";
+import AppContext from "../../components/AppContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -77,12 +77,10 @@ const SwitchContatiner = styled.View`
 `;
 function SineShuttle() {
   const {
-    sineBusList,
-    siweBusList,
     mjuCalendar,
     stationList,
     busTimeTable,
-  } = React.useContext(MBAContext);
+  } = React.useContext(AppContext);
 
   const isDark = useColorScheme() === "dark";
 

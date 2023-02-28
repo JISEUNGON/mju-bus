@@ -3,7 +3,7 @@ import { ActivityIndicator, Dimensions } from "react-native";
 import styled from "styled-components";
 import RouteTimeTable from "../../components/RouteTimeTable";
 import { highlights } from "../../utils";
-import { MBAContext } from "../../navigation/Root";
+import AppContext from "../../components/AppContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -66,12 +66,8 @@ const ContentsTitle = styled.Text`
 
 function SiweShuttle() {
   const {
-    sineBusList,
-    siweBusList,
     mjuCalendar,
-    stationList,
-    busTimeTable,
-  } = React.useContext(MBAContext);
+  } = React.useContext(AppContext);
 
   const [isToSchool, setIsToSchool] = useState(true);
 

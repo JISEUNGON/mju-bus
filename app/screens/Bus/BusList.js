@@ -15,7 +15,6 @@ import BusInfoList from "../../components/BusResult/BusInfo";
 import { stationApi } from "../../api";
 import { CalculatorTime, DeleteSecond } from "../../utils";
 import XIcon from "../../components/XIcon";
-import { MBAContext } from "../../navigation/Root";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -62,14 +61,6 @@ function CustomNavButton(navigation) {
 
 // eslint-disable-next-line react/prop-types
 function BusList({ navigation, route: { params } }) {
-  const {
-    sineBusList,
-    siweBusList,
-    mjuCalendar,
-    stationList,
-    busTimeTable,
-  } = React.useContext(MBAContext);
-
   const queryClient = useQueryClient();
 
   const { 

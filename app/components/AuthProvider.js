@@ -5,7 +5,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthContext from "./AuthContext";
 import { cos } from "react-native-reanimated";
-import { KEY_TOKENS, FCM_TOKENS } from "../screens/StorageKey";
+import { KEY_TOKENS, KEY_FCM_TOKENS } from "../screens/StorageKey";
 import { appleAuth } from "@invertase/react-native-apple-authentication";
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -14,9 +14,9 @@ const AuthProvider = ({ children }) => {
     async token => {
       if (user != null) {
         // 현재는 AsyncStorage에 토큰을 저장한다 -> DB저장 로직으로 변경
-        await AsyncStorage.setItem(FCM_TOKENS, JSON.stringify(token));
+        await AsyncStorage.setItem(KEY_FCM_TOKENS, JSON.stringify(token));
       }
-    },
+    }, 
     [user],
   );
 
@@ -123,10 +123,27 @@ const AuthProvider = ({ children }) => {
       }
     }
   }, []);
+  
+  const loadUser = useCallback(async () => {
+    try {
+      // 로그인 정보가 있으면 return
+      if (user !== null) {
+        return;
+      }
+      // 로그인 정보가 없으면 로그인 정보를 가져온다.
+      const tokens = await AsyncStorage.getItem(KEY_TOKENS);
+      if (tokens !== null) {
+        setUser(tokens);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   const value = useMemo(() => {
     return {
       user,
+      loadUser,
       kakoSignin,
       googleSignin,
       checkValidateToken,
@@ -138,6 +155,7 @@ const AuthProvider = ({ children }) => {
     kakoSignin,
     googleSignin,
     user,
+    loadUser,
     checkValidateToken,
     guestSignin,
     addFcmToken,

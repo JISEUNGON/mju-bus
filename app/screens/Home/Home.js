@@ -19,7 +19,7 @@ import { busApi, stationApi } from "../../api";
 import RunningRedBus from "../../components/RunningRedBus";
 import RouteSelect from "./RouteSelect";
 import { stationId } from "../../id";
-import { MBAContext } from "../../navigation/Root";
+import AppContext from "../../components/AppContext";
 import { KEY_FAVORITE_SIWE_BUS } from "../StorageKey";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -96,8 +96,10 @@ const SubTitle = styled.Text`
 
 // eslint-disable-next-line react/prop-types
 function Home({ route: { params }, navigation: { navigate } }) {
-  const { sineBusList, siweBusList, mjuCalendar, stationList, busTimeTable } =
-    React.useContext(MBAContext);
+  const { 
+    sineBusList, 
+    siweBusList
+  } = React.useContext(AppContext);
 
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);

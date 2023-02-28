@@ -10,8 +10,6 @@ import StudentAuth from "../components/Login/StudentAuth";
 import AddPartyStack from "./AddPartyStack";
 import TaxiStack from "./TaxiStack";
 
-console.disableYellowBox = true;
-
 const Nav = createNativeStackNavigator();
 
 export const MBAContext = React.createContext();

@@ -5,12 +5,8 @@ import { Text, useColorScheme, View } from "react-native";
 import Home from "../screens/Home/Home";
 import ScheduleTopTabs from "./ScheduleTopTabs";
 import BusTopTabs from "./BusTopTabs";
-import TogetherTopTabs from "./TogetherTopTabs";
 import ViewMore from "../screens/ViewMore";
 import { BLACK_COLOR, DARK_GRAY, WHITE_COLOR } from "../colors";
-import TaxiTabs from "./TaxiDetailTabs";
-import Chatting from "../screens/Taxi/Chatting";
-import { MBAContext } from "./Root";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,11 +19,6 @@ function EmptyText() {
 }
 
 function HomeBottomTabs() {
-  const {   
-    sineBusList,
-    siweBusList,
-    mjuCalendar,
-    stationList, } = useContext(MBAContext);
 
   const isDark = useColorScheme() === "dark";
   return (
