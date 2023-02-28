@@ -25,7 +25,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @Api(tags = {"멤버 정보 조회 API"})
 @RequiredArgsConstructor
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     @GetMapping("/")
     @ApiOperation("사용자의 정보를 받아온다.")
