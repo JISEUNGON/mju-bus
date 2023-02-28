@@ -159,7 +159,7 @@ public class MemberServiceImpl implements MemberService {
             member.upgradeRoleFromGuestToUser();
         }
 
-        return MemberResponse.of(member);
+        return MemberResponse.of(memberRepository.save(member));
     }
 
     @Override
