@@ -13,4 +13,6 @@ public class KakaoLoginRequest {
     private String refreshToken;
     private String refreshTokenExpiresAt;
 
+    private String fcmToken;
+
 }

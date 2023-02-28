@@ -4,7 +4,7 @@ import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.request.TaxiPartyDeleteRequest;
 
 public interface RedisMessageService {
-    void chattingRoomQuit(Long groupId, Member member);
+    boolean quitChattingRoom(Long groupId, Member member);
     void chattingRoomDelete(TaxiPartyDeleteRequest taxiPartyDeleteRequest);
 
 }

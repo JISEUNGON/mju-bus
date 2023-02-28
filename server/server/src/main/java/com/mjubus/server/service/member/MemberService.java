@@ -4,8 +4,14 @@ import com.mjubus.server.domain.Member;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
 import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.dto.request.JwtResponse;
+import com.mjubus.server.dto.request.MjuAuthInfoRequest;
+import com.mjubus.server.dto.response.MemberResponse;
+import com.mjubus.server.dto.response.MjuAuthInfoResponse;
 import com.nimbusds.oauth2.sdk.TokenResponse;
+
+import java.util.Optional;
 
 public interface MemberService {
 
@@ -27,4 +33,9 @@ public interface MemberService {
     boolean hasGroupAuthority(Long id, String groupId);
 
     boolean isGroupAdminister(Long id, String groupId);
+    MemberResponse authMjuStudent(Member member, MjuAuthInfoRequest request);
+
+    MemberResponse findMemberByMemberPrincipal(MemberPrincipalDto principalDto);
+
+    Optional<Member> findOptionalMemberByMemberId(Long memberId);
 }

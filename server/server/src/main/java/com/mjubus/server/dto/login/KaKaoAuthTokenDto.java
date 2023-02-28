@@ -16,6 +16,8 @@ public class KaKaoAuthTokenDto {
     @Setter
     LocalDateTime refreshTokenExpiresAt;
 
+    @Setter
+    private String fcmToken;
     private String id;
 
     private String expires_in;

@@ -132,7 +132,7 @@ function HomeBottomTabs() {
 
       <Tab.Screen
         name="더 보기"
-        component={Chatting}
+        component={ViewMore}
         options={{
           headerStyle: {
             backgroundColor: isDark ? BLACK_COLOR : WHITE_COLOR,

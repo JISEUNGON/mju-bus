@@ -1,6 +1,7 @@
 package com.mjubus.server.security;
 
 import com.mjubus.server.domain.Member;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.enums.MemberRole;
 import com.mjubus.server.service.member.MemberService;
 import com.mjubus.server.util.JwtUtil;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class JwtMemberFilter extends OncePerRequestFilter {
@@ -34,7 +36,7 @@ public class JwtMemberFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.error("JWT Token does not begin with Bearer String with URL : {}", request.getRequestURI());
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token does not begin with Bearer String");
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,7 +46,6 @@ public class JwtMemberFilter extends OncePerRequestFilter {
 
         // Token 검증
         if (!JwtUtil.isKeyValid(token)) {
-            log.error("JWT Token is not valid with Jwt : {}", token);
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
             filterChain.doFilter(request, response);
             return;
@@ -52,30 +53,45 @@ public class JwtMemberFilter extends OncePerRequestFilter {
 
         // Token 만료 체크
         if (JwtUtil.isExpired(token)) {
-            log.error("JWT Token is expired");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token is expired");
             filterChain.doFilter(request, response);
             return;
         }
 
         // 유저 식별
-        Member member = JwtUtil.getMember(token);
-        String role = member.getRole().getKey();
-        log.info("member: {}", member);
+        MemberPrincipalDto principalDto = JwtUtil.getMemberPrincipal(token);
+        Optional<Member> optionalMember = memberService.findOptionalMemberByMemberId(principalDto.getId());
 
-        String[] path = request.getServletPath().split("/");
-        // 그룹에 대한 요청인 경우
-        if (path.length > 2 && path[1].equals("taxi") && path[2].matches("[0-9]+")) {
-            String groupId = path[2];
-            if (memberService.hasGroupAuthority(member.getId(), groupId)) {
-                if (memberService.isGroupAdminister(member.getId(), groupId)) {
-                    role = "GROUP_ADMIN";
-                } else {
-                    role = "GROUP_MEMBER";
-                }
-            }
-
+        if (optionalMember.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "JWT Token is not valid");
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        Member member = optionalMember.get();
+        String role = "";
+        if (member.getRole() == MemberRole.ADMIN) {
+            role = "ADMIN";
+        } else {
+            String[] path = request.getServletPath().split("/");
+            // 그룹에 대한 요청인 경우
+            if (path.length > 2 && path[1].equals("taxi") && path[2].matches("[0-9]+")) { // 생성, 리스트 조회는 그룹에 대한 요청이 아님
+                String groupId = path[2];
+                if (memberService.hasGroupAuthority(member.getId(), groupId)) {
+                    if (memberService.isGroupAdminister(member.getId(), groupId)) { // 그룹 관리자인 경우
+                        role = "GROUP_ADMIN";
+                    } else { // 그룹 멤버인 경우
+                        role = "GROUP_MEMBER";
+                    }
+                } else { // 그룹에 속하지 않은 경우
+                    role = "MEMBER";
+                }
+            } else { // 그룹에 대한 요청이 아닌 경우
+                role = "MEMBER";
+            }
+        }
+
+
 
         log.warn("role: {}", role);
         // 권한 부여

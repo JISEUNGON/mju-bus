@@ -1,12 +1,20 @@
 package com.mjubus.server.service.member;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mjubus.server.domain.Member;
 import com.mjubus.server.domain.MemberProvider;
 import com.mjubus.server.domain.TaxiPartyMembers;
 import com.mjubus.server.dto.login.AppleAuthTokenDto;
 import com.mjubus.server.dto.login.GoogleAuthTokenDto;
 import com.mjubus.server.dto.login.KaKaoAuthTokenDto;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.dto.request.JwtResponse;
+import com.mjubus.server.dto.request.MjuAuthInfoRequest;
+import com.mjubus.server.dto.response.MemberResponse;
+import com.mjubus.server.dto.response.MjuAuthInfoResponse;
+import com.mjubus.server.exception.auth.MjuUserNotFoundException;
 import com.mjubus.server.exception.member.MemberNotFoundException;
 import com.mjubus.server.exception.member.RefreshTokenInvalidException;
 import com.mjubus.server.repository.MemberProviderRepository;
@@ -15,7 +23,14 @@ import com.mjubus.server.service.taxiParty.TaxiPartyService;
 import com.mjubus.server.service.taxiPartyMembers.TaxiPartyMembersService;
 import com.mjubus.server.util.JwtUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +44,15 @@ public class MemberServiceImpl implements MemberService {
     private final TaxiPartyMembersService taxiPartyMembersService;
     private final TaxiPartyService taxiPartyService;
 
-    public MemberServiceImpl(MemberRepository memberRepository, MemberProviderRepository memberProviderRepository, @Lazy TaxiPartyMembersService taxiPartyMembersService, TaxiPartyService taxiPartyService) {
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public MemberServiceImpl(MemberRepository memberRepository, MemberProviderRepository memberProviderRepository, @Lazy TaxiPartyMembersService taxiPartyMembersService, TaxiPartyService taxiPartyService, RestTemplate restTemplate) {
         this.memberRepository = memberRepository;
         this.memberProviderRepository = memberProviderRepository;
         this.taxiPartyMembersService = taxiPartyMembersService;
         this.taxiPartyService = taxiPartyService;
+        this.restTemplate = restTemplate;
     }
     @Override
     public Member saveOrGetAppleMember(AppleAuthTokenDto appleAuthTokenDto) {
@@ -43,6 +62,8 @@ public class MemberServiceImpl implements MemberService {
         else {
 
             Member member = Member.of("APPLE 유저");
+            member.setFcmToken(appleAuthTokenDto.getFcm_token());
+
             MemberProvider memberProvider = MemberProvider.of(appleAuthTokenDto);
             memberProvider.setMember(member);
 
@@ -61,6 +82,8 @@ public class MemberServiceImpl implements MemberService {
             return memberProviderOptional.get().getMember();
         else {
             Member member = Member.of("KAKAO 유저");
+            member.setFcmToken(kaKaoAuthTokenDto.getFcmToken());
+
             MemberProvider memberProvider = MemberProvider.of(kaKaoAuthTokenDto);
             memberProvider.setMember(member);
 
@@ -80,6 +103,8 @@ public class MemberServiceImpl implements MemberService {
             return memberProviderOptional.get().getMember();
         else {
             Member member = Member.of("GOOGLE 유저");
+            member.setFcmToken(googleAuthTokenDto.getFcmToken());
+
             MemberProvider memberProvider = MemberProvider.of(googleAuthTokenDto);
             memberProvider.setMember(member);
 
@@ -92,10 +117,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public JwtResponse generateToken(Member member, String refreshToken) {
-        Member member_from_db = findMemberById(member.getId());
 
-        if (member_from_db.getRefreshToken().equals(refreshToken)) {
-            return JwtResponse.of(JwtUtil.createJwt(member_from_db));
+        if (member.getRefreshToken().equals(refreshToken)) {
+            return JwtResponse.of(JwtUtil.createJwt(member));
         }
 
         throw new RefreshTokenInvalidException("Refresh Token is invalid");
@@ -125,5 +149,47 @@ public class MemberServiceImpl implements MemberService {
         return taxiPartyService.findOptionalPartyById(Long.parseLong(partyId))
                 .map(party -> party.getAdminister().getId().equals(id))
                 .orElse(false);
+    }
+
+    @Override
+    @Transactional
+    public MemberResponse authMjuStudent(Member member, MjuAuthInfoRequest request) {
+        // 명지대 인증 정보 조회
+        if (isMjuStudent(request)) {
+            member.upgradeRoleFromGuestToUser();
+        }
+
+        return MemberResponse.of(memberRepository.save(member));
+    }
+
+    @Override
+    public MemberResponse findMemberByMemberPrincipal(MemberPrincipalDto principal) {
+        Member member = findMemberById(principal.getId());
+        return MemberResponse.of(member);
+    }
+
+    @Override
+    public Optional<Member> findOptionalMemberByMemberId(Long memberId) {
+        return memberRepository.findById(memberId);
+    }
+
+
+    public Boolean isMjuStudent(MjuAuthInfoRequest request) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("nm", request.getName());
+        map.add("birthday", request.getBirthday());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+        headers.add("Referer", "https://sso1.mju.ac.kr/login.do");
+        HttpEntity<MultiValueMap<String, String>> httpRequest = new HttpEntity<>(map, headers);
+        ResponseEntity<String> response = restTemplate.postForEntity("https://sso1.mju.ac.kr/mju/findId.do", httpRequest, String.class);
+
+        try {
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            return jsonNode.get("error").toString().replace("\"", "").equals("0000");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

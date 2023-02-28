@@ -12,6 +12,7 @@ public class GoogleAuthTokenDto {
     private String refreshToken;
     private LocalDateTime refreshTokenExpiresAt;
 
+    private String fcmToken;
     @Setter
     private String userId;
 }

@@ -7,6 +7,7 @@ import lombok.*;
 @Builder
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class MjuAuthInfoRequest {
 
     @ApiModelProperty(name = "name", value = "이름")

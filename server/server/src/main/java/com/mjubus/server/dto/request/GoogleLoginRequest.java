@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class GoogleLoginRequest {
     private String id;
     private String serverAuthCode;
+
+    private String fcmToken;
 }

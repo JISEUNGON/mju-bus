@@ -1,6 +1,7 @@
 package com.mjubus.server.controller;
 
 import com.mjubus.server.domain.Member;
+import com.mjubus.server.dto.member.MemberPrincipalDto;
 import com.mjubus.server.dto.request.*;
 import com.mjubus.server.dto.response.*;
 import com.mjubus.server.service.chatting.*;
@@ -11,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,28 +28,16 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/taxi")
+@AllArgsConstructor
 @Api(tags = {"택시 파티 API"})
 public class TaxiPartyController {
 
     private final TaxiPartyService taxiPartyService;
     private final TaxiPartyMembersService taxiPartyMembersService;
     private final RedisMessageService redisMessageService;
-    private final RedisMessageLogService redisMessageLogService;
     private final RedisMessageSubService redisMessageSubService;
     private final DynamoDbMessageService dynamoDbMessageService;
     private final StationRadiusDetectionService stationRadiusDetectionService;
-
-
-    @Autowired
-    public TaxiPartyController(TaxiPartyService taxiPartyService, TaxiPartyMembersService taxiPartyMembersService, RedisMessageService redisMessageService, RedisMessageLogService redisMessageLogService, RedisMessageSubService redisMessageSubService, DynamoDbMessageService dynamoDbMessageService, StationRadiusDetectionService stationRadiusDetectionService) {
-        this.taxiPartyService = taxiPartyService;
-        this.taxiPartyMembersService = taxiPartyMembersService;
-        this.redisMessageService = redisMessageService;
-        this.redisMessageLogService = redisMessageLogService;
-        this.redisMessageSubService = redisMessageSubService;
-        this.dynamoDbMessageService = dynamoDbMessageService;
-        this.stationRadiusDetectionService = stationRadiusDetectionService;
-    }
 
     @GetMapping("/list")
     @ApiOperation(value = "그룹 리스트 조회")
@@ -96,9 +86,9 @@ public class TaxiPartyController {
     })
     @ResponseBody
     public ResponseEntity<TaxiPartyJoinResponse> addNewMember(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
-        taxiPartyService.addNewMember(groupId, (Member) authentication.getPrincipal());
-        //TODO: FCM "~ 사용자님이 새롭게 들어왔습니다" Actions;
-        return ResponseEntity.ok(TaxiPartyJoinResponse.builder().isAdded("success").build());
+
+        //TODO: FCM "~ 사용자님이 새게 들어왔습니다" Actions;
+        return ResponseEntity.ok(taxiPartyService.addNewMember(groupId, (Member) authentication.getPrincipal()));
     }
     @DeleteMapping("/{group-id}")
     @ApiOperation(value = "파티 탈퇴")
@@ -111,10 +101,8 @@ public class TaxiPartyController {
     })
     @ResponseBody
     public ResponseEntity<TaxiPartyQuitResponse> partyQuit(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
-        taxiPartyService.removeMember(groupId, (Member) authentication.getPrincipal());
-        redisMessageService.chattingRoomQuit(groupId, (Member) authentication.getPrincipal());
         //TODO: FCM "~ 사용자님이 탈퇴하였습니다" Actions;
-        return ResponseEntity.ok(TaxiPartyQuitResponse.builder().isQuited("success").build());
+        return ResponseEntity.ok(taxiPartyService.quitParty((Member) authentication.getPrincipal(), groupId));
     }
 
     @GetMapping("/{group-id}/members")
