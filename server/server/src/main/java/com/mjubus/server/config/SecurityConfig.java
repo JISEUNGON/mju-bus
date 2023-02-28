@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .antMatchers("/taxi/**/delete").hasAnyAuthority("ADMIN", "GROUP_ADMIN")
                 .antMatchers("/taxi/**/chatting/**").hasAnyAuthority("ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
                 .antMatchers(HttpMethod.DELETE, "/taxi/**").hasAnyAuthority("ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
-                .antMatchers("/member/**", "/taxi/**").hasAnyAuthority("ROLE_MEMBER", "ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
+                .antMatchers("/member/**", "/taxi/**").hasAnyAuthority("MEMBER", "ADMIN", "GROUP_ADMIN", "GROUP_MEMBER")
                 .and().build();
     }
 

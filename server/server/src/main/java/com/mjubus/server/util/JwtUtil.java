@@ -56,7 +56,7 @@ public class JwtUtil {
                 .getBody();
 
         return MemberPrincipalDto.builder()
-                .id((Long) claims.get("id"))
+                .id(Long.parseLong(String.valueOf(claims.get("id"))))
                 .build();
     }
 

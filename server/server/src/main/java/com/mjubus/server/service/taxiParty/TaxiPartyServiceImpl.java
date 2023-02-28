@@ -69,9 +69,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Transactional
     @Override
-    public TaxiPartyCreateResponse createTaxiParty(MemberPrincipalDto principalDto, TaxiPartyCreateRequest request) {
-        Member administer = memberService.findMemberById(principalDto.getId());
-
+    public TaxiPartyCreateResponse createTaxiParty(Member administer, TaxiPartyCreateRequest request) {
         // 진행중인 택시파티가 있는 경우
         if (hasActiveParty(administer)) {
             throw new IllegalPartyStateException("이미 진행중인 택시파티가 있습니다.");
@@ -85,14 +83,13 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
         taxiPartyRepository.save(taxiParty);
 
         // 택시파티 생성 후 생성자를 파티에 참여
-        addNewMember(taxiParty.getId(), principalDto);
+        addNewMember(taxiParty.getId(), administer);
         return TaxiPartyCreateResponse.builder().isCreated("success").build();
     }
 
     @Transactional
     @Override
-    public TaxiPartyJoinResponse addNewMember(Long groupId, MemberPrincipalDto principalDto) {
-        Member member = memberService.findMemberById(principalDto.getId());
+    public TaxiPartyJoinResponse addNewMember(Long groupId, Member member) {
         TaxiParty taxiParty = findTaxiPartyById(groupId);
 
         if (taxiPartyMembersService.isGroupMember(taxiParty.getId(), member)) { // 이미 파티에 참여중인 경우
@@ -129,8 +126,7 @@ public class TaxiPartyServiceImpl implements TaxiPartyService{
 
     @Override
     @Transactional
-    public TaxiPartyQuitResponse quitParty(MemberPrincipalDto principalDto, Long partyId) {
-        Member member = memberService.findMemberById(principalDto.getId());
+    public TaxiPartyQuitResponse quitParty(Member member, Long partyId) {
 
         // RDBMS와 Redis에서 퇴장 처리
         if (removeMember(partyId, member) && redisMessageService.quitChattingRoom(partyId, member)) {

@@ -27,15 +27,15 @@ public interface MemberService {
 
     Member saveOrGetGoogleMember(GoogleAuthTokenDto googleAuthTokenDto);
 
-    JwtResponse generateToken(MemberPrincipalDto principal, String refreshToken);
+    JwtResponse generateToken(Member member, String refreshToken);
     Member findMemberById(Long id);
 
     boolean hasGroupAuthority(Long id, String groupId);
 
     boolean isGroupAdminister(Long id, String groupId);
-    MemberResponse authMjuStudent(MemberPrincipalDto principal, MjuAuthInfoRequest request);
+    MemberResponse authMjuStudent(Member member, MjuAuthInfoRequest request);
 
-    MemberResponse findMemberByMemberPrincipal(MemberPrincipalDto principal);
+    MemberResponse findMemberByMemberPrincipal(MemberPrincipalDto principalDto);
 
     Optional<Member> findOptionalMemberByMemberId(Long memberId);
 }

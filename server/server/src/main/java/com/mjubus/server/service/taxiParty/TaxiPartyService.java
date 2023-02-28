@@ -15,10 +15,10 @@ public interface TaxiPartyService {
 
     TaxiPartyListResponse findTaxiPartyList();
 
-    TaxiPartyCreateResponse createTaxiParty(MemberPrincipalDto principalDto, TaxiPartyCreateRequest request);
-    TaxiPartyJoinResponse addNewMember(Long groupId, MemberPrincipalDto principalDto);
+    TaxiPartyCreateResponse createTaxiParty(Member member, TaxiPartyCreateRequest request);
+    TaxiPartyJoinResponse addNewMember(Long groupId, Member member);
 
-    TaxiPartyQuitResponse quitParty(MemberPrincipalDto principalDto, Long partyId);
+    TaxiPartyQuitResponse quitParty(Member member, Long partyId);
 
     void deleteParty(TaxiPartyDeleteRequest request);
 

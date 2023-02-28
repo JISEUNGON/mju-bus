@@ -60,7 +60,7 @@ public class TaxiPartyController {
     })
     @ResponseBody
     public ResponseEntity<TaxiPartyCreateResponse> createNewParty(@ApiIgnore Authentication authentication, @RequestBody TaxiPartyCreateRequest request) {
-        return ResponseEntity.ok(taxiPartyService.createTaxiParty((MemberPrincipalDto) authentication.getPrincipal(), request));
+        return ResponseEntity.ok(taxiPartyService.createTaxiParty((Member) authentication.getPrincipal(), request));
     }
 
     @GetMapping("/{group-id}")
@@ -88,7 +88,7 @@ public class TaxiPartyController {
     public ResponseEntity<TaxiPartyJoinResponse> addNewMember(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
 
         //TODO: FCM "~ 사용자님이 새게 들어왔습니다" Actions;
-        return ResponseEntity.ok(taxiPartyService.addNewMember(groupId, (MemberPrincipalDto) authentication.getPrincipal()));
+        return ResponseEntity.ok(taxiPartyService.addNewMember(groupId, (Member) authentication.getPrincipal()));
     }
     @DeleteMapping("/{group-id}")
     @ApiOperation(value = "파티 탈퇴")
@@ -102,7 +102,7 @@ public class TaxiPartyController {
     @ResponseBody
     public ResponseEntity<TaxiPartyQuitResponse> partyQuit(@ApiIgnore Authentication authentication, @PathVariable(value = "group-id") Long groupId) {
         //TODO: FCM "~ 사용자님이 탈퇴하였습니다" Actions;
-        return ResponseEntity.ok(taxiPartyService.quitParty((MemberPrincipalDto) authentication.getPrincipal(), groupId));
+        return ResponseEntity.ok(taxiPartyService.quitParty((Member) authentication.getPrincipal(), groupId));
     }
 
     @GetMapping("/{group-id}/members")

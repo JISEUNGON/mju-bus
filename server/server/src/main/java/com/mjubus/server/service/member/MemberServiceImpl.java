@@ -116,8 +116,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public JwtResponse generateToken(MemberPrincipalDto principal, String refreshToken) {
-        Member member = findMemberById(principal.getId());
+    public JwtResponse generateToken(Member member, String refreshToken) {
 
         if (member.getRefreshToken().equals(refreshToken)) {
             return JwtResponse.of(JwtUtil.createJwt(member));
@@ -154,15 +153,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponse authMjuStudent(MemberPrincipalDto principal, MjuAuthInfoRequest request) {
-        Member member = findMemberById(principal.getId());
-
+    public MemberResponse authMjuStudent(Member member, MjuAuthInfoRequest request) {
         // 명지대 인증 정보 조회
         if (isMjuStudent(request)) {
             member.upgradeRoleFromGuestToUser();
         }
 
-        memberRepository.save(member);
         return MemberResponse.of(member);
     }
 

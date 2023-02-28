@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,7 +24,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @Controller
 @RequestMapping("/member")
 @Api(tags = {"멤버 정보 조회 API"})
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MemberController {
     private MemberService memberService;
 
@@ -37,7 +38,7 @@ public class MemberController {
     })
     public ResponseEntity<MemberResponse> member(@ApiIgnore Authentication authentication) {
         return ResponseEntity.ok(
-                memberService.findMemberByMemberPrincipal((MemberPrincipalDto) authentication.getPrincipal())
+                MemberResponse.of((Member) authentication.getPrincipal())
         );
     }
 
@@ -50,7 +51,7 @@ public class MemberController {
     })
     public ResponseEntity<MemberResponse> findAndRoleChange(@ApiIgnore Authentication authentication, @RequestBody MjuAuthInfoRequest request) {
         return ResponseEntity.ok(
-                memberService.authMjuStudent((MemberPrincipalDto) authentication.getPrincipal(), request)
+                memberService.authMjuStudent((Member) authentication.getPrincipal(), request)
         );
     }
 
@@ -63,7 +64,7 @@ public class MemberController {
     })
     public ResponseEntity<JwtResponse> generateToken(@ApiIgnore Authentication authentication, @RequestBody String refresh_token) {
         return ResponseEntity.ok(
-                memberService.generateToken((MemberPrincipalDto) authentication.getPrincipal(), refresh_token)
+                memberService.generateToken((Member) authentication.getPrincipal(), refresh_token)
         );
     }
 }
