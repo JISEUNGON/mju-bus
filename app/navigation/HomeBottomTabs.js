@@ -19,7 +19,6 @@ function EmptyText() {
 }
 
 function HomeBottomTabs() {
-
   const isDark = useColorScheme() === "dark";
   return (
     <Tab.Navigator

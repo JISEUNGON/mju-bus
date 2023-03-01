@@ -8,6 +8,7 @@ import Login from "../components/Login/Login";
 import StudentAuth from "../components/Login/StudentAuth";
 import AddPartyStack from "./AddPartyStack";
 import TaxiStack from "./TaxiStack";
+import NameChange from "../screens/More/NameChange";
 import * as Sentry from "@sentry/react-native";
 
 Sentry.init({
@@ -45,6 +46,7 @@ function Root() {
         <Nav.Screen name="NoticeStack" component={NoticeStack} />
         <Nav.Screen name="AddPartyStack" component={AddPartyStack} />
         <Nav.Screen name="TaxiStack" component={TaxiStack} />
+        <Nav.Screen name="NameChange" component={NameChange} />
       </Nav.Navigator>
   );
 }
