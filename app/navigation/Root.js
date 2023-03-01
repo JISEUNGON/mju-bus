@@ -9,6 +9,7 @@ import Home from "../screens/Home/Home";
 import StudentAuth from "../components/Login/StudentAuth";
 import AddPartyStack from "./AddPartyStack";
 import TaxiStack from "./TaxiStack";
+import NameChange from "../screens/More/NameChange";
 
 console.disableYellowBox = true;
 
@@ -102,6 +103,7 @@ function Root() {
         <Nav.Screen name="NoticeStack" component={NoticeStack} />
         <Nav.Screen name="AddPartyStack" component={AddPartyStack} />
         <Nav.Screen name="TaxiStack" component={TaxiStack} />
+        <Nav.Screen name="NameChange" component={NameChange} />
       </Nav.Navigator>
     </MBAContext.Provider>
   );

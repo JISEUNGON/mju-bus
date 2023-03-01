@@ -23,11 +23,8 @@ function EmptyText() {
 }
 
 function HomeBottomTabs() {
-  const {   
-    sineBusList,
-    siweBusList,
-    mjuCalendar,
-    stationList, } = useContext(MBAContext);
+  const { sineBusList, siweBusList, mjuCalendar, stationList } =
+    useContext(MBAContext);
 
   const isDark = useColorScheme() === "dark";
   return (
