@@ -1,10 +1,9 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { loginApi } from "../api";
+import { loginApi, memberApi } from "../api";
 import { login } from "@react-native-seoul/kakao-login";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthContext from "./AuthContext";
-import { cos } from "react-native-reanimated";
 import { KEY_TOKENS, KEY_FCM_TOKENS } from "../screens/StorageKey";
 import { appleAuth } from "@invertase/react-native-apple-authentication";
 const AuthProvider = ({ children }) => {
@@ -12,10 +11,10 @@ const AuthProvider = ({ children }) => {
 
   const addFcmToken = useCallback(
     async token => {
-      if (user != null) {
-        // 현재는 AsyncStorage에 토큰을 저장한다 -> DB저장 로직으로 변경
-        await AsyncStorage.setItem(KEY_FCM_TOKENS, JSON.stringify(token));
+      const token_obj = {
+        fcmToken: token,
       }
+      await AsyncStorage.setItem(KEY_FCM_TOKENS, JSON.stringify(token_obj));
     }, 
     [user],
   );
@@ -23,8 +22,8 @@ const AuthProvider = ({ children }) => {
   const checkValidateToken = useCallback(async () => {
     try {
       const tokens = await AsyncStorage.getItem(KEY_TOKENS);
-      if (tokens !== null) {
-        setUser(tokens);
+      if (tokens !== null) { // 토큰 값이 있을 경우
+        setUser(JSON.parse(tokens));
       }
     } catch (e) {
       console.log(e);
@@ -43,18 +42,19 @@ const AuthProvider = ({ children }) => {
   //카카오 로그인 콜백 함수
   const kakoSignin = useCallback(async () => {
     try {
+      const fcm_obj = JSON.parse(await AsyncStorage.getItem(KEY_FCM_TOKENS));
       await login().then(res => {
         const payload = {
           accessToken: res.accessToken,
           accessTokenExpiresAt: res.accessTokenExpiresAt,
           refreshToken: res.refreshToken,
           refreshTokenExpiresAt: res.refreshTokenExpiresAt,
+          fcmToken: fcm_obj.fcmToken,
         };
 
         loginApi.kakao_login({ queryKey: { payload } }).then(async res => {
           setUser(res);
           await AsyncStorage.setItem(KEY_TOKENS, JSON.stringify(res));
-          console.log(res);
         });
       });
     } catch (e) {
@@ -68,6 +68,8 @@ const AuthProvider = ({ children }) => {
   //카카오 로그인 콜백 함수
   const googleSignin = useCallback(async () => {
     try {
+      const fcm_obj = JSON.parse(await AsyncStorage.getItem(KEY_FCM_TOKENS));
+
       GoogleSignin.configure({
         offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
         forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
@@ -82,9 +84,14 @@ const AuthProvider = ({ children }) => {
       const payload = {
         id: userInfo.user.id,
         serverAuthCode: userInfo.serverAuthCode,
+        fcmToken: fcm_obj.fcmToken,
       };
 
-      loginApi.google_login({ queryKey: { payload } });
+      loginApi.google_login({ queryKey: { payload } }).then(async res => {
+        setUser(res);
+        await AsyncStorage.setItem(KEY_TOKENS, JSON.stringify(res));
+      });
+
     } catch (e) {
       //로그인 취소할 경우
       if (e.code === "-5") {
@@ -100,6 +107,7 @@ const AuthProvider = ({ children }) => {
         // 안드로이드인 경우 보여지지 않음.
         console.log("Apple Authentication is not supported on this device.");
       } else {
+        const fcm_obj = JSON.parse(await AsyncStorage.getItem(KEY_FCM_TOKENS));
         const appleAuthRequestResponse = await appleAuth.performRequest({
           requestedOperation: appleAuth.Operation.LOGIN,
           requestedScopes: [],
@@ -109,6 +117,7 @@ const AuthProvider = ({ children }) => {
           authorizationCode: appleAuthRequestResponse.authorizationCode,
           identityToken: appleAuthRequestResponse.identityToken,
           user: appleAuthRequestResponse.user,
+          fcmToken: fcm_obj.fcmToken,
         };
 
         loginApi.apple_login({ queryKey: { payload } }).then(async res => {
@@ -123,27 +132,10 @@ const AuthProvider = ({ children }) => {
       }
     }
   }, []);
-  
-  const loadUser = useCallback(async () => {
-    try {
-      // 로그인 정보가 있으면 return
-      if (user !== null) {
-        return;
-      }
-      // 로그인 정보가 없으면 로그인 정보를 가져온다.
-      const tokens = await AsyncStorage.getItem(KEY_TOKENS);
-      if (tokens !== null) {
-        setUser(tokens);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
 
   const value = useMemo(() => {
     return {
       user,
-      loadUser,
       kakoSignin,
       googleSignin,
       checkValidateToken,
@@ -155,7 +147,6 @@ const AuthProvider = ({ children }) => {
     kakoSignin,
     googleSignin,
     user,
-    loadUser,
     checkValidateToken,
     guestSignin,
     addFcmToken,

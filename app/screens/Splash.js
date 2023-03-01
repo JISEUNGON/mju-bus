@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AuthContext from "../components/AuthContext";
 import usePushNotification from "../hooks/usePushNotification";
 import AppContext from "../components/AppContext";
+import { memberApi } from "../api";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Circle = styled.View`
@@ -50,10 +51,10 @@ const customFonts = {
 
 function Splash({ navigation: { navigate } }) {
   usePushNotification();
-  const {} = React.useContext(AppContext);
+  const {} = React.useContext(AppContext); // 데이터를 가져오기 위해 사용
 
   const { checkValidateToken, user } = useContext(AuthContext);
-
+  const [userRole, setUserRole] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -75,9 +76,9 @@ function Splash({ navigation: { navigate } }) {
 
         await checkValidateToken();
 
-        // AppData 로드 
-        // await loadAppData();
-
+        memberApi.member().then(res => {
+          setUserRole(res.role);
+        }).catch(err => {});
         // Splash Screen 1초 보여주기
         // eslint-disable-next-line no-promise-executor-return
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -103,11 +104,16 @@ function Splash({ navigation: { navigate } }) {
       // loading its initial state and rendering its first pixels. So instead,
       // we hide the splash screen once we know the root view has already
       // performed layout.
-      if (user != null) {
-        navigate("HomeBottomTabs", {
-          screen: "Home",
-        });
-      } else {
+
+      if (user !== null) {
+        if (userRole === null || userRole === "GUEST") { // 로그인 되어있지만, 명지대 인증이 안되어있을 때
+          navigate("StudentAuth");
+        } else { // 로그인 되어있고, 명지대 인증이 되어있을 때
+          navigate("HomeBottomTabs", {
+            screen: "Home",
+          });
+        }
+      } else { // 로그인 안되어있을 때
         navigate("Login");
       }
     }

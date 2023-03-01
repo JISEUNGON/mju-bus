@@ -74,11 +74,9 @@ function Login({ navigation: { navigate } }) {
                 <GuestStartText>게스트로 시작하기</GuestStartText>
               </GuestStartView>
             </TouchableOpacity>
-
             <SimpleLoginTextView>
               <SimpleLoginText>──────── 간편 로그인 ────────</SimpleLoginText>
             </SimpleLoginTextView>
-
             <SimpleLoginView>
                 <GoogleLogin />
               <LoginMarginView>
