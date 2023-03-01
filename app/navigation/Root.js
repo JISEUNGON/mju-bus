@@ -8,10 +8,18 @@ import Login from "../components/Login/Login";
 import StudentAuth from "../components/Login/StudentAuth";
 import AddPartyStack from "./AddPartyStack";
 import TaxiStack from "./TaxiStack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Sentry from "@sentry/react-native";
+
+Sentry.init({
+  dsn: "https://42549517bef54dcc8a4feaab1d6923ef@o4504760777572352.ingest.sentry.io/4504760785960960",
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  enableNative: false
+});
+
 
 const Nav = createNativeStackNavigator();
-// AsyncStorage.clear();
 function Root() {
   return (
       <Nav.Navigator
@@ -41,4 +49,4 @@ function Root() {
   );
 }
 
-export default Root;
+export default Sentry.wrap(Root);
