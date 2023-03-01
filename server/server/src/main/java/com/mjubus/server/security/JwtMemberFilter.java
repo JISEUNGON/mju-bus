@@ -72,6 +72,8 @@ public class JwtMemberFilter extends OncePerRequestFilter {
         String role = "";
         if (member.getRole() == MemberRole.ADMIN) {
             role = "ADMIN";
+        } else if (member.getRole() == MemberRole.GUEST) {
+            role = "GUEST";
         } else {
             String[] path = request.getServletPath().split("/");
             // 그룹에 대한 요청인 경우

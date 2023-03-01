@@ -8,8 +8,8 @@ import Root from "./navigation/Root";
 import { darkTheme, lightTheme } from "./styled";
 import useCodePush from "./hooks/useCodePush";
 import SyncProgressView from "./screens/SyncProgressView";
+import AppProvider from "./components/AppProvider";
 import AuthProvider from "./components/AuthProvider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const queryClient = new QueryClient();
 
@@ -24,9 +24,11 @@ function App() {
           <SyncProgressView syncProgress={syncProgress} />
         ) : (
           <NavigationContainer>
-            <AuthProvider>
-              <Root />
-            </AuthProvider>
+            <AppProvider>
+              <AuthProvider>
+                  <Root />
+              </AuthProvider>
+            </AppProvider>
           </NavigationContainer>
         )}
       </ThemeProvider>

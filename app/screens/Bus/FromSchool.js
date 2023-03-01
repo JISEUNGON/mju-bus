@@ -6,7 +6,7 @@ import { highlights } from "../../utils";
 import StationSelect from "./StationSelect";
 import NMap from "./NMap";
 import { stationId } from "../../id";
-import { MBAContext } from "../../navigation/Root";
+import AppContext from "../../components/AppContext";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -72,12 +72,8 @@ const SubmitButton = styled.TouchableOpacity``;
 // eslint-disable-next-line react/prop-types
 function FromSchool({ navigation: { navigate } }) {
   const {
-    sineBusList,
-    siweBusList,
-    mjuCalendar,
     stationList,
-    busTimeTable,
-  } = React.useContext(MBAContext);
+  } = React.useContext(AppContext);
 
   // 정류장 선택 모달 
   const [modalVisible, setModalVisible] = useState(false);

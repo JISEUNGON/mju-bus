@@ -2,6 +2,7 @@ import { Entypo } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { useState } from "react";
 import { Linking, TouchableOpacity, View } from "react-native";
+import { memberApi } from "../../api";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 
@@ -99,11 +100,28 @@ function StudentAuth({ navigation }) {
   const onChangeAgree = () => setAgree(!agree);
   const [checkBirthday, setCheckBirthday] = useState(false);
   const [checkName, setCheckName] = useState(false);
+
+  const mjuAuth = async () => {
+    if (checkName && checkBirthday && agree) {
+      const payload = {
+        birthday: birthday,
+        name: name,
+      }
+
+      const res = await memberApi.mjuAuth(payload);
+      if (res !== null && res.role === "USER") { // 인증 성공
+        navigation.navigate("HomeBottomTabs", { screen: "Home" })
+      } else { // 인증 실패
+        console.log("인증 실패");
+      }
+    }
+  }
+
   return (
     <SafeAreaProvider>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
         <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Entypo
               name="chevron-left"
               size={30}
@@ -153,13 +171,7 @@ function StudentAuth({ navigation }) {
           </AgreeView>
           <TouchableOpacity
             disabled={!checkBirthday || !agree || !checkName}
-            onPress={() =>
-              // TODO:
-              // 1) 재학생 검증 후 성공 시 홈으로
-              // 2) 실패 시 토큰 삭제 후, 로그인으로
-              // 3) 뒤로가기 시 토큰 삭제
-              navigation.navigate("HomeBottomTabs", { screen: "Home" })
-            }
+            onPress={() => mjuAuth()}
           >
             <NextBtn
               style={{

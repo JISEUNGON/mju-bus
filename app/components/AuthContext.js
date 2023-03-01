@@ -1,9 +1,10 @@
-const { createContext } = require("react");
+import { createContext } from "react";
 
 //User : userId, email, name
 
 const AuthContext = createContext({
   user: null,
+  loadUser: async () => {},
   kakoSignin: async () => {},
   googleSignin: async () => {},
   appleSignin: async () => {},
