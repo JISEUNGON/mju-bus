@@ -25,3 +25,6 @@ external:
     naver:
         key: ${NAVER_KEY}
         client-id: ${NAVER_CLIENT_ID}
+
+server:
+  port: 5000
