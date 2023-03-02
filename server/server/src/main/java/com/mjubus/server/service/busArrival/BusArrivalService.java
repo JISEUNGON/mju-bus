@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class BusArrivalService implements BusArrivalInterface {
@@ -164,11 +165,12 @@ public class BusArrivalService implements BusArrivalInterface {
 
                 if (curr.getId().equals(targetStation.getId())) break;
                 Station dest = stationService.findStationById(stationDTOList.get(i + 1).getId());
-                expected = expected.plusSeconds(NaverHandler.getDuration(curr, dest));
+                expected = expected.plusSeconds(new Random().nextInt(60) + 60);
+//                expected = expected.plusSeconds(NaverHandler.getDuration(curr, dest));
             }
 
             return LocalTime.from(expected);
-        } catch (IOException | ParseException e) {
+        } catch (Exception e) {
             throw  new RuntimeException(e);
         }
     }

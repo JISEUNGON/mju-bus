@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+@Component
 public class NaverHandler {
     public static String NAVER_SECRETKEY;
     public static String NAVER_CLIENTID;
@@ -39,8 +41,8 @@ public class NaverHandler {
 
         URL url = new URL(NAVER_ENDPOINT + NAVER_SRC + src.getLongitude() + "," + src.getLatitude() + NAVER_DEST + dest.getLongitude() + "," + dest.getLatitude() + NAVER_OPTION);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.addRequestProperty("X-NCP-APIGW-API-KEY-ID", NAVER_CLIENTID);
-        conn.addRequestProperty("X-NCP-APIGW-API-KEY", NAVER_SECRETKEY);
+        conn.setRequestProperty("X-NCP-APIGW-API-KEY-ID", NAVER_CLIENTID);
+        conn.setRequestProperty("X-NCP-APIGW-API-KEY", NAVER_SECRETKEY);
         conn.setRequestMethod("GET");
         conn.setDoOutput(true);
 
