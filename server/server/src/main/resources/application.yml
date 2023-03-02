@@ -17,6 +17,10 @@ spring:
         format_sql: true
   mvc.pathmatch.matching-strategy: ANT_PATH_MATCHER # Swagger-ui
 
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 0.5
+
 external:
     naver:
         key: ${NAVER_KEY}
